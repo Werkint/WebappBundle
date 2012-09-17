@@ -2,6 +2,6 @@ services:
     werkint.webappbundle.webapp:
         class: Werkint\Bundle\WebAppBundle\WebApp\WebApp
         tags:
-            - { name: templating.helper
+            - { name: templating.helper }
             - { name: kernel.event_listener, event: werkint.twig.postconstruct, method: templateConstruct }
         arguments: [@service_container, @event_dispatcher]

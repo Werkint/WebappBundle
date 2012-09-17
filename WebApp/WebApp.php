@@ -16,7 +16,6 @@ class WebApp {
 
 		$ext_tmp = get_class($cont->get('twig.extension.werkint.twig.base'));
 		$ext_tmp::$webapp = $this;
-		$ext_tmp::$postConstructHooks[] = $this;
 	}
 
 	public function createView() {
