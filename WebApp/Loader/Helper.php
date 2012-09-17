@@ -1,8 +1,7 @@
 <?php
+namespace Werkint\Bundle\WebAppBundle\WebApp\Loader;
 
-namespace Werkint\Bundle\WebAppBundle\WebApp\View;
-
-class LoadHelper {
+class Helper {
 
 	private $path = '';
 	private $name = '';

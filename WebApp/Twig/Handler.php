@@ -9,7 +9,7 @@ class Handler extends Singleton {
 	public $chunkClass = '\\Werkint\\Bundle\\WebApp\\Twig\\Chunks';
 
 	public function ext() {
-		return $this->twig()->getExtension('proxy');
+		return $this->baseExt;
 	}
 
 	/**

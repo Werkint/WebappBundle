@@ -1,18 +1,9 @@
 <?php
-
-namespace Werkint\Bundle\WebAppBundle\WebApp\View;
-
-use \Werkint\Component\Controller\View;
-use \Werkint\Component\Routing\Router;
-use \Werkint\Bundle\WebApp\Twig;
+namespace Werkint\Bundle\WebAppBundle\WebApp\Loader;
 use \Werkint\Toolkit\Singleton;
+use \Werkint\Bundle\WebAppBundle\WebApp\View;
 
 class Loader extends Singleton {
-
-	public static function init() {
-		Router::get()->viewClass(__NAMESPACE__ . '\\View');
-		Twig\Handler::get();
-	}
 
 	const EXT_JS = 'js';
 	const EXT_CSS = 'scss';
@@ -28,7 +19,7 @@ class Loader extends Singleton {
 			return;
 		}
 		$this->staticRes[$bundle][$name] = $path;
-		$imgpath = WEBAPP_RES_DIR . '/' . $bundle;
+		$imgpath = View\View::get()->presdir . '/' . $bundle;
 		if (!file_exists($imgpath)) {
 			mkdir($imgpath);
 		}
@@ -39,7 +30,7 @@ class Loader extends Singleton {
 		try {
 			symlink($path, $imgpath);
 		} catch (\Exception $e) {
-			throw new \Exception('Unable to symlink WebApp resource. Source: "' . $path . '", dest: "' . $imgpath . '"');
+			throw new \Exception('Ошибка создания ссылки. Источник: "' . $path . '", цель: "' . $imgpath . '"');
 		}
 	}
 
@@ -47,9 +38,9 @@ class Loader extends Singleton {
 		$ext = pathinfo($path);
 		$path = $ext['dirname'] . '/' . $ext['filename'];
 		if ($ext['extension'] == self::EXT_JS) {
-			Router::get()->view()->headScript($path . '.' . $ext['extension'], true);
+			View\View::get()->headScript($path . '.' . $ext['extension'], true);
 		} else if ($ext['extension'] == self::EXT_CSS) {
-			Router::get()->view()->headStyle($path . '.' . $ext['extension'], true);
+			View\View::get()->headStyle($path . '.' . $ext['extension'], true);
 		} else {
 			return false;
 		}
@@ -63,7 +54,7 @@ class Loader extends Singleton {
 
 		// Dependencies
 		if (!$this->deps) {
-			$this->deps = parse_ini_file($this->scriptPath() . '/scripts.ini');
+			$this->deps = parse_ini_file($this->scriptPath() . '/../config/scripts.ini');
 		}
 		if (!isset($this->deps[$name])) {
 			return;
@@ -78,7 +69,7 @@ class Loader extends Singleton {
 
 		$path = $this->scriptPath() . '/' . $name;
 		if (is_dir($path)) {
-			$model = new LoadHelper($path, $name);
+			$model = new Helper($path, $name);
 			$model->load();
 		} else {
 			$this->attachFile($path);
@@ -86,7 +77,7 @@ class Loader extends Singleton {
 	}
 
 	private function scriptPath() {
-		return realpath(dirname(__FILE__) . '/scripts');
+		return realpath(__DIR__ . '/../../Resources/scripts');
 	}
 
 	/**
@@ -94,10 +85,6 @@ class Loader extends Singleton {
 	 */
 	public static function get() {
 		return parent::get();
-	}
-
-	protected function __construct() {
-		$this->init();
 	}
 
 }
