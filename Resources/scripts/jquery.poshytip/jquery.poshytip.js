@@ -226,6 +226,7 @@
 				$table.width('auto').find('td').eq(3).width('auto').end().end().width(document.defaultView && document.defaultView.getComputedStyle && parseFloat(document.defaultView.getComputedStyle(this.$tip[0], null).width) || this.$tip.width()).find('td').eq(3).width('100%');
 			}
 			this.tipOuterW = this.$tip.outerWidth();
+			window.r = this.$tip;
 			this.tipOuterH = this.$tip.outerHeight();
 
 			this.calcPos();
