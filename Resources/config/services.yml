@@ -1,0 +1,7 @@
+services:
+    werkint.webappbundle.webapp:
+        class: Werkint\Bundle\WebAppBundle\WebApp\WebApp
+        tags:
+            - { name: templating.helper }
+            - { name: twig.module.postconstruct }
+        arguments: [@service_container]

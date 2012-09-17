@@ -9,11 +9,14 @@
 		}
 	],
 	"require":    {
-		"php":                ">=5.4",
-		"werkint/bundle-twig":"*",
-		"richthegeek/phpsass":"*",
-		"nick4fake/jsmin":    "*",
-		"nick4fake/minifycss":"*"
+		"php":                         ">=5.4",
+		"werkint/bundle-twig":         "*",
+		"richthegeek/phpsass":         "*",
+		"nick4fake/jsmin":             "*",
+		"nick4fake/minifycss":         "*",
+		"symfony/dependency-injection":"*",
+		"symfony/http-kernel":         "*",
+		"symfony/config":              "*"
 	},
 	"target-dir": "Werkint/Bundle/WebAppBundle",
 	"autoload":   {
