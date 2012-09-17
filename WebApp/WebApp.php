@@ -1,12 +1,14 @@
 <?php
 namespace Werkint\Bundle\WebAppBundle\WebApp;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\EventDispatcher\Event;
 
 class WebApp {
 
 	private $cont;
 	private $params;
 
-	public function __construct($cont) {
+	public function __construct(ContainerBuilder $cont) {
 		$this->cont = $cont;
 		$this->params = $this->cont->getParameter('werkint_webapp');
 		Twig\Handler::get()->init($this->params['cachedir'], $this->params['isdebug'], $cont);
@@ -26,8 +28,8 @@ class WebApp {
 		return $view;
 	}
 
-	public function templateConstruct($templateName) {
-		ScriptLoader::get()->addScripts($templateName);
+	public function templateConstruct(Event $e) {
+		ScriptLoader::get()->addScripts($e->templateName);
 	}
 
 	private $chunkClass;
