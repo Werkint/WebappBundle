@@ -1,0 +1,26 @@
+.jquery-pagination {
+  font-size: 80%;
+  a {
+    text-decoration: none;
+    border:          solid 1px #AAE;
+    color:           #15B;
+  }
+  a, span {
+    display:       inline-block;
+    padding:       0.3em 0.5em;
+    margin-right:  5px;
+    margin-bottom: 5px;
+    min-width:     1em;
+    text-align:    center;
+  }
+  .current {
+    background: #26B;
+    color:      #fff;
+    border:     solid 1px #AAE;
+    &.prev, &.next {
+      color:        #999;
+      border-color: #999;
+      background:   #fff;
+    }
+  }
+}
