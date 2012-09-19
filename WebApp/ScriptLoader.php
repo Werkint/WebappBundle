@@ -4,9 +4,11 @@ namespace Werkint\Bundle\WebAppBundle\WebApp;
 class ScriptLoader {
 
 	protected $view;
+	protected $twigLoader;
 
-	public function __construct($view) {
+	public function __construct($view, $twigLoader) {
 		$this->view = $view;
+		$this->twigLoader = $twigLoader;
 		$headLoader = function () {
 			foreach ($this->loadedScripts as $name) {
 				if (file_exists($name . '.scss')) {
@@ -31,6 +33,7 @@ class ScriptLoader {
 	}
 
 	public function addScripts($path) {
+		$path = $this->twigLoader->findTemplate($path);
 		$this->loadScript(pathinfo($path, PATHINFO_DIRNAME) . '/_all');
 		$this->loadScript($path);
 	}

@@ -43,7 +43,7 @@ class WebApp {
 
 	private function getScriptLoader() {
 		if (!$this->scriptLoader) {
-			$this->scriptLoader = new ScriptLoader($this->getView());
+			$this->scriptLoader = new ScriptLoader($this->getView(), $this->twigHandle()->twig()->getLoader());
 		}
 		return $this->scriptLoader;
 	}
@@ -61,7 +61,7 @@ class WebApp {
 	protected $chunks;
 
 	public function getChunks() {
-		if(get_class($this->chunks) != $this->chunkClass) {
+		if (get_class($this->chunks) != $this->chunkClass) {
 			$class = $this->chunkClass;
 			$this->chunks = new $class;
 		}
