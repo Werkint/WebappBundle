@@ -11,7 +11,6 @@ class WebApp {
 	public function __construct(ContainerBuilder $cont) {
 		$this->cont = $cont;
 		$this->params = $this->cont->getParameter('werkint_webapp');
-		$this->chunkClass = __NAMESPACE__ . '\\Chunks';
 
 		$ext_tmp = get_class($cont->get('twig.extension.werkint.twig.base'));
 		$ext_tmp::$webapp = $this;
@@ -52,18 +51,11 @@ class WebApp {
 		$this->getScriptLoader()->addScripts($e->templateName);
 	}
 
-	private $chunkClass;
-
-	public function chunkClass($name) {
-		$this->chunkClass = $name;
-	}
-
 	protected $chunks;
 
 	public function getChunks() {
-		if (get_class($this->chunks) != $this->chunkClass) {
-			$class = $this->chunkClass;
-			$this->chunks = new $class;
+		if (!$this->chunks) {
+			$this->chunks = new Chunks();
 		}
 		return $this->chunks;
 	}

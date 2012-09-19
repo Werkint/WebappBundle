@@ -3,24 +3,18 @@ namespace Werkint\Bundle\WebAppBundle\WebApp;
 
 class Chunks {
 
-	public function __construct() {
-		// Загрузчики
-		if (method_exists($this, 'initLoaders')) {
-			$this->initLoaders();
+	protected $loaders = array();
+
+	public function addLoader($namespace, $path, $loader) {
+		if (!isset($this->loaders[$namespace])) {
+			$this->loaders[$namespace] = array();
 		}
+		$this->loaders[$namespace][$path] = $loader;
 	}
 
-	// -- Loaders ---------------------------------------
-
-	private $loaders = array();
-
-	public function addLoader($path, $loader) {
-		$this->loaders[$path] = $loader;
-	}
-
-	public function triggerLoader($path, &$data = null) {
-		if (isset($this->loaders[$path])) {
-			$loader = &$this->loaders[$path];
+	public function triggerLoader($namespace, $path, &$data = null) {
+		if (isset($this->loaders[$namespace]) && isset($this->loaders[$namespace][$path])) {
+			$loader = &$this->loaders[$namespace][$path];
 			$loader($data);
 		}
 	}
