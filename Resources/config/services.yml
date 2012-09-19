@@ -1,4 +1,7 @@
 services:
+    twig.loader:
+        class: Werkint\Bundle\WebAppBundle\WebApp\Twig\Loader
+        arguments: [false]
     werkint.webappbundle.webapp:
         class: Werkint\Bundle\WebAppBundle\WebApp\WebApp
         tags:

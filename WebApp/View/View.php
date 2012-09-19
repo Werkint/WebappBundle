@@ -4,12 +4,22 @@ use \Werkint\Bundle\Menu\Menu;
 use \Werkint\Toolkit\Hooks;
 use \Werkint\Bundle\WebAppBundle\WebApp\Twig;
 
-class View extends \Werkint\Component\Controller\View {
+class View extends AbstractView {
+
+	protected $twig_handler;
+	protected $cont;
+
+	public function __construct($twig_handler, $cont) {
+		$this->twig_handler = $twig_handler;
+		$this->cont = $cont;
+
+		$this->initHead();
+		$this->events = new Hooks();
+	}
 
 	public $prevpath;
 	public $prespath;
 	public $presdir;
-	public $cont;
 
 	public function menu() {
 		return Menu::get();
@@ -18,15 +28,8 @@ class View extends \Werkint\Component\Controller\View {
 	// Шапка
 	use ViewHead;
 
-	public function path($respath = null) {
-		if ($respath) {
-			Twig\Handler::get()->twigRoot($respath);
-		}
-		return parent::path($respath);
-	}
-
-	public function renderLayout() {
-		$head = Twig\Handler::get()->getHeader();
+	public function render() {
+		$head = $this->twig_handler->getHeader();
 		$headname = '<' . md5('head' . microtime(true)) . ' />';
 		$head = str_replace(array(
 			'{#ACTIONPATH#}',
@@ -35,7 +38,7 @@ class View extends \Werkint\Component\Controller\View {
 			$this->pathAction(true) . '.twig',
 			$headname
 		), $head);
-		$head = Twig\Handler::get()->render($head, $this->getTwigData());
+		$head = $this->twig_handler->render($head, $this->getTwigData());
 		$head = str_replace($headname, $this->headRender(), $head);
 		return $head;
 	}
@@ -57,12 +60,6 @@ class View extends \Werkint\Component\Controller\View {
 
 	protected function initHead() {
 		$this->page = new ViewPage($this);
-	}
-
-	protected function __construct() {
-		$this->initHead();
-		$this->events = new Hooks();
-		parent::__construct();
 	}
 
 }

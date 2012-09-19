@@ -1,10 +1,9 @@
 <?php
 namespace Werkint\Bundle\WebAppBundle\WebApp;
-use \Werkint\Toolkit\Singleton;
 
-class Chunks extends Singleton {
+class Chunks {
 
-	private function init() {
+	public function __construct() {
 		// Загрузчики
 		if (method_exists($this, 'initLoaders')) {
 			$this->initLoaders();
@@ -24,17 +23,6 @@ class Chunks extends Singleton {
 			$loader = &$this->loaders[$path];
 			$loader($data);
 		}
-	}
-
-	/**
-	 * @return Chunks
-	 */
-	public static function get() {
-		return parent::get();
-	}
-
-	protected function __construct() {
-		$this->init();
 	}
 
 }

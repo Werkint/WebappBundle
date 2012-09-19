@@ -5,21 +5,23 @@ class Helper {
 
 	private $path = '';
 	private $name = '';
+	protected $loader;
+
+	public function __construct(&$loader, $path, $name) {
+		$this->loader = $loader;
+		$this->path = $path;
+		$this->name = $name;
+	}
 
 	public function attach($name) {
-		Loader::get()->attachFile($this->path . '/' . $name);
+		$this->loader->attachFile($this->path . '/' . $name);
 	}
 
 	public function loadRes($path, $name = null) {
 		if (!$name) {
 			$name = $path;
 		}
-		Loader::get()->loadRes($this->path . '/' . $path, $name, $this->name);
-	}
-
-	public function __construct($path, $name) {
-		$this->path = $path;
-		$this->name = $name;
+		$this->loader->loadRes($this->path . '/' . $path, $name, $this->name);
 	}
 
 	public function load() {
