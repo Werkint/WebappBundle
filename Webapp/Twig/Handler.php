@@ -1,9 +1,10 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp\Twig;
+use Symfony\Component\DependencyInjection\Container;
 
 class Handler {
 
-	public function __construct($cachedir, $isdebug, &$cont) {
+	public function __construct($cachedir, $isdebug, Container &$cont) {
 		$this->baseExt = $cont->get('twig.extension.werkint.twig.base');
 
 		$this->twig = new \Twig_Environment(null, array(

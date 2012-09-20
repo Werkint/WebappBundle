@@ -1,6 +1,6 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\EventDispatcher\Event;
 
 class Webapp {
@@ -8,7 +8,7 @@ class Webapp {
 	protected $cont;
 	protected $params;
 
-	public function __construct(ContainerBuilder $cont) {
+	public function __construct(Container $cont) {
 		$this->cont = $cont;
 		$this->params = $this->cont->getParameter('werkint_webapp');
 
