@@ -1,5 +1,5 @@
 <?php
-namespace Werkint\Bundle\WebAppBundle\WebApp\Twig;
+namespace Werkint\Bundle\WebappBundle\Webapp\Twig;
 
 class Loader extends \Twig_Loader_Filesystem {
 

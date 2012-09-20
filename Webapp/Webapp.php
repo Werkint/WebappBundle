@@ -1,9 +1,9 @@
 <?php
-namespace Werkint\Bundle\WebAppBundle\WebApp;
+namespace Werkint\Bundle\WebappBundle\Webapp;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\EventDispatcher\Event;
 
-class WebApp {
+class Webapp {
 
 	protected $cont;
 	protected $params;

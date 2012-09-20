@@ -1,7 +1,7 @@
 {
 	"name":       "werkint/bundle-webapp",
 	"type":       "library",
-	"description":"Symfony2 WebApp bundle",
+	"description":"Symfony2 Webapp bundle",
 	"authors":    [
 		{
 			"name": "Bogdan Yurov",
@@ -16,10 +16,10 @@
 		"nick4fake/minifycss":"*",
 		"symfony/symfony":    "*"
 	},
-	"target-dir": "Werkint/Bundle/WebAppBundle",
+	"target-dir": "Werkint/Bundle/WebappBundle",
 	"autoload":   {
 		"psr-0":{
-			"Werkint\\Bundle\\WebAppBundle":""
+			"Werkint\\Bundle\\WebappBundle":""
 		}
 	}
 }

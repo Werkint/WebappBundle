@@ -1,8 +1,8 @@
 <?php
-namespace Werkint\Bundle\WebAppBundle\WebApp\View;
+namespace Werkint\Bundle\WebappBundle\Webapp\View;
 use \Werkint\Bundle\Menu\Menu;
 use \Werkint\Toolkit\Hooks;
-use \Werkint\Bundle\WebAppBundle\WebApp\Twig;
+use \Werkint\Bundle\WebappBundle\Webapp\Twig;
 
 class View extends AbstractView {
 

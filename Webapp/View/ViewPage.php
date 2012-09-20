@@ -1,5 +1,5 @@
 <?php
-namespace Werkint\Bundle\WebAppBundle\WebApp\View;
+namespace Werkint\Bundle\WebappBundle\Webapp\View;
 use \Werkint\Component\Routing\Route;
 use \Werkint\Bundle\Menu\Menu;
 

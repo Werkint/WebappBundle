@@ -1,6 +1,6 @@
 <?php
-namespace Werkint\Bundle\WebAppBundle\WebApp\Loader;
-use \Werkint\Bundle\WebAppBundle\WebApp\View;
+namespace Werkint\Bundle\WebappBundle\Webapp\Loader;
+use \Werkint\Bundle\WebappBundle\Webapp\View;
 
 class Loader {
 

@@ -1,5 +1,5 @@
 <?php
-namespace Werkint\Bundle\WebAppBundle\WebApp;
+namespace Werkint\Bundle\WebappBundle\Webapp;
 
 class ScriptLoader {
 

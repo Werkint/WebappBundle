@@ -1,5 +1,5 @@
 <?php
-namespace Werkint\Bundle\WebAppBundle\WebApp\Loader;
+namespace Werkint\Bundle\WebappBundle\Webapp\Loader;
 
 class Helper {
 

@@ -1,6 +1,6 @@
 <?php
-namespace Werkint\Bundle\WebAppBundle\WebApp\View;
-use \Werkint\Bundle\WebApp\Twig;
+namespace Werkint\Bundle\WebappBundle\Webapp\View;
+use \Werkint\Bundle\Webapp\Twig;
 use \JsMin, \MinifyCSS, \SassParser;
 
 trait ViewHead {
