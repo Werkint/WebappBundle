@@ -1,13 +1,17 @@
 <?php
-namespace Werkint\Bundle\WebappBundle\Webapp\Loader;
+namespace Werkint\Bundle\WebappBundle\Webapp;
 
-class Helper {
+class ScriptLoadHelper {
 
-	private $path = '';
-	private $name = '';
+	/**
+	 * @var ScriptLoader
+	 */
 	protected $loader;
 
-	public function __construct(&$loader, $path, $name) {
+	protected $path;
+	protected $name;
+
+	public function __construct($loader, $path, $name) {
 		$this->loader = $loader;
 		$this->path = $path;
 		$this->name = $name;
@@ -25,6 +29,6 @@ class Helper {
 	}
 
 	public function load() {
-		include_once($this->path . '/init.php');
+		require($this->path . '/init.php');
 	}
 }

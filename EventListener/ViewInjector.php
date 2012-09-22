@@ -10,10 +10,12 @@ use Symfony\Bundle\TwigBundle\TwigEngine;
 class ViewInjector {
 
 	protected $templating;
+	protected $webapp;
 	protected $parameters;
 
-	public function __construct(TwigEngine $templating, $parameters) {
+	public function __construct(TwigEngine $templating, $webapp, $parameters) {
 		$this->templating = $templating;
+		$this->webapp = $webapp;
 		$this->parameters = $parameters;
 	}
 
@@ -30,11 +32,11 @@ class ViewInjector {
 		$content = $response->getContent();
 		if (($pos = mb_strripos($content, '</head>')) !== false) {
 			$data = array(
-				'hash' => 'changeme',
+				'hash'    => $this->webapp->compile(),
 				'respath' => $this->parameters['respath']
 			);
 			$code = $this->templating->render(
-				'WebappBundle:Templates:head.twig', $data
+				'WerkintWebappBundle:Templates:head.twig', $data
 			);
 			$code = "\n" . str_replace("\n", '', $code) . "\n";
 			$content = mb_substr($content, 0, $pos) . $code . mb_substr($content, $pos);
