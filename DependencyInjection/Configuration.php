@@ -17,22 +17,14 @@ class Configuration implements ConfigurationInterface {
 		$treeBuilder = new TreeBuilder();
 		$rootNode = $treeBuilder->root($this->alias)->children();
 
-		$this->configMisc($rootNode);
-
-		$rootNode->end();
-		return $treeBuilder;
-	}
-
-	private function configMisc(NodeBuilder $rootNode) {
 		$rootNode
 			->scalarNode('respath')->end();
 		$rootNode
 			->scalarNode('resdir')->end();
 		$rootNode
 			->scalarNode('revpath')->end();
-		$rootNode
-			->scalarNode('cachedir')->end();
-		$rootNode
-			->scalarNode('isdebug')->end();
+
+		$rootNode->end();
+		return $treeBuilder;
 	}
 }

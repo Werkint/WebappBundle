@@ -10,11 +10,9 @@
 	],
 	"require":    {
 		"php":                ">=5.4",
-		"werkint/bundle-twig":"*",
 		"richthegeek/phpsass":"*",
 		"nick4fake/jsmin":    "*",
-		"nick4fake/minifycss":"*",
-		"symfony/symfony":    "*"
+		"nick4fake/minifycss":"*"
 	},
 	"target-dir": "Werkint/Bundle/WebappBundle",
 	"autoload":   {

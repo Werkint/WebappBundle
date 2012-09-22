@@ -1,10 +1,16 @@
 services:
-    twig.loader:
-        class: Werkint\Bundle\WebappBundle\Webapp\Twig\Loader
-        arguments: [false]
-    werkint.webappbundle.webapp:
-        class: Werkint\Bundle\WebappBundle\Webapp\Webapp
+    werkint.webapp.twigextension:
+        class: Werkint\Bundle\WebappBundle\Twig\Extension\Extension
+        arguments: [@event_dispatcher]
         tags:
-            - { name: templating.helper }
-            - { name: kernel.event_listener, event: werkint.twig.postconstruct, method: templateConstruct }
-        arguments: [@service_container, @event_dispatcher]
+            -  { name: twig.extension }
+    werkint.webapp.viewinjector:
+        class: Werkint\Bundle\WebappBundle\EventListener\ViewInjector
+        arguments: [@templating.engine.twig, %werkint_webapp%]
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+    werkint.webapp:
+        class: Werkint\Bundle\WebappBundle\Webapp\Webapp
+        arguments: [%werkint_webapp%]
+        tags:
+            - { name: kernel.event_listener, event: werkint.webapp.postconstruct, method: templateConstruct }

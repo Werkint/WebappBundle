@@ -1,13 +1,12 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp\Loader;
-use \Werkint\Bundle\WebappBundle\Webapp\View;
 
 class Loader {
 
-	protected $view;
+	protected $resdir;
 
-	public function __construct($view) {
-		$this->view = $view;
+	public function __construct($resdir) {
+		$this->resdir = $resdir;
 	}
 
 	const EXT_JS = 'js';
@@ -24,7 +23,7 @@ class Loader {
 			return;
 		}
 		$this->staticRes[$bundle][$name] = $path;
-		$imgpath = $this->view->presdir . '/' . $bundle;
+		$imgpath = $this->resdir . '/' . $bundle;
 		if (!file_exists($imgpath)) {
 			mkdir($imgpath);
 		}
@@ -43,9 +42,9 @@ class Loader {
 		$ext = pathinfo($path);
 		$path = $ext['dirname'] . '/' . $ext['filename'];
 		if ($ext['extension'] == self::EXT_JS) {
-			$this->view->headScript($path . '.' . $ext['extension'], true);
+			//$this->view->headScript($path . '.' . $ext['extension'], true);
 		} else if ($ext['extension'] == self::EXT_CSS) {
-			$this->view->headStyle($path . '.' . $ext['extension'], true);
+			//$this->view->headStyle($path . '.' . $ext['extension'], true);
 		} else {
 			return false;
 		}
