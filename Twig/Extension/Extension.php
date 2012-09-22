@@ -15,7 +15,6 @@ class Extension extends \Twig_Extension {
 
 	public function initRuntime(\Twig_Environment $environment) {
 		$environment->setBaseTemplateClass(__NAMESPACE__ . '\\Template');
-		$environment->setLoader(new Loader());
 	}
 
 	public function getNodeVisitors() {

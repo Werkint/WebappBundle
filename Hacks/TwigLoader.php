@@ -1,8 +1,8 @@
 <?php
-namespace Werkint\Bundle\WebappBundle\Twig\Extension;
+namespace Werkint\Bundle\WebappBundle\Hacks;
 use Symfony\Bundle\TwigBundle\Loader\FilesystemLoader;
 
-class Loader extends FilesystemLoader {
+class TwigLoader extends FilesystemLoader {
 
 	public function findTemplate($template) {
 		return parent::findTemplate($template);

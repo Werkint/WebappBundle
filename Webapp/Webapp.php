@@ -9,6 +9,7 @@ class Webapp {
 
 	public function __construct($params) {
 		$this->params = $params;
+		$this->initLoaders();
 	}
 
 	protected $loader;
