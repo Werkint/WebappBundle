@@ -16,6 +16,21 @@ class NodeModule extends \Twig_Node_Module {
 		return $node;
 	}
 
+	/**
+	 * ОЧЕНЬ грязный хак
+	 * @param \Twig_Compiler $compiler
+	 */
+	protected function compileClassHeader(\Twig_Compiler $compiler) {
+		$compiler
+			->write("\n\n")
+		// if the filename contains */, add a blank to avoid a PHP parse error
+			->write("/* " . str_replace('*/', '* /', $this->getAttribute('filename')) . " */\n")
+			->write('class ' . $compiler->getEnvironment()->getTemplateClass($this->getAttribute('filename'), $this->getAttribute('index')))
+			->raw(sprintf(" extends %s\n", __NAMESPACE__ . '\\Template'))
+			->write("{\n")
+			->indent();
+	}
+
 	protected function compileConstructor(\Twig_Compiler $compiler) {
 		$compiler
 			->write("public function __construct(Twig_Environment \$env)\n", "{\n")

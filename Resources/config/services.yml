@@ -4,13 +4,13 @@ services:
         arguments: [%werkint_webapp%]
         tags:
             - { name: kernel.event_listener, event: werkint.webapp.postconstruct, method: templateConstruct }
-    werkint.webapp.twigextension:
-        class: Werkint\Bundle\WebappBundle\Twig\Extension\Extension
-        arguments: [@event_dispatcher]
-        tags:
-            -  { name: twig.extension }
     werkint.webapp.viewinjector:
         class: Werkint\Bundle\WebappBundle\EventListener\ViewInjector
         arguments: [@templating.engine.twig, @werkint.webapp, %werkint_webapp%]
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+    werkint.webapp.twigextension:
+        class: Werkint\Bundle\WebappBundle\Twig\Extension\Extension
+        arguments: [@werkint.webapp, @event_dispatcher]
+        tags:
+            -  { name: twig.extension }

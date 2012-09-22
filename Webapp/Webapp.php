@@ -15,9 +15,7 @@ class Webapp {
 		$this->handler = new ScriptHandler();
 		$this->loader = new ScriptLoader($this->handler, $this->params['resdir']);
 
-		//$this->handler->addVar('app-url', APP_URL);
-		//$this->handler->addVar('webapp-res', $this->prespath);
-		//$this->handler->addVar('app-res', APP_PATH_RES);
+		$this->handler->addVar('webapp-res', $this->params['respath']);
 	}
 
 	public function templateConstruct(TemplateEvent $e) {
@@ -32,6 +30,14 @@ class Webapp {
 		$compiler = new Compiler($this->handler, $this->params['resdir']);
 		$revision = substr(crc32(file_exists($this->params['revpath']) ? file_get_contents($this->params['revpath']) : ''), 0, 6);
 		return $compiler->compile($revision);
+	}
+
+	public function getVars() {
+		return $this->handler->getVariables();
+	}
+
+	public function addVar($name, $value) {
+		$this->handler->addVar($name, $value);
 	}
 
 }

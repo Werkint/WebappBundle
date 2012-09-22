@@ -1,6 +1,7 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Twig\Extension;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Werkint\Bundle\WebappBundle\Webapp\Webapp;
 
 class Extension extends \Twig_Extension {
 
@@ -8,18 +9,22 @@ class Extension extends \Twig_Extension {
 	 * @var EventDispatcher
 	 */
 	public static $dispatcher;
+	public $webapp;
 
-	public function __construct(EventDispatcher $dispatcher) {
+	public function __construct(Webapp $webapp, EventDispatcher $dispatcher) {
+		$this->webapp = $webapp;
 		static::$dispatcher = $dispatcher;
-	}
-
-	public function initRuntime(\Twig_Environment $environment) {
-		$environment->setBaseTemplateClass(__NAMESPACE__ . '\\Template');
 	}
 
 	public function getNodeVisitors() {
 		return array(
 			new NodeVisitor()
+		);
+	}
+
+	public function getGlobals() {
+		return array(
+			'const' => $this->webapp->getVars()
 		);
 	}
 
