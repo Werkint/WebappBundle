@@ -82,27 +82,21 @@ app.fn.query = (function () {
 			url:     options.root + '/' + action,
 			data:    data,
 			success: function (ret) {
-				if (ret.is_error) {
-					alert('Ошибка! ' + ret.message);
-					app.error('Query id[' + id + '], error: "' + ret.message + '"');
-				} else {
-					app.log('Query id[' + id + '] finished successfully');
-					if (callback) {
-						callback.call(xhr, options.type == 'json' ? ret.data : ret);
-					}
+				app.log('Запрос [' + id + '] закончился удачно: ', ret);
+				if (callback) {
+					callback.call(xhr, ret);
 				}
 				if (!options.nosplash) {
 					$fn.loading(false);
 				}
 			},
 			error:   function (req_obj, msg, error) {
-				app.error('Query id[' + id + '] ' + (error == 'abort' ? 'aborted' : 'unknown error'));
-				if (!app.debug) {
-					alert('Ошибка! Обновите страницу!');
-				} else if (!options.nosplash) {
-					$fn.loading(false);
+				try {
+					var obj = $.parseJSON(req_obj.responseText);
+					app.log('Запрос [' + id + '] закончился ошибкой: ', obj.message, obj.trace.split('\n'));
+				} catch (e) {
+					app.log('Запрос [' + id + '] закончился ошибкой: ', req_obj.responseText);
 				}
-				app.log('Ошибка:', $.trim(req_obj.responseText));
 			},
 			dataType:options.type
 		});

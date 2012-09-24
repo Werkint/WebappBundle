@@ -9,6 +9,10 @@ services:
         arguments: [@templating.engine.twig, @werkint.webapp, %werkint_webapp%]
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+    werkint.webapp.ajaxexception:
+        class: Werkint\Bundle\WebappBundle\EventListener\AjaxException
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
     werkint.webapp.twigextension:
         class: Werkint\Bundle\WebappBundle\Twig\Extension\Extension
         arguments: [@werkint.webapp, @event_dispatcher]

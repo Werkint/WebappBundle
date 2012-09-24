@@ -23,6 +23,7 @@ class ViewInjector {
 		if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
 			return;
 		}
+
 		// do not capture redirects or modify XML HTTP Requests
 		if ($event->getRequest()->isXmlHttpRequest() || $event->getResponse()->isRedirect()) {
 			return;
