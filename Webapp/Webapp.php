@@ -26,6 +26,10 @@ class Webapp {
 		$this->loader->attach($name);
 	}
 
+	public function attachFile($name) {
+		$this->loader->attachFile($name);
+	}
+
 	public function compile() {
 		$compiler = new Compiler($this->handler, $this->params['resdir']);
 		$revision = substr(crc32(file_exists($this->params['revpath']) ? file_get_contents($this->params['revpath']) : ''), 0, 6);
