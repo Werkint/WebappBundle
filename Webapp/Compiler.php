@@ -52,6 +52,9 @@ class Compiler {
 	protected function loadStyles($filepath, &$files) {
 		$data = array();
 		foreach ($this->handler->getVariables() as $name => $value) {
+			if (!is_scalar($value)) {
+				continue;
+			}
 			$data[] = '$const-' . strtolower(str_replace('_', '-', $name)) . ': "' . str_replace('"', '\\"', $value) . '";';
 		}
 		foreach ($files as $file) {
@@ -78,7 +81,14 @@ class Compiler {
 			'window.CONST = {};'
 		);
 		foreach ($this->handler->getVariables() as $name => $value) {
-			$data[] = 'window.CONST.' . strtolower(str_replace('-', '_', $name)) . ' = "' . str_replace('"', '\\"', $value) . '";';
+			if (is_array($value)) {
+				$value = json_encode($value);
+			} else if (is_scalar($value)) {
+				$value = '"' . str_replace('"', '\\"', $value) . '"';
+			} else {
+				throw new \Exception('Неправильный тип: ' . gettype($value));
+			}
+			$data[] = 'window.CONST.' . strtolower(str_replace('-', '_', $name)) . ' = ' . $value . ';';
 		}
 		foreach ($files as $file) {
 			$data[] = file_get_contents($file);

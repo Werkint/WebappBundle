@@ -1,4 +1,4 @@
-/*! fancyBox v2.0.6 fancyapps.com | fancyapps.com/fancybox/#license */
+/*! fancyBox v2.1.0 fancyapps.com | fancyapps.com/fancybox/#license */
 .fancybox-wrap,
 .fancybox-skin,
 .fancybox-outer,
@@ -28,7 +28,7 @@
   background:  #f9f9f9;
   color:       #444;
   text-shadow: none;
-  @include rounded(4px);
+  @include rounded(15px);
 }
 
 .fancybox-opened {
@@ -109,7 +109,7 @@
   height:                      100%;
   cursor:                      pointer;
   text-decoration:             none;
-  background:                  transparent url(#{$const-webapp-res}/jquery.fancybox/blank.gif); /* helps IE */
+  background:                  transparent url(#{$const-webapp-res}/jquery.fancyboxblank.gif); /* helps IE */
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   z-index:                     8040;
 }
@@ -156,20 +156,29 @@
 
 /* Overlay helper */
 
-#fancybox-overlay {
+.fancybox-lock {
+  overflow: hidden;
+}
+
+.fancybox-overlay {
   position:   absolute;
   top:        0;
   left:       0;
   overflow:   hidden;
   display:    none;
   z-index:    8010;
-  background: #000;
+  background: url(#{$const-webapp-res}/jquery.fancyboxfancybox_overlay.png);
 }
 
-#fancybox-overlay.overlay-fixed {
+.fancybox-overlay-fixed {
   position: fixed;
   bottom:   0;
   right:    0;
+}
+
+.fancybox-lock .fancybox-overlay {
+  overflow:   auto;
+  overflow-y: scroll;
 }
 
 /* Title helper */
