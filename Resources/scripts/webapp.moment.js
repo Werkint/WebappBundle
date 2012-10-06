@@ -103,7 +103,7 @@
 	this.moment.lang('ru', lang);
 
 	moment.fn.rusShort = (function (time) {
-		var str = this.date() + ' ' + app.conf.monthsCh[this.month()] + ', ' + this.year();
+		var str = this.date() + ' ' + this.lang().monthsShort[this.month()] + ', ' + this.year();
 		return time ? this.hours() + ':' + this.minutes() + ' ' + str : str;
 	});
 }());

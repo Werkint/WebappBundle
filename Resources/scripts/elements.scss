@@ -1,7 +1,7 @@
-@mixin -gradient-ms($start, $stop){
+@mixin -gradient-ms($start, $stop) {
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$start}', endColorstr='#{$stop}')";
 }
-@mixin -gradient-chunk($start, $stop, $rule-wb, $rule){
+@mixin -gradient-chunk($start, $stop, $rule-wb, $rule) {
   background: $start;
   @include -gradient-ms($start, $stop);
   background: -webkit-linear-gradient(#{$rule});
@@ -11,10 +11,10 @@
   background: linear-gradient(#{$rule});
   background: -webkit-gradient($rule-wb);
 }
-@mixin gradient-sliced($start: #FFF, $center1: #EEE, $center2: #EEE, $stop: #FFF){
+@mixin gradient-sliced($start: #FFF, $center1: #EEE, $center2: #EEE, $stop: #FFF) {
   @include -gradient-chunk($start, $stop, "linear, left top, left bottom, color-stop(0, $start), color-stop(0.50, $center1), color-stop(0.51, $center2), color-stop(1, $stop)", "top, $start 0%, $center1 50%, $center2 51%, $stop 100%");
 }
-@mixin gradient-triple($start: #EEE, $start-num: 0, $center: #EEE, $center-num: 0, $stop: #FFF, $stop-num: 100){
+@mixin gradient-triple($start: #EEE, $start-num: 0, $center: #EEE, $center-num: 0, $stop: #FFF, $stop-num: 100) {
   $start-per: "#{$start-num}%";
   $start-num: $start-num/100;
   $center-per: "#{$center-num}%";
@@ -23,33 +23,33 @@
   $stop-num: $stop-num/100;
   @include -gradient-chunk($start, $stop, "linear, left top, left bottom, color-stop($start-num, $start), color-stop($center-num, $center), color-stop($stop-num, $stop)", "top, #{$start} #{$start-per}, #{$center} #{$center-per}, #{$stop} #{$stop-per}");
 }
-@mixin gradient-double($start: #EEE, $start-num: 0, $stop: #FFF, $stop-num: 100){
+@mixin gradient-double($start: #EEE, $start-num: 0, $stop: #FFF, $stop-num: 100) {
   $start-per: "#{$start-num}%";
   $start-num: $start-num/100;
   $stop-per: "#{$stop-num}%";
   $stop-num: $stop-num/100;
   @include -gradient-chunk($start, $stop, "linear, left top, left bottom, color-stop($start-num, $start), color-stop($stop-num, $stop)", "top, #{$start} #{$start-per}, #{$stop} #{$stop-per}");
 }
-@mixin gradient-double-backend($data: "", $start: #EEE, $start-num: 0, $stop: #FFF, $stop-num: 100){
+@mixin gradient-double-backend($data: "", $start: #EEE, $start-num: 0, $stop: #FFF, $stop-num: 100) {
   $start-per: "#{$start-num}%";
   $start-num: $start-num/100;
   $stop-per: "#{$stop-num}%";
   $stop-num: $stop-num/100;
   @include -gradient-chunk($start, $stop, "linear, left top, left bottom, color-stop($start-num, $start), color-stop($stop-num, $stop)", "top, #{$start} #{$start-per}, #{$stop} #{$stop-per}");
 }
-@mixin gradient($start: #EEE, $stop: #FFF){
+@mixin gradient($start: #EEE, $stop: #FFF) {
   @include gradient-double($start, 0, $stop, 100);
 }
 
-@mixin box-shadow($arguments){
+@mixin box-shadow($arguments) {
   -webkit-box-shadow: $arguments;
   -moz-box-shadow:    $arguments;
   box-shadow:         $arguments;
 }
-@mixin drop-shadow($x-axis: 0, $y-axis: 1px, $blur: 2px, $alpha: 0.1){
+@mixin drop-shadow($x-axis: 0, $y-axis: 1px, $blur: 2px, $alpha: 0.1) {
   @include box-shadow($x-axis $y-axis $blur rgba(0, 0, 0, $alpha));
 }
-@mixin rounded($radius: 2px){
+@mixin rounded($radius: 2px) {
   -webkit-border-radius:   $radius;
   -moz-border-radius:      $radius;
   border-radius:           $radius;
@@ -57,22 +57,22 @@
   -webkit-background-clip: padding-box;
   background-clip:         padding-box;
 }
-@mixin border-radius-top-right($radius: 0){
+@mixin border-radius-top-right($radius: 0) {
   -webkit-border-top-right-radius: $radius;
   -moz-border-radius-topright:     $radius;
   border-top-right-radius:         $radius;
 }
-@mixin border-radius-bottom-right($radius: 0){
+@mixin border-radius-bottom-right($radius: 0) {
   -webkit-border-bottom-right-radius: $radius;
   -moz-border-radius-bottomright:     $radius;
   border-bottom-right-radius:         $radius;
 }
-@mixin border-radius-bottom-left($radius: 0){
+@mixin border-radius-bottom-left($radius: 0) {
   -moz-border-radius-bottomleft:     $radius;
   -webkit-border-bottom-left-radius: $radius;
   border-bottom-left-radius:         $radius;
 }
-@mixin border-radius-top-left($radius: 0){
+@mixin border-radius-top-left($radius: 0) {
   -moz-border-radius-topleft:     $radius;
   -webkit-border-top-left-radius: $radius;
   border-top-left-radius:         $radius;
@@ -82,14 +82,14 @@
   -webkit-background-clip: padding-box;
   background-clip:         padding-box;
 }
-@mixin border-radius($topleft: 0, $topright: 0, $bottomright: 0, $bottomleft: 0){
+@mixin border-radius($topleft: 0, $topright: 0, $bottomright: 0, $bottomleft: 0) {
   @include border-radius-top-left($topleft);
   @include border-radius-top-right($topright);
   @include border-radius-bottom-right($bottomright);
   @include border-radius-bottom-left($bottomleft);
   @include background-clip-padding;
 }
-@mixin opacity($opacity: 0.5){
+@mixin opacity($opacity: 0.5) {
   -moz-opacity:    $opacity;
   -khtml-opacity:  $opacity;
   -webkit-opacity: $opacity;
@@ -97,28 +97,28 @@
   $opacity-ie: $opacity*100;
   -ms-filter:      "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$opacity-ie})";
 }
-@mixin text-overflow($param){
+@mixin text-overflow($param) {
   -o-text-overflow:  $param;
   -ms-text-overflow: $param;
   text-overflow:     $param;
 }
-@mixin edges($top: 0, $right: 0, $bottom: 0, $left: 0){
+@mixin edges($top: 0, $right: 0, $bottom: 0, $left: 0) {
   top:    $top;
   right:  $right;
   bottom: $bottom;
   left:   $left;
 }
-@mixin edges-all($val){
+@mixin edges-all($val) {
   @include edges($val, $val, $val, $val);
 }
-@mixin position-centered($width, $height){
+@mixin position-centered($width, $height) {
   position: absolute;
   @include edges(50%, auto, auto, 50%);
-  margin:   -$height/2 0 0 -$width/2;
+  margin:   -$height/2 0 0 0 -$width/2;
   height:   $height;
   width:    $width;
 }
-@mixin input-placeholder($param){
+@mixin input-placeholder($param) {
   &::-webkit-input-placeholder {
     $test;
   }
@@ -126,7 +126,7 @@
     $test;
   }
 }
-@mixin box-sizing($param){
+@mixin box-sizing($param) {
   -moz-box-sizing:    $param;
   -ms-box-sizing:     $param;
   -webkit-box-sizing: $param;
@@ -146,7 +146,7 @@
   transform:                rotate(270deg);
   transform-origin:         0% 50%;
 }
-@mixin background-size($param){
+@mixin background-size($param) {
   -moz-background-size:    $param;
   -o-background-size:      $param;
   -webkit-background-size: $param;
