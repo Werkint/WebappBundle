@@ -55,7 +55,7 @@ class Compiler {
 			if (!is_scalar($value)) {
 				continue;
 			}
-			$data[] = '$const-' . strtolower(str_replace('_', '-', $name)) . ': "' . str_replace('"', '\\"', $value) . '";';
+			$data[] = '$const-' . str_replace('_', '-', $name) . ': "' . str_replace('"', '\\"', $value) . '";';
 		}
 		foreach ($files as $file) {
 			$data[] = file_get_contents($file);
@@ -88,7 +88,7 @@ class Compiler {
 			} else {
 				throw new \Exception('Неправильный тип: ' . gettype($value));
 			}
-			$data[] = 'window.CONST.' . strtolower(str_replace('-', '_', $name)) . ' = ' . $value . ';';
+			$data[] = 'window.CONST.' . str_replace('-', '_', $name) . ' = ' . $value . ';';
 		}
 		foreach ($files as $file) {
 			$data[] = file_get_contents($file);
