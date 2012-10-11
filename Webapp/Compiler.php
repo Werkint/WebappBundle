@@ -51,12 +51,19 @@ class Compiler {
 
 	protected function loadStyles($filepath, &$files) {
 		$data = array();
-		foreach ($this->handler->getVariables() as $name => $value) {
-			if (!is_scalar($value)) {
-				continue;
+		$updVars = function ($vars, $prefix) use (&$data, &$updVars) {
+			foreach ($vars as $name => $value) {
+				$pr = $prefix . '-' . str_replace('_', '-', $name);
+				if (is_array($value)) {
+					$updVars($value, $pr);
+				}
+				if (!is_scalar($value)) {
+					continue;
+				}
+				$data[] = $pr . ': "' . str_replace('"', '\\"', $value) . '";';
 			}
-			$data[] = '$const-' . str_replace('_', '-', $name) . ': "' . str_replace('"', '\\"', $value) . '";';
-		}
+		};
+		$updVars($this->handler->getVariables(), '$const');
 		foreach ($files as $file) {
 			$data[] = file_get_contents($file);
 		}
