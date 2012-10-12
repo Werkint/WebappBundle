@@ -106,4 +106,8 @@
 		var str = this.date() + ' ' + this.lang().monthsShort[this.month()] + ', ' + this.year();
 		return time ? this.hours() + ':' + this.minutes() + ' ' + str : str;
 	});
+
+	moment.fn.rusShorter = (function () {
+		return this.date() + ' ' + this.lang().monthsShort[this.month()];
+	});
 }());
