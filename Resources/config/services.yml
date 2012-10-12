@@ -1,7 +1,9 @@
 services:
     werkint.webapp:
         class: Werkint\Bundle\WebappBundle\Webapp\Webapp
-        arguments: [%werkint_webapp%]
+        arguments:
+            - %werkint_webapp%
+            - %kernel.debug%
         tags:
             - { name: kernel.event_listener, event: werkint.webapp.postconstruct, method: templateConstruct }
     werkint.webapp.viewinjector:
@@ -11,10 +13,14 @@ services:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
     werkint.webapp.ajaxexception:
         class: Werkint\Bundle\WebappBundle\EventListener\AjaxException
+        arguments:
+            - %kernel.debug%
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
     werkint.webapp.twigextension:
         class: Werkint\Bundle\WebappBundle\Twig\Extension\Extension
-        arguments: [@werkint.webapp, @event_dispatcher]
+        arguments:
+            - @werkint.webapp
+            - @event_dispatcher
         tags:
             -  { name: twig.extension }

@@ -10,12 +10,15 @@ class Webapp {
 	protected $loader;
 	protected $handler;
 
-	public function __construct($params) {
+	protected $isDebug;
+
+	public function __construct($params, $isDebug) {
 		$this->params = $params;
 		$this->handler = new ScriptHandler();
 		$this->loader = new ScriptLoader($this->handler, $this->params['resdir']);
 
 		$this->handler->addVar('webapp-res', $this->params['respath']);
+		$this->isDebug = $isDebug;
 	}
 
 	public function templateConstruct(TemplateEvent $e) {
@@ -31,7 +34,7 @@ class Webapp {
 	}
 
 	public function compile() {
-		$compiler = new Compiler($this->handler, $this->params['resdir']);
+		$compiler = new Compiler($this->handler, $this->params['resdir'], $this->isDebug);
 		$revision = substr(crc32(file_exists($this->params['revpath']) ? file_get_contents($this->params['revpath']) : ''), 0, 6);
 		return $compiler->compile($revision);
 	}

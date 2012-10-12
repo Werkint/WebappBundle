@@ -10,12 +10,16 @@ class Compiler {
 	protected $handler;
 	protected $targetdir;
 
-	public function __construct($handler, $targetdir) {
+	protected $isDebug;
+
+	public function __construct($handler, $targetdir, $isDebug) {
+		// TODO: to service
 		if (!file_exists($targetdir)) {
 			throw new \Exception('Папка не существует: ' . $targetdir);
 		}
 		$this->handler = $handler;
 		$this->targetdir = $targetdir;
+		$this->isDebug = $isDebug;
 	}
 
 	public function compile($revision) {
@@ -73,7 +77,7 @@ class Compiler {
 			'style'     => 'nested',
 			'cache'     => FALSE,
 			'syntax'    => 'scss',
-			'debug'     => APP_DEBUG
+			'debug'     => $this->isDebug
 		));
 		try {
 			$data = $parser->toCss($data, false);
@@ -101,7 +105,7 @@ class Compiler {
 			$data[] = file_get_contents($file);
 		}
 		$data = join("\n", $data);
-		if (!APP_DEBUG) {
+		if (!$this->isDebug) {
 			\JsMin\Minify::minify($data);
 		}
 		file_put_contents($filepath, $data);

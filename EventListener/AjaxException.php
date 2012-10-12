@@ -9,12 +9,18 @@ use Symfony\Bundle\TwigBundle\TwigEngine;
 
 class AjaxException {
 
+	protected $isDebug;
+
+	public function __construct($isDebug) {
+		$this->isDebug = $isDebug;
+	}
+
 	public function onKernelException(GetResponseForExceptionEvent $event) {
 		if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
 			return;
 		}
 
-		if (!$event->getRequest()->isXmlHttpRequest() || !APP_DEBUG) {
+		if (!$event->getRequest()->isXmlHttpRequest() || !$this->isDebug) {
 			return;
 		}
 		$exception = $event->getException();
