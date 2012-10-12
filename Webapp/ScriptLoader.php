@@ -48,10 +48,11 @@ class ScriptLoader {
 	 * @param string $path
 	 * @return bool
 	 */
-	public function attachFile($path, $ignore_check = false) {
-		if (!file_exists($path)) {
+	public function attachFile($pathin, $ignore_check = false) {
+		$path = realpath($pathin);
+		if (!$path) {
 			if (!$ignore_check) {
-				throw new \Exception('Файл не найден: ' . $path);
+				throw new \Exception('Файл не найден: ' . $pathin);
 			} else {
 				return;
 			}

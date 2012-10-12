@@ -152,3 +152,13 @@
   -webkit-background-size: $param;
   background-size:         $param;
 }
+@mixin arrow-right($width, $height, $color) {
+  border-top:    solid $height/2 transparent;
+  border-bottom: solid $height/2 transparent;
+  border-left:   solid $width/2 $color;
+  width:         0;
+  height:        0;
+  line-height:   0;
+  font-size:     0;
+  display:       inline-block;
+}

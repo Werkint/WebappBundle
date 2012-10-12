@@ -29,6 +29,9 @@ class ScriptHandler {
 		} else {
 			$ret = array();
 			foreach ($this->files as $file) {
+				if (in_array($file, $ret)) {
+					continue;
+				}
 				if (pathinfo($file, PATHINFO_EXTENSION) == $ext) {
 					$ret[] = $file;
 				}
