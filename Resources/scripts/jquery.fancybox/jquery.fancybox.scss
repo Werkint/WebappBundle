@@ -1,4 +1,4 @@
-/*! fancyBox v2.1.0 fancyapps.com | fancyapps.com/fancybox/#license */
+/*! fancyBox v2.1.2 fancyapps.com | fancyapps.com/fancybox/#license */
 .fancybox-wrap,
 .fancybox-skin,
 .fancybox-outer,
@@ -28,7 +28,7 @@
   background:  #f9f9f9;
   color:       #444;
   text-shadow: none;
-  @include rounded(15px);
+  @include rounded(4px);
 }
 
 .fancybox-opened {
@@ -36,7 +36,7 @@
 }
 
 .fancybox-opened .fancybox-skin {
-  @include drop-shadow(0, 10px, 25px, 0.5);
+  @include box-shadow(0, 10px, 25px, 0.5);
 }
 
 .fancybox-outer, .fancybox-inner {
@@ -109,7 +109,7 @@
   height:                      100%;
   cursor:                      pointer;
   text-decoration:             none;
-  background:                  transparent url(#{$const-webapp-res}/jquery.fancyboxblank.gif); /* helps IE */
+  background:                  transparent url(#{$const-webapp-res}/jquery.fancybox/blank.gif); /* helps IE */
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   z-index:                     8040;
 }
@@ -167,7 +167,7 @@
   overflow:   hidden;
   display:    none;
   z-index:    8010;
-  background: url(#{$const-webapp-res}/jquery.fancyboxfancybox_overlay.png);
+  background: url(#{$const-webapp-res}/jquery.fancybox/fancybox_overlay.png);
 }
 
 .fancybox-overlay-fixed {
