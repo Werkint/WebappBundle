@@ -22,7 +22,7 @@
 			styles[i] = stylesIn[i];
 		}
 
-		if (!transitionsAvailable || true) {
+		if (!transitionsAvailable) {
 			$.extend(true, settings, {
 				complete:function () {
 					callbacks.resolve();
@@ -35,21 +35,24 @@
 				settings.easing = 'ease';
 			}
 
-			var property = ''
+			var property = [], duration = [], easing = []
 				, transitionMap = {};
 
-			for (var i in styles) {
-				if (property) {
-					property += ',';
-				}
-				property += i;
+			var dur = (settings.duration / 1000) + 's';
+			for (var style in styles) {
+				property.push(style);
+				duration.push(dur);
+				easing.push(settings.easing);
 			}
+			property = property.join(', ');
+			duration = duration.join(', ');
+			easing = easing.join(', ');
 
-			for (var i = 0; i < PREFIXES.length; i++) {
-				var prefix = PREFIXES[i];
+			for (var prefix = 0; prefix < PREFIXES.length; prefix++) {
+				prefix = PREFIXES[prefix];
 				transitionMap[prefix + 'transition-property'] = property;
-				transitionMap[prefix + 'transition-duration'] = (settings.duration / 1000) + ' s';
-				transitionMap[prefix + 'transition-timing-function'] = settings.easing;
+				transitionMap[prefix + 'transition-duration'] = duration;
+				transitionMap[prefix + 'transition-timing-function'] = easing;
 			}
 
 			this.css(transitionMap);
@@ -58,7 +61,9 @@
 			var resolve = (function () {
 				callbacks.resolve();
 			});
-			this.unbind('webkitTransitionEnd').bind('webkitTransitionEnd', resolve);
+			for (var i = 0; i < EVENTS.length; i++) {
+				this.unbind(EVENTS[i]).bind(EVENTS[i], resolve);
+			}
 		}
 
 		var self = this;
