@@ -1,5 +1,4 @@
 (function (app) {
-	console.log(app);
 	app.conf.tinymce = {
 		/**
 		 * Configuration should ONLY be affected by changing of this property ("conf") in runtime

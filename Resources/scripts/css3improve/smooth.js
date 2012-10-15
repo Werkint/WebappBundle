@@ -7,14 +7,24 @@
  * MIT license
  */
 (function ($, transitionsAvailable) {
+	"use strict";
 	var PREFIXES = ['', '-o-', '-moz-', '-webkit-', '-ms-'];
 	var EVENTS = ['transitionend', 'oTransitionEnd', 'webkitTransitionEnd', 'MSTransitionEnd'];
 	var def = {
 		duration:500,
 		easing:  'linear'
 	};
-	$.fn.smooth = function (stylesIn, settingsIn) {
-		var callbacks = $.Deferred();
+	var resolve = (function () {
+		callbacks.resolve();
+	});
+	var smoothIt = (function (stylesIn, settingsIn) {
+		if (typeof $(this).data('smoothed') == 'undefined') {
+			$(this).data('smoothed', $.Deferred());
+			for (var i = 0; i < EVENTS.length; i++) {
+				$(this).unbind(EVENTS[i]).bind(EVENTS[i], resolve);
+			}
+		}
+		var callbacks = $(this).data('smoothed');
 		var settings = $.extend(true, def, settingsIn);
 
 		var styles = {};
@@ -28,7 +38,7 @@
 					callbacks.resolve();
 				}
 			});
-			this.stop(false, false).animate(styles, settings);
+			$(this).stop(false, false).animate(styles, settings);
 		} else {
 			//fixing easing CSS3-jQuery difference
 			if ('swing' == settings.easing) {
@@ -55,24 +65,19 @@
 				transitionMap[prefix + 'transition-timing-function'] = easing;
 			}
 
-			this.css(transitionMap);
-			this.css(styles);
-
-			var resolve = (function () {
-				callbacks.resolve();
-			});
-			for (var i = 0; i < EVENTS.length; i++) {
-				this.unbind(EVENTS[i]).bind(EVENTS[i], resolve);
-			}
+			$(this).css(transitionMap);
+			$(this).css(styles);
 		}
 
-		var self = this;
-		callbacks.done(function () {
-			if (settingsIn && settingsIn.complete && (settingsIn.complete instanceof Function)) {
-				settingsIn.complete.apply(self, []);
-			}
-		});
-
-		return callbacks;
-	};
+		if (settingsIn.complete && (settingsIn.complete instanceof Function)) {
+			callbacks.done(function (target, callback) {
+				return function () {
+					callback.apply($(target), []);
+				};
+			}(this, settingsIn.complete));
+		}
+	});
+	$.fn.smooth = (function () {
+		return this.each(smoothIt);
+	});
 })(jQuery, Modernizr.csstransitions);

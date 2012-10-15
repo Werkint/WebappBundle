@@ -89,6 +89,7 @@ class Compiler {
 
 	protected function loadScripts($filepath, &$files) {
 		$data = array(
+			'"use strict";',
 			'window.CONST = {};'
 		);
 		foreach ($this->handler->getVariables() as $name => $value) {

@@ -1,4 +1,4 @@
-(function () {
+(function (moment) {
 
 	var pluralRules = [
 			function (n) {
@@ -100,7 +100,7 @@
 			}
 		};
 
-	this.moment.lang('ru', lang);
+	moment.lang('ru', lang);
 
 	moment.fn.rusShort = (function (time) {
 		var str = this.date() + ' ' + this.lang().monthsShort[this.month()] + ', ' + this.year();
@@ -110,4 +110,4 @@
 	moment.fn.rusShorter = (function () {
 		return this.date() + ' ' + this.lang().monthsShort[this.month()];
 	});
-}());
+})(window.moment);
