@@ -11,6 +11,12 @@
   background: linear-gradient(#{$rule});
   background: -webkit-gradient($rule-wb);
 }
+@mixin transition($param) {
+  -webkit-transition: #{$param};
+  -o-transition:      #{$param};
+  -moz-transition:    #{$param};
+  transition:         #{$param};
+}
 @mixin gradient-sliced($start: #FFF, $center1: #EEE, $center2: #EEE, $stop: #FFF) {
   @include -gradient-chunk($start, $stop, "linear, left top, left bottom, color-stop(0, $start), color-stop(0.50, $center1), color-stop(0.51, $center2), color-stop(1, $stop)", "top, $start 0%, $center1 50%, $center2 51%, $stop 100%");
 }
