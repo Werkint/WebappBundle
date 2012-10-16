@@ -47,13 +47,13 @@
 
 		}
 		this.oldhtml = '';
-		this.restore = (function () {
+		this.restore = function () {
 			if (this.oldhtml) {
 				$(this.list).html(this.oldhtml);
 			}
 			return this;
-		});
-		this.init = (function (name) {
+		};
+		this.init = function (name) {
 			if (this.ajaxQuery) {
 				this.ajaxQuery.abort();
 			}
@@ -65,18 +65,21 @@
 				});
 			}
 			return this;
-		});
+		};
 		// Вызываем
 		this.init();
 
 		// Получение данных
 		this.fGetter = null;
 		this.ajaxQuery = null;
-		this.setGetter = (function (getter) {
+		this.setGetter = function (getter) {
 			this.fGetter = getter;
 			return this;
-		});
-		this.update = this.reload = (function () {
+		};
+		this.update = this.reload = function () {
+			if(!this.fGetter) {
+				return;
+			}
 			if (this.ajaxQuery) {
 				this.ajaxQuery.abort();
 			}
@@ -87,55 +90,55 @@
 				this.ajaxQuery = this.fGetter(this.filters, this.getOrder());
 			}
 			return this;
-		});
+		};
 
 		// Сортировка
-		this.order = (function (col, dir_desc) {
+		this.order = function (col, dir_desc) {
 			this.orderer.column = col;
 			this.orderer.desc = dir_desc;
 			this.sorters.removeClass('order-desc').removeClass('order-asc');
 			this.sorters.parent().filter('.col_' + col).children('button').addClass('order-' + (dir_desc ? 'desc' : 'asc'));
 			this.update();
 			return this;
-		});
-		this.getOrder = (function () {
+		};
+		this.getOrder = function () {
 			return this.orderer.column + ' ' + (this.orderer.desc ? 'desc' : 'asc');
-		});
+		};
 
 		// Установка фильтра
-		this.setFilter = (function (name, val, autoupd) {
+		this.setFilter = function (name, val, autoupd) {
 			var oldval = this.filters[name];
 			this.filters[name] = val;
 			if (autoupd && (oldval != val)) {
 				this.update();
 			}
 			return this;
-		});
+		};
 
-		this.clear = (function () {
+		this.clear = function () {
 			if (this.listBody) {
 				this.listBody.html('');
 			}
-		});
-		this.setRes = (function (str) {
+		};
+		this.setRes = function (str) {
 			this.clear();
 			var tr = $('<tr></tr>').append($('<td></td>').html(str).addClass('nothing'));
 			tr.find('td').attr('colspan', this.listHead.find('th').size());
 			this.listBody.append(tr);
 			this.listHead.hide();
-		});
-		this.setLoading = (function () {
+		};
+		this.setLoading = function () {
 			this.clear();
 			var tr = $('<tr></tr>').append($('<td></td>').html('<img src="' + CONST.webapp_res + '/listfiltered/preloader-hor.gif" alt="preloader" />').addClass('loading'));
 			tr.find('td').attr('colspan', this.listHead.find('th').size());
 			this.listBody.append(tr);
 			this.listHead.hide();
-		});
+		};
 
 	});
 
 	// Установка списка
-	flist.prototype.setList = (function (in_list) {
+	flist.prototype.setList = function (in_list) {
 		this.list = in_list;
 		this.oldhtml = $(this.list).html();
 		this.columns.rawlist = [];
@@ -170,10 +173,10 @@
 			}
 		});
 		return this;
-	});
+	};
 
 	// Установка контрольной панели
-	flist.prototype.setPanel = (function (panel) {
+	flist.prototype.setPanel = function (panel) {
 		var list = this;
 		var updater = (function (test, el) {
 			var el = test === true ? el : this;
@@ -185,16 +188,16 @@
 		});
 		$(panel).find('.list-param').each(function (ind, el) {
 			$(this).keydown(updater).change(updater);
-			updater(true, el);
+			updater.call(this, true, el);
 		});
 		$(panel).find('.list-update').click(function () {
 			list.update();
 		});
 		return this;
-	});
+	};
 
 	// Настройка типов колонок
-	flist.prototype.setColType = (function (name, type, params) {
+	flist.prototype.setColType = function (name, type, params) {
 		if (!this.columns.list[name]) {
 			this.columns.list[name] = {};
 		}
@@ -211,10 +214,10 @@
 				col.css('width', '1px');
 				break;
 		}
-	});
+	};
 
 	// Выводим полученные строки
-	flist.prototype.setRows = (function (rows) {
+	flist.prototype.setRows = function (rows) {
 		this.listHead.show();
 		this.clear();
 		var list = this;
@@ -269,7 +272,7 @@
 			}
 			list.listBody.append(tr);
 		});
-	});
+	};
 
 	// Глобализируем и урбанизируем
 	window.flist = flist;
