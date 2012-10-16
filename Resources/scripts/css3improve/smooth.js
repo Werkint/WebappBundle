@@ -14,18 +14,29 @@
 		duration:500,
 		easing:  'linear'
 	};
-	var resolve = (function () {
-		callbacks.resolve();
-	});
+	var getTransition = function (prop, dur, ease) {
+		var transitionMap = {},
+			property = prop.join(', '),
+			duration = dur.join(', '),
+			easing = ease.join(', ');
+		for (var i = 0; i < PREFIXES.length; i++) {
+			var prefix = PREFIXES[i];
+			transitionMap[prefix + 'transition-property'] = property;
+			transitionMap[prefix + 'transition-duration'] = duration;
+			transitionMap[prefix + 'transition-timing-function'] = easing;
+		}
+		return transitionMap;
+	};
 	var smoothIt = (function (stylesIn, settingsIn) {
 		if (typeof $(this).data('smoothed') == 'undefined') {
-			$(this).data('smoothed', $.Deferred());
-			for (var i = 0; i < EVENTS.length; i++) {
-				$(this).unbind(EVENTS[i]).bind(EVENTS[i], resolve);
-			}
+			$(this).data('smoothed', true);
+			/*for (var i = 0; i < EVENTS.length; i++) {
+			 $(this).unbind(EVENTS[i]).bind(EVENTS[i], resolve);
+			 }*/
 		}
-		var callbacks = $(this).data('smoothed');
 		var settings = $.extend(true, def, settingsIn);
+		var callback = settingsIn.complete;
+		var that = this;
 
 		var styles = {};
 		for (var i in stylesIn) {
@@ -35,7 +46,7 @@
 		if (!transitionsAvailable) {
 			$.extend(true, settings, {
 				complete:function () {
-					callbacks.resolve();
+					callback.call(that);
 				}
 			});
 			$(this).stop(false, false).animate(styles, settings);
@@ -45,8 +56,7 @@
 				settings.easing = 'ease';
 			}
 
-			var property = [], duration = [], easing = []
-				, transitionMap = {};
+			var property = [], duration = [], easing = [];
 
 			var dur = (settings.duration / 1000) + 's';
 			for (var style in styles) {
@@ -54,30 +64,27 @@
 				duration.push(dur);
 				easing.push(settings.easing);
 			}
-			property = property.join(', ');
-			duration = duration.join(', ');
-			easing = easing.join(', ');
 
-			for (var prefix = 0; prefix < PREFIXES.length; prefix++) {
-				prefix = PREFIXES[prefix];
-				transitionMap[prefix + 'transition-property'] = property;
-				transitionMap[prefix + 'transition-duration'] = duration;
-				transitionMap[prefix + 'transition-timing-function'] = easing;
-			}
 
-			$(this).css(transitionMap);
+			$(this).css(
+				getTransition(property, duration, easing)
+			);
 			$(this).css(styles);
 		}
 
-		if (settingsIn.complete && (settingsIn.complete instanceof Function)) {
-			callbacks.done(function (target, callback) {
-				return function () {
-					callback.apply($(target), []);
-				};
-			}(this, settingsIn.complete));
+		if ($(this).data('smoothTm')) {
+			clearTimeout($(this).data('smoothTm'));
 		}
+		$(this).data(
+			'smoothTm',
+			setTimeout(function () {
+				callback.call(that);
+			}, settings.duration)
+		);
 	});
-	$.fn.smooth = (function () {
-		return this.each(smoothIt);
+	$.fn.smooth = (function (stylesIn, settingsIn) {
+		return this.each(function () {
+			smoothIt.call(this, stylesIn, settingsIn);
+		});
 	});
 })(jQuery, Modernizr.csstransitions);
