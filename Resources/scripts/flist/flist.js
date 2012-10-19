@@ -239,8 +239,12 @@
 						$('<td>').html('<img src="' + CONST.webapp_res + '/flist/preloader.gif" alt="preloader" />').addClass('preloader')
 							.attr('colspan', this.columns.length)
 					).appendTo(tBody);
-				} else if (typeof data == 'object' && data.length) {
-					f.updateRows(this.columns, tBody.get(0), data);
+				} else if (typeof data == 'object' && typeof data.length != 'undefined') {
+					if(data.length) {
+						f.updateRows(this.columns, tBody.get(0), data);
+					} else {
+						this.updateState('Ничего не найдено');
+					}
 				} else {
 					this.updateState('Ошибочный статус');
 				}
