@@ -70,16 +70,17 @@ app.fn.query = (function () {
 			nosplash:false,
 			type:    'json'
 		};
-		var options = $.extend(defOptions, options ? options : {});
+		var options = $.extend({}, defOptions, options ? options : {});
+		options.root = (options.root !== null ? options.root + '/' : '');
 		var id = ++app.data.lastid;
-		app.log('Query id[' + id + '], action = "' + options.root + '/' + action + '"');
+		app.log('Query id[' + id + '], action = "' + options.root + action + '"');
 		if (!options.nosplash) {
 			$fn.loading(true);
 		}
 		var xhr;
 		xhr = $.ajax({
 			type:    'POST',
-			url:     options.root + '/' + action,
+			url:     options.root + action,
 			data:    data,
 			success: function (ret) {
 				app.log('Запрос [' + id + '] закончился удачно: ', ret);

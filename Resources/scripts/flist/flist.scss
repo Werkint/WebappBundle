@@ -11,10 +11,15 @@
   .right {
     float: right;
   }
+  label {
+    display:        inline-block;
+    vertical-align: middle;
+    margin: 0 0.3em 0 0.5em;
+  }
 }
 .list-filtered {
   width: 100%;
-  .nothing, .loading {
+  .message, .preloader {
     text-align:     center;
     color:          black;
     font-size:      1.4em;
@@ -32,19 +37,21 @@
     .flist-sorter {
       white-space: nowrap;
       padding:     4px 10px;
+      margin-bottom: 0.2em;
       &::after {
-        content:    "";
-        width:      10px;
-        height:     10px;
-        display:    inline-block;
-        margin:     0px 8px;
-        background: url(#{$const-webapp-res}/listfiltered/arrow_right.png) no-repeat right center;
+        content:        "";
+        display:        inline-block;
+        vertical-align: middle;
+        position:       relative;
+        top:            -0.02em;
+        margin:         -1em -0.3em -1em 0.3em;
+        @include ui-icon-carat-1-e;
       }
       &.order-asc::after {
-        background: url(#{$const-webapp-res}/listfiltered/arrow_down.png) no-repeat right center;
+        @include ui-icon-carat-1-s;
       }
       &.order-desc::after {
-        background: url(#{$const-webapp-res}/listfiltered/arrow_up.png) no-repeat right center;
+        @include ui-icon-carat-1-n;
       }
     }
     .coltitle {
@@ -94,10 +101,10 @@
     }
   }
   tbody tr {
-    &.row-even {
+    &:nth-child(even) {
       background: #EEE;
     }
-    &.row-uneven {
+    &:nth-child(odd) {
       background: #E4E4E4;
     }
     &:hover {
