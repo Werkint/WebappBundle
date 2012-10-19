@@ -19,7 +19,7 @@
 	var featuresD = null;
 	APNG.checkNativeFeatures = function (callback) {
 		var firstCall = !featuresD;
-		var d = firstCall ? (featuresD = new Deferred()) : featuresD;
+			var d = firstCall ? (featuresD = new Deferred()) : featuresD;
 		if (callback) d.promise().done(callback);
 		if (!firstCall) return d.promise();
 
@@ -506,6 +506,4 @@
 		return a.whenReady();
 	};
 
-})(function () {
-	return window;
-});
+})(window);
