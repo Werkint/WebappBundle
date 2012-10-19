@@ -14,7 +14,7 @@
 		paging:      null,
 		noresMessage:'Результатов нет',
 		colregex:    {
-			exp:  /^(.*\s)?col_([a-z0-9_A-Z]+)(\s.*)?$/,
+			exp:  /^(.*\s)?col-([a-z0-9_A-Z]+)(\s.*)?$/,
 			index:2
 		},
 		pagingParams:{
@@ -30,16 +30,17 @@
 		bindFormUpdate:function (context, settings) {
 			var form = $(context.form);
 			var xhr;
+			var page;
+			if (settings.paging) {
+				page = $('<input type="hidden" name="page" />').attr('value', 1);
+				page.appendTo(form);
+			}
 			form.submit(function (e) {
 				e.preventDefault();
 				if (xhr) {
 					xhr.abort();
 				}
-				var page;
-				if (settings.paging) {
-					page = $('<input type="hidden" name="page" />').attr('value', 1);
-					page.appendTo(form);
-				}
+				context.updateState();
 				var post = form.formSerialize();
 				app.log('List request', form, post);
 				xhr = $fn.query(form.attr('action'), function (data) {
@@ -205,7 +206,7 @@
 				});
 				return ret;
 			})(settings.panel.find('input[name]:not([type="hidden"]), select[name]'), function () {
-				$(this).closest(form).submit();
+				$(this).closest('form').submit();
 			});
 
 			this.update = f.bindFormUpdate(this, settings);
