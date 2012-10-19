@@ -31,9 +31,6 @@
   thead th {
     pading-left: 6px;
     text-align:  left;
-    &.col_id {
-      width: 70px;
-    }
     .flist-sorter {
       white-space: nowrap;
       padding:     4px 10px;
@@ -111,7 +108,7 @@
       background: #F4F4F4;
     }
   }
-  tbody td.col_actions {
+  tbody td.col-actions {
     text-align:    center;
     padding-right: 0px;
     .button {
