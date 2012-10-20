@@ -52,6 +52,11 @@
 						context.updateState(data.rows);
 					}
 					if (page) {
+						if(data.countPage < page.attr('value')) {
+							page.attr('value', Math.max(1, data.countPage));
+							form.submit();
+							return;
+						}
 						var params = $.extend({}, settings.pagingParams, {
 							current_page:page.attr('value') - 1,
 							callback:    function (inpage) {
