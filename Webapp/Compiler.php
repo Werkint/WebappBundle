@@ -110,7 +110,7 @@ class Compiler {
 		}
 		$data = join(";\n", $data);
 		if (!$this->isDebug) {
-			\JsMin\Minify::minify($data);
+			//\JsMin\Minify::minify($data);
 		}
 		file_put_contents($filepath, $data);
 	}
