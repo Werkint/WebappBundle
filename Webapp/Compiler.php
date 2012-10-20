@@ -94,7 +94,7 @@ class Compiler {
 		if ($this->strictMode) {
 			$data[] = '"use strict"';
 		}
-		$data[] = '"window.CONST = {}';
+		$data[] = 'window.CONST = {}';
 		foreach ($this->handler->getVariables() as $name => $value) {
 			if (is_array($value)) {
 				$value = json_encode($value);
@@ -110,7 +110,7 @@ class Compiler {
 		}
 		$data = join(";\n", $data);
 		if (!$this->isDebug) {
-			//\JsMin\Minify::minify($data);
+			\JsMin\Minify::minify($data);
 		}
 		file_put_contents($filepath, $data);
 	}
