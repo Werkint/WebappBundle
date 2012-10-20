@@ -9,21 +9,29 @@
 (function ($, transitionsAvailable) {
 	"use strict";
 	var PREFIXES = ['', '-o-', '-moz-', '-webkit-', '-ms-'];
-	var EVENTS = ['transitionend', 'oTransitionEnd', 'webkitTransitionEnd', 'MSTransitionEnd'];
+	// TODO: by events
+	//var EVENTS = ['transitionend', 'oTransitionEnd', 'webkitTransitionEnd', 'MSTransitionEnd'];
 	var def = {
 		duration:500,
 		easing:  'linear'
 	};
-	var getTransition = function (prop, dur, ease) {
+	var updProp = function (target, element, key, value) {
+		var val = element.css(key);
+		if (val) {
+			value += ', ' + val;
+		}
+		target[key] = value;
+	};
+	var getTransition = function (prop, dur, ease, element) {
 		var transitionMap = {},
 			property = prop.join(', '),
 			duration = dur.join(', '),
 			easing = ease.join(', ');
 		for (var i = 0; i < PREFIXES.length; i++) {
 			var prefix = PREFIXES[i];
-			transitionMap[prefix + 'transition-property'] = property;
-			transitionMap[prefix + 'transition-duration'] = duration;
-			transitionMap[prefix + 'transition-timing-function'] = easing;
+			updProp(transitionMap, element, prefix + 'transition-property', property);
+			updProp(transitionMap, element, prefix + 'transition-duration', duration);
+			updProp(transitionMap, element, prefix + 'transition-timing-function', easing);
 		}
 		return transitionMap;
 	};
@@ -65,9 +73,8 @@
 				easing.push(settings.easing);
 			}
 
-
 			$(this).css(
-				getTransition(property, duration, easing)
+				getTransition(property, duration, easing, $(this))
 			);
 			$(this).css(styles);
 		}
