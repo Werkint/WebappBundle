@@ -12,6 +12,8 @@ class Compiler {
 
 	protected $isDebug;
 
+	protected $strictMode = false;
+
 	public function __construct($handler, $targetdir, $isDebug) {
 		// TODO: to service
 		if (!file_exists($targetdir)) {
@@ -88,10 +90,11 @@ class Compiler {
 	}
 
 	protected function loadScripts($filepath, &$files) {
-		$data = array(
-			'"use strict";',
-			'window.CONST = {};'
-		);
+		$data = array();
+		if ($this->strictMode) {
+			$data[] = '"use strict"';
+		}
+		$data[] = '"window.CONST = {}';
 		foreach ($this->handler->getVariables() as $name => $value) {
 			if (is_array($value)) {
 				$value = json_encode($value);
@@ -100,12 +103,12 @@ class Compiler {
 			} else {
 				throw new \Exception('Неправильный тип: ' . gettype($value));
 			}
-			$data[] = 'window.CONST.' . str_replace('-', '_', $name) . ' = ' . $value . ';';
+			$data[] = 'window.CONST.' . str_replace('-', '_', $name) . ' = ' . $value;
 		}
 		foreach ($files as $file) {
 			$data[] = file_get_contents($file);
 		}
-		$data = join("\n", $data);
+		$data = join(";\n", $data);
 		if (!$this->isDebug) {
 			\JsMin\Minify::minify($data);
 		}
