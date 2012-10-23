@@ -51,6 +51,15 @@
 @mixin ui-icon-close {
   @include ui-icon(5, 8);
 }
+@mixin ui-icon-refresh {
+  @include ui-icon(4, 5);
+}
+@mixin ui-icon-shuffle {
+  @include ui-icon(5, 5);
+}
+@mixin ui-icon-note {
+  @include ui-icon(4, 6);
+}
 @mixin ui-icon-closethick {
   @include ui-icon(6, 8);
 }
