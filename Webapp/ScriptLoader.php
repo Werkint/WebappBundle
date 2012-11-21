@@ -45,7 +45,9 @@ class ScriptLoader {
 
 	/**
 	 * Подключает один файл
-	 * @param string $path
+	 * @param string $pathin
+	 * @param bool $ignore_check
+	 * @throws \Exception
 	 * @return bool
 	 */
 	public function attachFile($pathin, $ignore_check = false) {
@@ -54,10 +56,21 @@ class ScriptLoader {
 			if (!$ignore_check) {
 				throw new \Exception('Файл не найден: ' . $pathin);
 			} else {
-				return;
+				return false;
 			}
 		}
 		$this->handler->appendFile($path);
+
+		// Иной языковой раздел
+		if (APP_MOD) {
+			$path = realpath(preg_replace(
+				'!^(.*)(\.[a-z0-9]+)$!', '$1.' . APP_MOD . '$2', $path
+			));
+			if ($path) {
+				$this->handler->appendFile($path);
+			}
+		}
+		return true;
 	}
 
 	public function attachRelated($path) {
