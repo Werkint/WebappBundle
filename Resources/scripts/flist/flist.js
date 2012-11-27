@@ -2,32 +2,32 @@
  * by Bogdan Yurov <bogdan@yurov.me> aka nick4fake
  * version 0.4, 2012
  * */
-(function ($, generalClass) {
+void function ($, generalClass) {
 	"use strict";
 
 	var defSettings = {
-		bools:       {
-			btrue: 'да',
-			bfalse:'нет'
+		bools:        {
+			btrue:  'да',
+			bfalse: 'нет'
 		},
-		panel:       null,
-		paging:      null,
-		noresMessage:'Результатов нет',
-		colregex:    {
-			exp:  /^(.*\s)?col-([a-z0-9_A-Z]+)(\s.*)?$/,
-			index:2
+		panel:        null,
+		paging:       null,
+		noresMessage: 'Результатов нет',
+		colregex:     {
+			exp:   /^(.*\s)?col-([a-z0-9_A-Z]+)(\s.*)?$/,
+			index: 2
 		},
-		pagingParams:{
-			num_edge_entries:   1,
-			num_display_entries:4,
-			callback:           null,
-			items_per_page:     1,
-			current_page:       null
+		pagingParams: {
+			num_edge_entries:    1,
+			num_display_entries: 4,
+			callback:            null,
+			items_per_page:      1,
+			current_page:        null
 		}
 	};
 
 	var f = {
-		bindFormUpdate:function (context, settings) {
+		bindFormUpdate: function (context, settings) {
 			var form = $(context.form);
 			var xhr;
 			var page;
@@ -44,6 +44,7 @@
 				var post = form.formSerialize();
 				app.log('List request', form, post);
 				xhr = $fn.query(form.attr('action'), function (data) {
+					form.trigger('xhr', data);
 					if (data.res) {
 						context.updateState(data.res);
 					} else if (!data.countTotal) {
@@ -52,14 +53,14 @@
 						context.updateState(data.rows);
 					}
 					if (page) {
-						if(data.countPage < page.attr('value')) {
+						if (data.countPage < page.attr('value')) {
 							page.attr('value', Math.max(1, data.countPage));
 							form.submit();
 							return;
 						}
 						var params = $.extend({}, settings.pagingParams, {
-							current_page:page.attr('value') - 1,
-							callback:    function (inpage) {
+							current_page: page.attr('value') - 1,
+							callback:     function (inpage) {
 								if (page.attr('value') == inpage + 1) {
 									return;
 								}
@@ -69,13 +70,13 @@
 						});
 						settings.paging.pagination(data.countPage, params);
 					}
-				}, post, {root:null});
+				}, post, {root: null});
 			});
 			return function () {
 				form.submit();
 			};
 		},
-		updateRows:    function (columns, target, rows, settings) {
+		updateRows:     function (columns, target, rows, settings) {
 			var column, tr, td, i, rowind, row, text, cont;
 			for (rowind = 0; rowind < rows.length; rowind++) {
 				row = rows[rowind];
@@ -123,7 +124,7 @@
 	};
 
 	var classes = {
-		Column:function (element, name, sorter) {
+		Column: function (element, name, sorter) {
 			this.element = $(element);
 			this.name = name;
 			this.title = this.element.text();
@@ -144,7 +145,7 @@
 
 			this.type = this.element.data('flist-type') ? this.element.data('flist-type') : 'string';
 		},
-		Plugin:function (targetTable, settings) {
+		Plugin: function (targetTable, settings) {
 			this.target = targetTable.addClass('list-filtered');
 			this.form = settings.panel.addClass('list-filtered-panel');
 
@@ -152,7 +153,7 @@
 				tHead = this.target.find('thead');
 
 			// Столбцы
-			this.columns = (function (list, sorter) {
+			this.columns = function (list, sorter) {
 				var ret = [];
 				list.each(function () {
 					var name;
@@ -163,12 +164,12 @@
 					}
 				});
 				return ret;
-			})(this.target.find('thead th'), function (that) {
+			}(this.target.find('thead th'), function (that) {
 				return function () {
 					that.order(this.name, !this.isDesc);
 				};
 			}(this));
-			this.sorters = (function (columns) {
+			this.sorters = function (columns) {
 				var ret = $();
 				$.each(columns, function () {
 					if (this.isSortable) {
@@ -176,8 +177,8 @@
 					}
 				});
 				return ret;
-			})(this.columns);
-			this.col = (function (columns) {
+			}(this.columns);
+			this.col = function (columns) {
 				return function (name) {
 					var ret;
 					$.each(columns, function () {
@@ -188,16 +189,16 @@
 					});
 					return ret;
 				};
-			})(this.columns);
+			}(this.columns);
 
 			// Фильтры
-			this.filters = (function (list, update) {
+			this.filters = function (list, update) {
 				var ret = $();
-				var kdown = (function (e) {
+				var kdown = function (e) {
 					if (e.keyCode == 13) {
 						update.call(this, e);
 					}
-				});
+				};
 				list.each(function () {
 					switch ($(this).attr('type')) {
 						case 'checkbox':
@@ -210,14 +211,14 @@
 					ret.add($(this).change(update));
 				});
 				return ret;
-			})(settings.panel.find('input[name]:not([type="hidden"]), select[name]'), function () {
+			}(settings.panel.find('input[name]:not([type="hidden"]), select[name]'), function () {
 				$(this).closest('form').submit();
 			});
 
 			this.update = f.bindFormUpdate(this, settings);
 
 			// Сортировка
-			this.order = (function (form, sorters, colgetter) {
+			this.order = function (form, sorters, colgetter) {
 				var el = $('<input type="hidden" name="order" />').appendTo(form);
 				return function (col, isDesc) {
 					this.updateState();
@@ -230,7 +231,7 @@
 					form.submit();
 					return this;
 				}
-			})(this.form, this.sorters, this.col);
+			}(this.form, this.sorters, this.col);
 
 			this.updateState = function (data) {
 				tBody.html('');
@@ -245,7 +246,7 @@
 							.attr('colspan', this.columns.length)
 					).appendTo(tBody);
 				} else if (typeof data == 'object' && typeof data.length != 'undefined') {
-					if(data.length) {
+					if (data.length) {
 						f.updateRows(this.columns, tBody.get(0), data);
 					} else {
 						this.updateState('Ничего не найдено');
@@ -271,4 +272,4 @@
 			element.data(generalClass, new classes.Plugin(element, settings));
 		});
 	};
-})(jQuery, 'flist');
+}(jQuery, 'flist');
