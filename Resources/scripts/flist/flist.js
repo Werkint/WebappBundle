@@ -141,13 +141,17 @@ void function ($, generalClass) {
 			} else {
 				this.obj = $('<span></span>');
 			}
-			this.obj.text(this.title).appendTo(this.element.html(''));
+			this.obj.
+				text(this.title).
+				appendTo(this.element.html(''));
 
 			this.type = this.element.data('flist-type') ? this.element.data('flist-type') : 'string';
 		},
 		Plugin: function (targetTable, settings) {
 			this.target = targetTable.addClass('list-filtered');
 			this.form = settings.panel.addClass('list-filtered-panel');
+
+			this.updateRows = f.updateRows;
 
 			var tBody = this.target.find('tbody'),
 				tHead = this.target.find('thead');
@@ -159,7 +163,9 @@ void function ($, generalClass) {
 					var name;
 					if (name = settings.colregex.exp.exec($(this).attr('class'))) {
 						ret.push(
-							new classes.Column(this, name[settings.colregex.index], sorter)
+							new classes.Column(
+								this, name[settings.colregex.index], sorter
+							)
 						);
 					}
 				});
@@ -237,17 +243,19 @@ void function ($, generalClass) {
 				tBody.html('');
 				if (typeof data == 'string') {
 					$('<tr>').append(
-						$('<td>').html(data).addClass('message')
-							.attr('colspan', this.columns.length)
+						$('<td>').html(data).
+							addClass('message').
+							attr('colspan', this.columns.length)
 					).appendTo(tBody);
 				} else if (typeof data == 'undefined') {
 					$('<tr>').append(
-						$('<td>').html('<img src="' + CONST.webapp_res + '/flist/preloader.gif" alt="preloader" />').addClass('preloader')
-							.attr('colspan', this.columns.length)
+						$('<td>').html('<img src="' + CONST.webapp_res + '/flist/preloader.gif" alt="preloader" />').
+							addClass('preloader').
+							attr('colspan', this.columns.length)
 					).appendTo(tBody);
 				} else if (typeof data == 'object' && typeof data.length != 'undefined') {
 					if (data.length) {
-						f.updateRows(this.columns, tBody.get(0), data);
+						this.updateRows(this.columns, tBody.get(0), data);
 					} else {
 						this.updateState('Ничего не найдено');
 					}
@@ -263,13 +271,18 @@ void function ($, generalClass) {
 	$.fn[generalClass] = function (options) {
 		return this.each(function () {
 			var element = $(this);
-			if (element.data(generalClass)) return;
+			if (element.data(generalClass)) {
+				return;
+			}
 
 			var settings = $.extend({}, defSettings, options || {});
 			if (!settings.panel) {
 				throw 'Панель не указана';
 			}
-			element.data(generalClass, new classes.Plugin(element, settings));
+			element.data(
+				generalClass,
+				new classes.Plugin(element, settings)
+			);
 		});
 	};
 }(jQuery, 'flist');
