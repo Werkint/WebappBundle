@@ -44,6 +44,7 @@ void function ($, generalClass) {
 				var post = form.formSerialize();
 				app.log('List request', form, post);
 				xhr = $fn.query(form.attr('action'), function (data) {
+					data.countPage = Math.max(data.countPage, 1);
 					form.trigger('xhr', data);
 					if (data.res) {
 						context.updateState(data.res);
