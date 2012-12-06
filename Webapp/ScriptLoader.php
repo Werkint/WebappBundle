@@ -14,6 +14,7 @@ class ScriptLoader {
 	public function __construct($handler, $resdir, $appmode) {
 		$this->handler = $handler;
 		$this->appmode = $appmode;
+		$this->resdir = $resdir;
 	}
 
 	/**
