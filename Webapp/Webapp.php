@@ -12,10 +12,12 @@ class Webapp {
 
 	protected $isDebug;
 
-	public function __construct($params, $isDebug) {
+	public function __construct($params, $isDebug, $appmode) {
 		$this->params = $params;
 		$this->handler = new ScriptHandler();
-		$this->loader = new ScriptLoader($this->handler, $this->params['resdir']);
+		$this->loader = new ScriptLoader(
+			$this->handler, $this->params['resdir'], $appmode
+		);
 
 		$this->handler->addVar('webapp-res', $this->params['respath']);
 		$this->isDebug = $isDebug;

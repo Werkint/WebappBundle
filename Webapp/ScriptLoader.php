@@ -9,9 +9,11 @@ class ScriptLoader {
 	protected $handler;
 	protected $resdir;
 
-	public function __construct($handler, $resdir) {
+	protected $appmode;
+
+	public function __construct($handler, $resdir, $appmode) {
 		$this->handler = $handler;
-		$this->resdir = $resdir;
+		$this->appmode = $appmode;
 	}
 
 	/**
@@ -46,7 +48,7 @@ class ScriptLoader {
 	/**
 	 * Подключает один файл
 	 * @param string $pathin
-	 * @param bool $ignore_check
+	 * @param bool   $ignore_check
 	 * @throws \Exception
 	 * @return bool
 	 */
@@ -62,9 +64,9 @@ class ScriptLoader {
 		$this->handler->appendFile($path);
 
 		// Иной языковой раздел
-		if (APP_MOD) {
+		if ($this->appmode) {
 			$path = realpath(preg_replace(
-				'!^(.*)(\.[a-z0-9]+)$!', '$1.' . APP_MOD . '$2', $path
+				'!^(.*)(\.[a-z0-9]+)$!', '$1.' . $this->appmode . '$2', $path
 			));
 			if ($path) {
 				$this->handler->appendFile($path);

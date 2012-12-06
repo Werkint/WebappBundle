@@ -4,6 +4,7 @@ services:
         arguments:
             - %werkint_webapp%
             - %kernel.debug%
+            - %appmode%
         tags:
             - { name: kernel.event_listener, event: werkint.webapp.postconstruct, method: templateConstruct }
     werkint.webapp.viewinjector:
