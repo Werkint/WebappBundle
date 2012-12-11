@@ -1,13 +1,14 @@
-app.fn.postiframe = (function (href, optionsin, data) {
+app.fn.postiframe = function (href, optionsin, data) {
+	var pref = app.queryPrefix ? app.queryPrefix + '/' : '';
 	var options = {
-		fitToView:false,
-		autoSize: true,
-		href:     app.queryPrefix + '/' + href
+		fitToView: false,
+		autoSize:  true,
+		href:      pref + href
 	};
 	$.extend(options, optionsin);
 	$.extend(options, {
-		type:     'iframe',
-		afterLoad:(function () {
+		type:      'iframe',
+		afterLoad: (function () {
 			var frame = $(this.content[0]);
 			var form = $('<form action="' + options.href + '" method="POST"></form>');
 			for (var name in data) {
@@ -23,4 +24,4 @@ app.fn.postiframe = (function (href, optionsin, data) {
 		})
 	});
 	$.fancybox(options);
-});
+};
