@@ -1,23 +1,23 @@
 {
-	"name":       "werkint/bundle-webapp",
-	"type":       "library",
-	"description":"Symfony2 Webapp bundle",
-	"authors":    [
-		{
-			"name": "Bogdan Yurov",
-			"email":"bogdan@yurov.me"
-		}
-	],
-	"require":    {
-		"php":                ">=5.4",
-		"richthegeek/phpsass":"*",
-		"nick4fake/jsmin":    "*",
-		"nick4fake/minifycss":"*"
-	},
-	"target-dir": "Werkint/Bundle/WebappBundle",
-	"autoload":   {
-		"psr-0":{
-			"Werkint\\Bundle\\WebappBundle":""
-		}
-	}
+    "name":        "werkint/webapp-bundle",
+    "type":        "library",
+    "description": "Symfony2 Webapp bundle",
+    "authors":     [
+        {
+            "name":  "Bogdan Yurov",
+            "email": "bogdan@yurov.me"
+        }
+    ],
+    "require":     {
+        "php":                 ">=5.4",
+        "richthegeek/phpsass": "*",
+        "nick4fake/jsmin":     "*",
+        "nick4fake/minifycss": "*"
+    },
+    "target-dir":  "Werkint/Bundle/WebappBundle",
+    "autoload":    {
+        "psr-0": {
+            "Werkint\\Bundle\\WebappBundle": ""
+        }
+    }
 }

@@ -1,152 +1,163 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp;
 
-class ScriptLoader {
+class ScriptLoader
+{
 
-	/**
-	 * @var ScriptHandler
-	 */
-	protected $handler;
-	protected $resdir;
+    /**
+     * @var ScriptHandler
+     */
+    protected $handler;
+    protected $resdir;
 
-	protected $appmode;
+    protected $appmode;
 
-	public function __construct($handler, $resdir, $appmode) {
-		$this->handler = $handler;
-		$this->appmode = $appmode;
-		$this->resdir = $resdir;
-	}
+    public function __construct($handler, $resdir, $appmode)
+    {
+        $this->handler = $handler;
+        $this->appmode = $appmode;
+        $this->resdir = $resdir;
+    }
 
-	/**
-	 * Подключает библиотеку
-	 * @param $name
-	 * @throws \Exception
-	 */
-	public function attach($name) {
-		if (!$this->scriptExists($name)) {
-			throw new \Exception('Скрипт не существует: ' . $name);
-		}
-		if ($this->handler->wasLoaded($name)) {
-			// Уже загружен
-			return;
-		}
+    /**
+     * Подключает библиотеку
+     * @param $name
+     * @throws \Exception
+     */
+    public function attach($name)
+    {
+        if (!$this->scriptExists($name)) {
+            throw new \Exception('Скрипт не существует: ' . $name);
+        }
+        if ($this->handler->wasLoaded($name)) {
+            // Уже загружен
+            return;
+        }
 
-		// Зависимости
-		$deps_loaded = $this->scriptAttachDeps($name);
+        // Зависимости
+        $deps_loaded = $this->scriptAttachDeps($name);
 
-		$path = $this->pathScripts() . '/' . $name;
-		if (is_dir($path)) {
-			$model = new ScriptLoadHelper($this, $path, $name);
-			$model->load();
-		} else {
-			$this->attachFile($path, $deps_loaded);
-		}
+        $path = $this->pathScripts() . '/' . $name;
+        if (is_dir($path)) {
+            $model = new ScriptLoadHelper($this, $path, $name);
+            $model->load();
+        } else {
+            $this->attachFile($path, $deps_loaded);
+        }
 
-		// Загружен
-		$this->handler->setLoaded($name);
-	}
+        // Загружен
+        $this->handler->setLoaded($name);
+    }
 
-	/**
-	 * Подключает один файл
-	 * @param string $pathin
-	 * @param bool   $ignore_check
-	 * @throws \Exception
-	 * @return bool
-	 */
-	public function attachFile($pathin, $ignore_check = false) {
-		$path = realpath($pathin);
-		if (!$path) {
-			if (!$ignore_check) {
-				throw new \Exception('Файл не найден: ' . $pathin);
-			} else {
-				return false;
-			}
-		}
-		$this->handler->appendFile($path);
+    /**
+     * Подключает один файл
+     * @param string $pathin
+     * @param bool   $ignore_check
+     * @throws \Exception
+     * @return bool
+     */
+    public function attachFile($pathin, $ignore_check = false)
+    {
+        $path = realpath($pathin);
+        if (!$path) {
+            if (!$ignore_check) {
+                throw new \Exception('Файл не найден: ' . $pathin);
+            } else {
+                return false;
+            }
+        }
+        $this->handler->appendFile($path);
 
-		// Иной языковой раздел
-		if ($this->appmode) {
-			$path = realpath(preg_replace(
-				'!^(.*)(\.[a-z0-9]+)$!', '$1.' . $this->appmode . '$2', $path
-			));
-			if ($path) {
-				$this->handler->appendFile($path);
-			}
-		}
-		return true;
-	}
+        // Иной языковой раздел
+        if ($this->appmode) {
+            $path = realpath(preg_replace(
+                '!^(.*)(\.[a-z0-9]+)$!', '$1.' . $this->appmode . '$2', $path
+            ));
+            if ($path) {
+                $this->handler->appendFile($path);
+            }
+        }
+        return true;
+    }
 
-	public function attachRelated($path) {
-		$dir = pathinfo($path, PATHINFO_DIRNAME);
-		$name = $dir . '/_all';
-		$this->attachFile($name . '.scss', true);
-		$this->attachFile($name . '.js', true);
-		$name = $dir . '/' . pathinfo($path, PATHINFO_FILENAME);
-		$this->attachFile($name . '.scss', true);
-		$this->attachFile($name . '.js', true);
-	}
+    public function attachRelated($path)
+    {
+        $dir = pathinfo($path, PATHINFO_DIRNAME);
+        $name = $dir . '/_all';
+        $this->attachFile($name . '.scss', true);
+        $this->attachFile($name . '.js', true);
+        $name = $dir . '/' . pathinfo($path, PATHINFO_FILENAME);
+        $this->attachFile($name . '.scss', true);
+        $this->attachFile($name . '.js', true);
+    }
 
-	protected function scriptAttachDeps($name) {
-		$deps = $this->getDeps();
-		$list = trim($deps[$name]);
-		if ($list != '.root') {
-			$list = explode(',', $list);
-			foreach ($list as $dep) {
-				$this->attach($dep);
-			}
-			return true;
-		}
-		return false;
-	}
+    protected function scriptAttachDeps($name)
+    {
+        $deps = $this->getDeps();
+        $list = trim($deps[$name]);
+        if ($list != '.root') {
+            $list = explode(',', $list);
+            foreach ($list as $dep) {
+                $this->attach($dep);
+            }
+            return true;
+        }
+        return false;
+    }
 
-	protected function scriptExists($name) {
-		$deps = $this->getDeps();
-		return isset($deps);
-	}
+    protected function scriptExists($name)
+    {
+        $deps = $this->getDeps();
+        return isset($deps);
+    }
 
-	// -- Service ---------------------------------------
+    // -- Service ---------------------------------------
 
-	protected $deps;
+    protected $deps;
 
-	protected function getDeps() {
-		if (!$this->deps) {
-			$this->deps = parse_ini_file($this->pathDeps());
-		}
-		return $this->deps;
-	}
+    protected function getDeps()
+    {
+        if (!$this->deps) {
+            $this->deps = parse_ini_file($this->pathDeps());
+        }
+        return $this->deps;
+    }
 
-	protected function pathDeps() {
-		return realpath(__DIR__ . '/../Resources/config/scripts.ini');
-	}
+    protected function pathDeps()
+    {
+        return realpath(__DIR__ . '/../Resources/config/scripts.ini');
+    }
 
-	protected function pathScripts() {
-		return realpath(__DIR__ . '/../Resources/scripts');
-	}
+    protected function pathScripts()
+    {
+        return realpath(__DIR__ . '/../Resources/scripts');
+    }
 
-	// -- Статические ресурсы ---------------------------------------
+    // -- Статические ресурсы ---------------------------------------
 
-	private $staticRes = array();
+    private $staticRes = array();
 
-	public function loadRes($path, $name, $bundle) {
-		if (!isset($this->staticRes[$bundle])) {
-			$this->staticRes[$bundle] = array();
-		} else if (isset($this->staticRes[$bundle][$name])) {
-			return;
-		}
-		$this->staticRes[$bundle][$name] = $path;
-		$imgpath = $this->resdir . '/' . $bundle;
-		if (!file_exists($imgpath)) {
-			mkdir($imgpath);
-		}
-		$imgpath .= '/' . $name;
-		if (file_exists($imgpath)) {
-			return;
-		}
-		try {
-			symlink($path, $imgpath);
-		} catch (\Exception $e) {
-			throw new \Exception('Ошибка создания ссылки. Источник: "' . $path . '", цель: "' . $imgpath . '"');
-		}
-	}
+    public function loadRes($path, $name, $bundle)
+    {
+        if (!isset($this->staticRes[$bundle])) {
+            $this->staticRes[$bundle] = array();
+        } else if (isset($this->staticRes[$bundle][$name])) {
+            return;
+        }
+        $this->staticRes[$bundle][$name] = $path;
+        $imgpath = $this->resdir . '/' . $bundle;
+        if (!file_exists($imgpath)) {
+            mkdir($imgpath);
+        }
+        $imgpath .= '/' . $name;
+        if (file_exists($imgpath)) {
+            return;
+        }
+        try {
+            symlink($path, $imgpath);
+        } catch (\Exception $e) {
+            throw new \Exception('Ошибка создания ссылки. Источник: "' . $path . '", цель: "' . $imgpath . '"');
+        }
+    }
 
 }
