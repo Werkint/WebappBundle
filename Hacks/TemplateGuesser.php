@@ -1,10 +1,12 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Hacks;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Doctrine\Common\Util\ClassUtils;
 
-class TemplateGuesser extends \Sensio\Bundle\FrameworkExtraBundle\Templating\TemplateGuesser
+
+use Symfony\Component\HttpFoundation\Request,
+    Doctrine\Common\Util\ClassUtils,
+    Sensio\Bundle\FrameworkExtraBundle\Templating\TemplateGuesser as TemplateGuesserRef;
+
+class TemplateGuesser extends TemplateGuesserRef
 {
 
     public function guessTemplateName($controller, Request $request, $engine = 'twig')

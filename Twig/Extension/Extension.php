@@ -1,9 +1,11 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Twig\Extension;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Werkint\Bundle\WebappBundle\Webapp\Webapp;
 
-class Extension extends \Twig_Extension
+use Symfony\Component\EventDispatcher\EventDispatcher,
+    Werkint\Bundle\WebappBundle\Webapp\Webapp,
+    \Twig_Extension;
+
+class Extension extends Twig_Extension
 {
 
     /**

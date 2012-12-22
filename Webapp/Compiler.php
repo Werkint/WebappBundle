@@ -1,6 +1,9 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp;
-use \JsMin, \MinifyCSS, \SassParser;
+
+use \JsMin,
+    \MinifyCSS,
+    \SassParser;
 
 class Compiler
 {
@@ -89,7 +92,9 @@ class Compiler
         try {
             $data = $parser->toCss($data, false);
         } catch (\Exception $e) {
-            throw new \Exception('SCSS compiler error: ' . $e->getMessage() . ', loaded files: ' . print_r($files, true));
+            throw new \Exception(
+                'SCSS compiler error: ' . $e->getMessage() . ', loaded files: ' . print_r($files, true)
+            );
         }
         file_put_contents($filepath, $data);
     }

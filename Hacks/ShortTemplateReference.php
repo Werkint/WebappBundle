@@ -1,5 +1,6 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Hacks;
+
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
 
 class ShortTemplateReference extends TemplateReference

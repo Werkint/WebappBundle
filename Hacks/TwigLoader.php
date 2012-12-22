@@ -1,5 +1,6 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Hacks;
+
 use Symfony\Bundle\TwigBundle\Loader\FilesystemLoader;
 
 class TwigLoader extends FilesystemLoader

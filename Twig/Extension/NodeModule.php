@@ -1,10 +1,14 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Twig\Extension;
 
-class NodeModule extends \Twig_Node_Module
+use \Twig_Node_Module,
+    \Twig_Compiler,
+    \Twig_Node_Expression_Constant;
+
+class NodeModule extends Twig_Node_Module
 {
 
-    public static function nest(\Twig_Node_Module $node)
+    public static function nest(Twig_Node_Module $node)
     {
         $node = new static(
             $node->getNode('body'),
@@ -18,7 +22,7 @@ class NodeModule extends \Twig_Node_Module
         return $node;
     }
 
-    protected function compileConstructor(\Twig_Compiler $compiler)
+    protected function compileConstructor(Twig_Compiler $compiler)
     {
         $compiler
             ->write("public function __construct(Twig_Environment \$env)\n", "{\n")
@@ -28,7 +32,7 @@ class NodeModule extends \Twig_Node_Module
         // parent
         if (null === $this->getNode('parent')) {
             $compiler->write("\$this->parent = false;\n\n");
-        } elseif ($this->getNode('parent') instanceof \Twig_Node_Expression_Constant) {
+        } elseif ($this->getNode('parent') instanceof Twig_Node_Expression_Constant) {
             $compiler
                 ->write("\$this->parent = \$this->env->loadTemplate(")
                 ->subcompile($this->getNode('parent'))

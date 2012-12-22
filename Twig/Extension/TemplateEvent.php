@@ -1,5 +1,6 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Twig\Extension;
+
 use Symfony\Component\EventDispatcher\Event;
 
 class TemplateEvent extends Event
@@ -13,7 +14,9 @@ class TemplateEvent extends Event
         $event = new static();
         $event->templateName = $name;
         $event->templatePath = $path;
-        Extension::$dispatcher->dispatch('werkint.webapp.postconstruct', $event);
+        Extension::$dispatcher->dispatch(
+            'werkint.webapp.postconstruct', $event
+        );
     }
 
 }
