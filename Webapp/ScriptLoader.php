@@ -9,14 +9,17 @@ class ScriptLoader
      */
     protected $handler;
     protected $resdir;
+    protected $scripts;
 
     protected $appmode;
 
-    public function __construct($handler, $resdir, $appmode)
-    {
+    public function __construct(
+        $handler, $resdir, $appmode, $scripts
+    ) {
         $this->handler = $handler;
         $this->appmode = $appmode;
         $this->resdir = $resdir;
+        $this->scripts = $scripts;
     }
 
     /**
@@ -123,14 +126,14 @@ class ScriptLoader
         return $this->deps;
     }
 
-    protected function pathDeps()
-    {
-        return realpath(__DIR__ . '/../Resources/config/scripts.ini');
-    }
-
     protected function pathScripts()
     {
-        return realpath(__DIR__ . '/../Resources/scripts');
+        return realpath($this->scripts . '/scripts.ini');
+    }
+
+    protected function pathDeps()
+    {
+        return realpath($this->scripts . '/scripts');
     }
 
     // -- Статические ресурсы ---------------------------------------

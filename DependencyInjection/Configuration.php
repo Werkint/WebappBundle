@@ -19,12 +19,10 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root($this->alias)->children();
 
-        $rootNode
-            ->scalarNode('respath')->end();
-        $rootNode
-            ->scalarNode('resdir')->end();
-        $rootNode
-            ->scalarNode('revpath')->end();
+        $rootNode->scalarNode('scripts')->end();
+        $rootNode->scalarNode('respath')->end();
+        $rootNode->scalarNode('resdir')->end();
+        $rootNode->scalarNode('revpath')->end();
 
         $rootNode->end();
         return $treeBuilder;
