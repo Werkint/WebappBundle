@@ -19,5 +19,13 @@
         "psr-0": {
             "Werkint\\Bundle\\WebappBundle": ""
         }
+    },
+    "scripts":     {
+        "post-install-cmd": [
+            "Werkint\\Bundle\\WebappBundle\\Webapp\\ComposerScriptHandler::updateScripts"
+        ],
+        "post-update-cmd":  [
+            "Werkint\\Bundle\\WebappBundle\\Webapp\\ComposerScriptHandler::updateScripts"
+        ]
     }
 }
