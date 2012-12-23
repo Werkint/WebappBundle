@@ -26,7 +26,7 @@ class ScriptLoader
 
         $this->packages = array();
         foreach (file($this->scripts . '/.packages') as $package) {
-            $this->packages[$package] = $package;
+            $this->packages[$package] = trim($package);
         }
     }
 
