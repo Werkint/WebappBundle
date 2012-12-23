@@ -24,9 +24,10 @@ class ScriptLoader
         $this->resdir = $resdir;
         $this->scripts = $scripts;
 
-        $this->packages = parse_ini_file(
-            $this->scripts . '/.packages'
-        );
+        $this->packages = array();
+        foreach (file($this->scripts . '/.packages') as $package) {
+            $this->packages[$package] = $package;
+        }
     }
 
     /**
