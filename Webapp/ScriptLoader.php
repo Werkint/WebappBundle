@@ -26,7 +26,7 @@ class ScriptLoader
 
         $this->packages = array();
         foreach (file($this->scripts . '/.packages') as $package) {
-            $this->packages[$package] = trim($package);
+            $this->packages[trim($package)] = trim($package);
         }
     }
 
@@ -69,7 +69,7 @@ class ScriptLoader
             if (!($file = trim($file))) {
                 continue;
             }
-            $this->loadRes($path, $file, $name);
+            $this->loadRes($path . '/' . $file, $file, $name);
         }
 
         // Loaded successfully
