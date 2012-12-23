@@ -56,7 +56,7 @@ class ScriptHandler
     public function setLoaded($name)
     {
         if ($this->wasLoaded($name)) {
-            throw new \Exception('Скрипт уже загружался');
+            throw new \Exception('Script already was loaded');
         }
         $this->loaded[$name] = true;
     }

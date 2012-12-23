@@ -13,12 +13,16 @@ class Webapp
 
     protected $isDebug;
 
-    public function __construct($params, $isDebug, $appmode)
-    {
+    public function __construct(
+        $params, $isDebug, $appmode
+    ) {
         $this->params = $params;
         $this->handler = new ScriptHandler();
         $this->loader = new ScriptLoader(
-            $this->handler, $this->params['resdir'], $appmode
+            $this->handler,
+            $this->params['resdir'],
+            $appmode,
+            $this->params['scripts']
         );
 
         $this->handler->addVar('webapp-res', $this->params['respath']);
@@ -42,8 +46,11 @@ class Webapp
 
     public function compile()
     {
-        $compiler = new Compiler($this->handler, $this->params['resdir'], $this->isDebug);
-        $revision = substr(crc32(file_exists($this->params['revpath']) ? file_get_contents($this->params['revpath']) : ''), 0, 6);
+        $compiler = new Compiler(
+            $this->handler, $this->params['resdir'], $this->isDebug
+        );
+        $revision = substr(crc32(file_exists($this->params['revpath']) ?
+            file_get_contents($this->params['revpath']) : ''), 0, 6);
         return $compiler->compile($revision);
     }
 

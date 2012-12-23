@@ -1,16 +1,19 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp;
 
+/**
+ * Goes through dependency tree, ataches package with dependencies
+ */
 class ScriptLoader
 {
 
-    /**
-     * @var ScriptHandler
-     */
+    /** @var ScriptHandler */
     protected $handler;
+    /** @var string Cash directory */
     protected $resdir;
+    /** @var string Scripts directory */
     protected $scripts;
-
+    /** @var string Subenvironment (for example, language) */
     protected $appmode;
 
     public function __construct(
@@ -20,40 +23,60 @@ class ScriptLoader
         $this->appmode = $appmode;
         $this->resdir = $resdir;
         $this->scripts = $scripts;
+
+        $this->packages = parse_ini_file(
+            $this->scripts . '/.packages'
+        );
     }
 
     /**
-     * Подключает библиотеку
+     * Attaches package
      * @param $name
      * @throws \Exception
      */
     public function attach($name)
     {
-        if (!$this->scriptExists($name)) {
-            throw new \Exception('Скрипт не существует: ' . $name);
+        if (!isset($this->packages[$name])) {
+            throw new \Exception('Package not found: ' . $name);
         }
         if ($this->handler->wasLoaded($name)) {
-            // Уже загружен
+            // Package already was loaded
             return;
         }
+        // Package data
+        $path = $this->scripts . '/' . $name;
+        $meta = parse_ini_file($path . '/.package.ini');
 
-        // Зависимости
-        $deps_loaded = $this->scriptAttachDeps($name);
-
-        $path = $this->pathScripts() . '/' . $name;
-        if (is_dir($path)) {
-            $model = new ScriptLoadHelper($this, $path, $name);
-            $model->load();
-        } else {
-            $this->attachFile($path, $deps_loaded);
+        // Dependencies
+        foreach (explode(',', $meta['deps']) as $dep) {
+            if (!($dep = trim($dep))) {
+                continue;
+            }
+            $this->attach($dep);
         }
 
-        // Загружен
+        // Scripts
+        foreach (explode(',', $meta['files']) as $file) {
+            if (!($file = trim($file))) {
+                continue;
+            }
+            $this->attachFile($path . '/' . $file);
+        }
+
+        // Resources
+        foreach (explode(',', $meta['res']) as $file) {
+            if (!($file = trim($file))) {
+                continue;
+            }
+            $this->loadRes($path, $file, $name);
+        }
+
+        // Loaded successfully
         $this->handler->setLoaded($name);
     }
 
     /**
-     * Подключает один файл
+     * Attaches one script
      * @param string $pathin
      * @param bool   $ignore_check
      * @throws \Exception
@@ -64,14 +87,14 @@ class ScriptLoader
         $path = realpath($pathin);
         if (!$path) {
             if (!$ignore_check) {
-                throw new \Exception('Файл не найден: ' . $pathin);
+                throw new \Exception('Script not found: ' . $pathin);
             } else {
                 return false;
             }
         }
         $this->handler->appendFile($path);
 
-        // Иной языковой раздел
+        // Other language (appmode)
         if ($this->appmode) {
             $path = realpath(preg_replace(
                 '!^(.*)(\.[a-z0-9]+)$!', '$1.' . $this->appmode . '$2', $path
@@ -83,6 +106,10 @@ class ScriptLoader
         return true;
     }
 
+    /**
+     * Attaches related to template files
+     * @param string $path
+     */
     public function attachRelated($path)
     {
         $dir = pathinfo($path, PATHINFO_DIRNAME);
@@ -94,51 +121,9 @@ class ScriptLoader
         $this->attachFile($name . '.js', true);
     }
 
-    protected function scriptAttachDeps($name)
-    {
-        $deps = $this->getDeps();
-        $list = trim($deps[$name]);
-        if ($list != '.root') {
-            $list = explode(',', $list);
-            foreach ($list as $dep) {
-                $this->attach($dep);
-            }
-            return true;
-        }
-        return false;
-    }
+    // -- Static resources ---------------------------------------
 
-    protected function scriptExists($name)
-    {
-        $deps = $this->getDeps();
-        return isset($deps);
-    }
-
-    // -- Service ---------------------------------------
-
-    protected $deps;
-
-    protected function getDeps()
-    {
-        if (!$this->deps) {
-            $this->deps = parse_ini_file($this->pathDeps());
-        }
-        return $this->deps;
-    }
-
-    protected function pathScripts()
-    {
-        return realpath($this->scripts . '/scripts.ini');
-    }
-
-    protected function pathDeps()
-    {
-        return realpath($this->scripts . '/scripts');
-    }
-
-    // -- Статические ресурсы ---------------------------------------
-
-    private $staticRes = array();
+    protected $staticRes = array();
 
     public function loadRes($path, $name, $bundle)
     {
@@ -159,7 +144,9 @@ class ScriptLoader
         try {
             symlink($path, $imgpath);
         } catch (\Exception $e) {
-            throw new \Exception('Ошибка создания ссылки. Источник: "' . $path . '", цель: "' . $imgpath . '"');
+            throw new \Exception(
+                'Cannot symlink  "' . $path . '" to "' . $imgpath . '"'
+            );
         }
     }
 

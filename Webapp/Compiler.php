@@ -22,7 +22,7 @@ class Compiler
     {
         // TODO: to service
         if (!file_exists($targetdir)) {
-            throw new \Exception('Папка не существует: ' . $targetdir);
+            throw new \Exception('Directory not found: ' . $targetdir);
         }
         $this->handler = $handler;
         $this->targetdir = $targetdir;
@@ -34,7 +34,7 @@ class Compiler
         $hash = $this->handler->getDataHash() . '_rev' . $revision;
         $filepath = $this->targetdir . '/' . $hash;
 
-        // Компилируем, если нужно
+        // Compile, if needed
         $files = $this->handler->getFiles('scss');
         if (!$this->isFresh($filepath . '.css', $files)) {
             $this->loadStyles($filepath . '.css', $files);
@@ -44,7 +44,7 @@ class Compiler
             $this->loadScripts($filepath . '.js', $files);
         }
 
-        // Возвращаем хеш
+        // Return hash
         return $hash;
     }
 
@@ -112,7 +112,7 @@ class Compiler
             } else if (is_scalar($value)) {
                 $value = '"' . str_replace('"', '\\"', $value) . '"';
             } else {
-                throw new \Exception('Неправильный тип: ' . gettype($value));
+                throw new \Exception('Wrong variable type: ' . gettype($value));
             }
             $data[] = 'window.CONST.' . str_replace('-', '_', $name) . ' = ' . $value;
         }
