@@ -32,6 +32,14 @@ parameters:
     twig.loader.class: Werkint\Bundle\WebappBundle\Hacks\TwigLoader
 ```
 
+Next, we should set app mode (any keyword - def, normal, us, etc).
+
+```php
+$container->setParameter(
+    'appmode', 'def'
+);
+```
+
 ### Configuring cached  files tagging
 
 For automatic taggin there should be a file with current repository tag. It is convenient to change this file in a git hook, and store there commit hash (symlink or source this file in .git/hooks):
