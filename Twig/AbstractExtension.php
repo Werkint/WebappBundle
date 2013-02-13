@@ -48,7 +48,7 @@ abstract class AbstractExtension extends Twig_Extension
 
     public function getFunctions()
     {
-        $this->functions;
+        return $this->functions;
     }
 
     protected $globals = [];
