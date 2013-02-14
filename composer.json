@@ -10,7 +10,7 @@
     ],
     "require":     {
         "php":                 ">=5.4",
-        "richthegeek/phpsass": "*",
+        "nick4fake/phpsass":   "*",
         "nick4fake/jsmin":     "*",
         "nick4fake/minifycss": "*"
     },
