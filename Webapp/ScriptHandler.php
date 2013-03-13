@@ -61,4 +61,16 @@ class ScriptHandler
         $this->loaded[$name] = true;
     }
 
+    protected $cssImports = array();
+
+    public function addCssImport($url)
+    {
+        $this->cssImports[] = $url;
+    }
+
+    public function getImports()
+    {
+        return $this->cssImports;
+    }
+
 }

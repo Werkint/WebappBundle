@@ -44,6 +44,11 @@ class Webapp
         $this->loader->attachFile($name);
     }
 
+    public function addCssImport($url)
+    {
+        $this->handler->addCssImport($url);
+    }
+
     public function compile()
     {
         $compiler = new Compiler(

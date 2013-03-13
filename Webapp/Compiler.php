@@ -87,10 +87,16 @@ class Compiler
             'style'  => 'nested',
             'cache'  => false,
             'syntax' => 'scss',
-            'debug'  => $this->isDebug
+            'debug'  => $this->isDebug,
         ));
         try {
             $data = $parser->toCss($data, false);
+
+            $imports = array();
+            foreach ($this->handler->getImports() as $url) {
+                $imports[] = '@import url("' . $url . '")';
+            }
+            $data = join('', $imports) . $data;
         } catch (\Exception $e) {
             throw new \Exception(
                 'SCSS compiler error: ' . $e->getMessage() . ', loaded files: ' . print_r($files, true)
@@ -109,7 +115,7 @@ class Compiler
         foreach ($this->handler->getVariables() as $name => $value) {
             if (is_array($value)) {
                 $value = json_encode($value);
-            } else if (is_scalar($value)) {
+            } elseif (is_scalar($value)) {
                 $value = '"' . str_replace('"', '\\"', $value) . '"';
             } else {
                 throw new \Exception('Wrong variable type: ' . gettype($value));
