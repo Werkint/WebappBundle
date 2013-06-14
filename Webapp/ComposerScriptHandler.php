@@ -1,8 +1,8 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp;
 
-use Sensio\Bundle\DistributionBundle\Composer\ScriptHandler as BaseScriptHandler,
-    \ZipArchive;
+use Sensio\Bundle\DistributionBundle\Composer\ScriptHandler as BaseScriptHandler;
+use ZipArchive;
 
 class ComposerScriptHandler extends BaseScriptHandler
 {

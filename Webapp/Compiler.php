@@ -1,9 +1,9 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp;
 
-use \JsMin,
-    \MinifyCSS,
-    \SassParser;
+use JsMin;
+use MinifyCSS;
+use SassParser;
 
 class Compiler
 {

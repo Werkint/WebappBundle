@@ -1,9 +1,9 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Hacks;
 
-use Symfony\Bundle\FrameworkBundle\Templating\TemplateNameParser,
-    Symfony\Bundle\FrameworkBundle\Templating\TemplateReference,
-    Symfony\Component\Templating\TemplateReferenceInterface;
+use Symfony\Bundle\FrameworkBundle\Templating\TemplateNameParser;
+use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
+use Symfony\Component\Templating\TemplateReferenceInterface;
 
 class NameParser extends TemplateNameParser
 {

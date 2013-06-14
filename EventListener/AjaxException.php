@@ -1,9 +1,9 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\EventListener;
 
-use Symfony\Component\HttpKernel\HttpKernelInterface,
-    Symfony\Component\HttpFoundation\Response,
-    Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class AjaxException
 {

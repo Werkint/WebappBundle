@@ -1,7 +1,7 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Twig\Extension;
 
-use \Twig_Template;
+use Twig_Template;
 
 abstract class Template extends Twig_Template
 {

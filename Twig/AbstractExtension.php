@@ -1,9 +1,9 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Twig;
 
-use \Twig_Extension,
-    \Twig_SimpleFunction,
-    \Twig_SimpleFilter;
+use Twig_Extension;
+use Twig_SimpleFilter;
+use Twig_SimpleFunction;
 
 abstract class AbstractExtension extends Twig_Extension
 {

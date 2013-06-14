@@ -1,8 +1,8 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp;
 
-use Symfony\Component\DependencyInjection\Container,
-    Werkint\Bundle\WebappBundle\Twig\Extension\TemplateEvent;
+use Symfony\Component\DependencyInjection\Container;
+use Werkint\Bundle\WebappBundle\Twig\Extension\TemplateEvent;
 
 class Webapp
 {

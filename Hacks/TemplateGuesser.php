@@ -2,9 +2,9 @@
 namespace Werkint\Bundle\WebappBundle\Hacks;
 
 
-use Symfony\Component\HttpFoundation\Request,
-    Doctrine\Common\Util\ClassUtils,
-    Sensio\Bundle\FrameworkExtraBundle\Templating\TemplateGuesser as TemplateGuesserRef;
+use Doctrine\Common\Util\ClassUtils;
+use Sensio\Bundle\FrameworkExtraBundle\Templating\TemplateGuesser as TemplateGuesserRef;
+use Symfony\Component\HttpFoundation\Request;
 
 class TemplateGuesser extends TemplateGuesserRef
 {

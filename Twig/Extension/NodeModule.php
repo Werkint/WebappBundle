@@ -1,9 +1,9 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Twig\Extension;
 
-use \Twig_Node_Module,
-    \Twig_Compiler,
-    \Twig_Node_Expression_Constant;
+use Twig_Compiler;
+use Twig_Node_Expression_Constant;
+use Twig_Node_Module;
 
 class NodeModule extends Twig_Node_Module
 {

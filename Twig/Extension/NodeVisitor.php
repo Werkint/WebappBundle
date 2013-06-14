@@ -1,10 +1,10 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Twig\Extension;
 
-use \Twig_NodeVisitorInterface,
-    \Twig_Node_Module,
-    \Twig_Environment,
-    \Twig_NodeInterface;
+use Twig_Environment;
+use Twig_Node_Module;
+use Twig_NodeInterface;
+use Twig_NodeVisitorInterface;
 
 class NodeVisitor implements Twig_NodeVisitorInterface
 {
