@@ -22,16 +22,16 @@ class Extension extends Twig_Extension
 
     public function getNodeVisitors()
     {
-        return array(
-            new NodeVisitor()
-        );
+        return [
+            new NodeVisitor(),
+        ];
     }
 
     public function getGlobals()
     {
-        return array(
-            'const' => $this->webapp->getVars()
-        );
+        return [
+            'const' => $this->webapp->getVars(),
+        ];
     }
 
     /**

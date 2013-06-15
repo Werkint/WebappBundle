@@ -27,11 +27,11 @@ class AjaxException
         $exception = $event->getException();
 
         $response = new Response();
-        $response->setContent(json_encode(array(
+        $response->setContent(json_encode([
             'code'    => $exception->getCode(),
             'message' => $exception->getMessage(),
             'trace'   => $exception->getTraceAsString(),
-        )));
+        ]));
         $event->setResponse($response);
     }
 }

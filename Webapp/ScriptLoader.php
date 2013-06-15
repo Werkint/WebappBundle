@@ -24,7 +24,7 @@ class ScriptLoader
         $this->resdir = $resdir;
         $this->scripts = $scripts;
 
-        $this->packages = array();
+        $this->packages = [];
         foreach (file($this->scripts . '/.packages') as $package) {
             $this->packages[trim($package)] = trim($package);
         }
@@ -124,12 +124,12 @@ class ScriptLoader
 
     // -- Static resources ---------------------------------------
 
-    protected $staticRes = array();
+    protected $staticRes = [];
 
     public function loadRes($path, $name, $bundle)
     {
         if (!isset($this->staticRes[$bundle])) {
-            $this->staticRes[$bundle] = array();
+            $this->staticRes[$bundle] = [];
         } else if (isset($this->staticRes[$bundle][$name])) {
             return;
         }

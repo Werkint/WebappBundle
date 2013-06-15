@@ -1,2 +1,7 @@
-<link href="{{ respath }}/{{ hash }}.css" rel="stylesheet" type="text/css"/>
-<script src="{{ respath }}/{{ hash }}.js"></script>
+{% for class, hash in hashes %}
+  <link href="{{ respath }}/{{ hash }}.css" rel="stylesheet" type="text/css" class="webapp_res_{{ class }}"/>
+  <script src="{{ respath }}/{{ hash }}.js" class="webapp_res_{{ class }}"></script>
+{% endfor %}
+{% for import in imports %}
+  <link href="{{ import }}" rel="stylesheet" type="text/css"/>
+{% endfor %}

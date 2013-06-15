@@ -2,7 +2,6 @@
 namespace Werkint\Bundle\WebappBundle\Webapp;
 
 use Symfony\Component\DependencyInjection\Container;
-use Werkint\Bundle\WebappBundle\Twig\Extension\TemplateEvent;
 
 class Webapp
 {
@@ -18,20 +17,27 @@ class Webapp
     ) {
         $this->params = $params;
         $this->handler = new ScriptHandler();
+
         $this->loader = new ScriptLoader(
             $this->handler,
             $this->params['resdir'],
             $appmode,
             $this->params['scripts']
         );
+        $this->handler->blockStart('_root');
 
         $this->handler->addVar('webapp-res', $this->params['respath']);
         $this->isDebug = $isDebug;
     }
 
-    public function templateConstruct(TemplateEvent $e)
+    public function getLoader()
     {
-        $this->loader->attachRelated($e->templatePath);
+        return $this->loader;
+    }
+
+    public function getHandler()
+    {
+        return $this->handler;
     }
 
     public function attach($name)
@@ -51,6 +57,7 @@ class Webapp
 
     public function compile()
     {
+        $this->handler->blockEnd();
         $compiler = new Compiler(
             $this->handler, $this->params['resdir'], $this->isDebug
         );

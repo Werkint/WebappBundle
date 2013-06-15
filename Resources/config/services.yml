@@ -5,20 +5,29 @@ services:
             - %werkint_webapp%
             - %kernel.debug%
             - %appmode%
+    werkint.webapp.listener.template:
+        class: Werkint\Bundle\WebappBundle\EventListener\Template
+        arguments:
+            - @werkint.webapp
         tags:
             - { name: kernel.event_listener, event: werkint.webapp.postconstruct, method: templateConstruct }
-    werkint.webapp.viewinjector:
+            - { name: kernel.event_listener, event: werkint.webapp.blockpre, method: templateBlockStart }
+            - { name: kernel.event_listener, event: werkint.webapp.blockpost, method: templateBlockEnd }
+    werkint.webapp.listener.viewinjector:
         class: Werkint\Bundle\WebappBundle\EventListener\ViewInjector
-        arguments: [@templating.engine.twig, @werkint.webapp, %werkint_webapp%]
+        arguments:
+            - @templating.engine.twig
+            - @werkint.webapp
+            - %werkint_webapp%
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
-    werkint.webapp.ajaxexception:
+    werkint.webapp.listener.ajaxexception:
         class: Werkint\Bundle\WebappBundle\EventListener\AjaxException
         arguments:
             - %kernel.debug%
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
-    werkint.webapp.twigextension:
+    werkint.webapp.listener.twigextension:
         class: Werkint\Bundle\WebappBundle\Twig\Extension\Extension
         arguments:
             - @werkint.webapp

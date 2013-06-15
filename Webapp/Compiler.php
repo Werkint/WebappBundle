@@ -2,8 +2,6 @@
 namespace Werkint\Bundle\WebappBundle\Webapp;
 
 use JsMin;
-use MinifyCSS;
-use SassParser;
 
 class Compiler
 {
@@ -31,21 +29,32 @@ class Compiler
 
     public function compile($revision)
     {
-        $hash = $this->handler->getDataHash() . '_rev' . $revision;
-        $filepath = $this->targetdir . '/' . $hash;
+        $hash = $this->handler->getDataHash() . '_r' . $revision;
 
-        // Compile, if needed
-        $files = $this->handler->getFiles('scss');
-        if (!$this->isFresh($filepath . '.css', $files)) {
-            $this->loadStyles($filepath . '.css', $files);
-        }
-        $files = $this->handler->getFiles('js');
-        if (!$this->isFresh($filepath . '.js', $files)) {
-            $this->loadScripts($filepath . '.js', $files);
+        $blocks = [];
+        $root = null;
+        foreach ($this->handler->getBlocks() as $block) {
+            $blocks[$block] = $blockPath = $hash . '_' . $block;
+            $blockPath = $this->targetdir . '/' . $blockPath;
+
+            // Compile, if needed
+            $files = $this->handler->getFiles($block, 'scss');
+            if (!$this->isFresh($blockPath . '.css', $files)) {
+                $data = $this->loadStyles($blockPath . '.css', $files, $root);
+                file_put_contents($blockPath . '.scss', $data);
+            }
+            $files = $this->handler->getFiles($block, 'js');
+            if (!$this->isFresh($blockPath . '.js', $files)) {
+                $this->loadScripts($blockPath . '.js', $files);
+            }
+
+            if ($block == '_root') {
+                $root = file_get_contents($blockPath . '.scss');
+            }
         }
 
-        // Return hash
-        return $hash;
+        // Return hashes
+        return $blocks;
     }
 
     protected function isFresh($filepath, &$files)
@@ -62,9 +71,9 @@ class Compiler
         return true;
     }
 
-    protected function loadStyles($filepath, &$files)
+    protected function loadStyles($filepath, &$files, $prefixData = null)
     {
-        $data = array();
+        $data = [];
         $updVars = function ($vars, $prefix) use (&$data, &$updVars) {
             foreach ($vars as $name => $value) {
                 $pr = $prefix . '-' . str_replace('_', '-', $name);
@@ -83,31 +92,36 @@ class Compiler
         }
         $data = join("\n", $data);
 
-        $parser = new SassParser(array(
+        $parser = new \SassParser([
             'style'  => 'nested',
             'cache'  => false,
             'syntax' => 'scss',
             'debug'  => $this->isDebug,
-        ));
+        ]);
+        $retdata = $data;
+
+        $hr = null;
+        if ($prefixData) {
+            $hr = '.HR' . sha1(microtime(true) . $filepath);
+            $data = $prefixData . $hr . '{ display: none; }' . $data;
+        }
         try {
             $data = $parser->toCss($data, false);
-
-            $imports = array();
-            foreach ($this->handler->getImports() as $url) {
-                $imports[] = '@import url("' . $url . '")';
+            if ($prefixData) {
+                $data = substr($data, strpos($data, $hr));
             }
-            $data = join('', $imports) . $data;
         } catch (\Exception $e) {
             throw new \Exception(
-                'SCSS compiler error: ' . $e->getMessage() . ', loaded files: ' . print_r($files, true)
+                'SCSS compiler error in file "' . $filepath . '": ' . $e->getMessage() . ', loaded files: ' . print_r($files, true)
             );
         }
         file_put_contents($filepath, $data);
+        return $retdata;
     }
 
     protected function loadScripts($filepath, &$files)
     {
-        $data = array();
+        $data = [];
         if ($this->strictMode) {
             $data[] = '"use strict"';
         }
@@ -127,7 +141,7 @@ class Compiler
         }
         $data = join(";\n", $data);
         if (!$this->isDebug) {
-            \JsMin\Minify::minify($data);
+            JsMin\Minify::minify($data);
         }
         file_put_contents($filepath, $data);
     }

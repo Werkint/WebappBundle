@@ -5,6 +5,7 @@ use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Werkint\Bundle\WebappBundle\Webapp\Webapp;
 
 class ViewInjector
 {
@@ -13,8 +14,11 @@ class ViewInjector
     protected $webapp;
     protected $parameters;
 
-    public function __construct(TwigEngine $templating, $webapp, $parameters)
-    {
+    public function __construct(
+        TwigEngine $templating,
+        Webapp $webapp,
+        $parameters
+    ) {
         $this->templating = $templating;
         $this->webapp = $webapp;
         $this->parameters = $parameters;
@@ -34,10 +38,11 @@ class ViewInjector
         $response = $event->getResponse();
         $content = $response->getContent();
         if (($pos = mb_strripos($content, '</head>')) !== false) {
-            $data = array(
-                'hash'    => $this->webapp->compile(),
-                'respath' => $this->parameters['respath']
-            );
+            $data = [
+                'hashes'  => $this->webapp->compile(),
+                'imports' => $this->webapp->getHandler()->getImports(),
+                'respath' => $this->parameters['respath'],
+            ];
             $code = $this->templating->render(
                 'WerkintWebappBundle:Templates:head.twig', $data
             );

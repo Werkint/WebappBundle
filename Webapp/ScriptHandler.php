@@ -4,12 +4,25 @@ namespace Werkint\Bundle\WebappBundle\Webapp;
 class ScriptHandler
 {
 
-    public function getDataHash()
+    protected $log = [];
+
+    protected function log($tag, $msg)
     {
-        return md5(serialize($this->getVariables()) . serialize($this->getFiles()));
+        $this->log[] = $tag . ': ' . $msg;
     }
 
-    protected $vars = array();
+    public function getLog()
+    {
+        return $this->log;
+    }
+
+    public function getDataHash()
+    {
+        $hash = serialize($this->getVariables()) . serialize($this->blocks);
+        return substr(sha1($hash), 0, 10);
+    }
+
+    protected $vars = [];
 
     public function getVariables()
     {
@@ -21,20 +34,19 @@ class ScriptHandler
         $this->vars[$name] = $value;
     }
 
-    protected $files = array();
-
-    public function appendFile($path)
+    public function appendFile(&$path)
     {
-        $this->files[] = $path;
+        $this->log('file in [' . $this->blocksStack[0] . ']', $path);
+        $this->blocks[$this->blocksStack[0]][] = $path;
     }
 
-    public function getFiles($ext = null)
+    public function getFiles($blocks = null, $ext = null)
     {
         if (!$ext) {
-            return $this->files;
+            return $this->blocks[$blocks];
         } else {
-            $ret = array();
-            foreach ($this->files as $file) {
+            $ret = [];
+            foreach ($this->blocks[$blocks] as $file) {
                 if (in_array($file, $ret)) {
                     continue;
                 }
@@ -46,7 +58,7 @@ class ScriptHandler
         }
     }
 
-    protected $loaded = array();
+    protected $loaded = [];
 
     public function wasLoaded($name)
     {
@@ -61,7 +73,7 @@ class ScriptHandler
         $this->loaded[$name] = true;
     }
 
-    protected $cssImports = array();
+    protected $cssImports = [];
 
     public function addCssImport($url)
     {
@@ -71,6 +83,38 @@ class ScriptHandler
     public function getImports()
     {
         return $this->cssImports;
+    }
+
+    // -- Blocks ---------------------------------------
+
+    protected $blocks = [];
+    protected $blocksStack = [];
+
+    public function blockStart($name)
+    {
+        $this->log('block start', $name);
+        if (!isset($this->blocks[$name])) {
+            $this->blocks[$name] = [];
+        }
+        array_unshift($this->blocksStack, $name);
+        $this->log('block', $this->blocksStack[0]);
+        return $this;
+    }
+
+    public function blockEnd()
+    {
+        $name = array_shift($this->blocksStack);
+        $this->log('block end', $name);
+        $this->log('block', $this->blocksStack[0]);
+        return $this;
+    }
+
+    public function getBlocks()
+    {
+        while (count($this->blocksStack)) {
+            $this->blockEnd();
+        }
+        return array_keys($this->blocks);
     }
 
 }
