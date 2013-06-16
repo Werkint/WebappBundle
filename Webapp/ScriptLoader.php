@@ -1,79 +1,24 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp;
 
-/**
- * Goes through dependency tree, ataches package with dependencies
- */
 class ScriptLoader
 {
 
-    /** @var ScriptHandler */
-    protected $handler;
-    /** @var string Cash directory */
     protected $resdir;
-    /** @var string Scripts directory */
-    protected $scripts;
-    /** @var string Subenvironment (for example, language) */
+    protected $respath;
     protected $appmode;
+    protected $isDebug;
 
     public function __construct(
-        $handler, $resdir, $appmode, $scripts
+        $params, $isDebug, $appmode
     ) {
-        $this->handler = $handler;
+        $this->resdir = $params['resdir'];
+        $this->respath = $params['respath'];
         $this->appmode = $appmode;
-        $this->resdir = $resdir;
-        $this->scripts = $scripts;
+        $this->isDebug = $isDebug;
 
-        $this->packages = [];
-        foreach (file($this->scripts . '/.packages') as $package) {
-            $this->packages[trim($package)] = trim($package);
-        }
-    }
-
-    /**
-     * Attaches package
-     * @param $name
-     * @throws \Exception
-     */
-    public function attach($name)
-    {
-        if (!isset($this->packages[$name])) {
-            throw new \Exception('Package not found: ' . $name);
-        }
-        if ($this->handler->wasLoaded($name)) {
-            // Package already was loaded
-            return;
-        }
-        // Package data
-        $path = $this->scripts . '/' . $name;
-        $meta = parse_ini_file($path . '/.package.ini');
-
-        // Dependencies
-        foreach (explode(',', $meta['deps']) as $dep) {
-            if (!($dep = trim($dep))) {
-                continue;
-            }
-            $this->attach($dep);
-        }
-
-        // Scripts
-        foreach (explode(',', $meta['files']) as $file) {
-            if (!($file = trim($file))) {
-                continue;
-            }
-            $this->attachFile($path . '/' . $file);
-        }
-
-        // Resources
-        foreach (explode(',', $meta['res']) as $file) {
-            if (!($file = trim($file))) {
-                continue;
-            }
-            $this->loadRes($path . '/' . $file, $file, $name);
-        }
-
-        // Loaded successfully
-        $this->handler->setLoaded($name);
+        $this->blockStart('_root');
+        $this->addVar('webapp-res', $this->respath);
     }
 
     /**
@@ -93,7 +38,8 @@ class ScriptLoader
                 return false;
             }
         }
-        $this->handler->appendFile($path);
+        $this->log('file in [' . $this->blocksStack[0] . ']', $path);
+        $this->getCurrentBlock()['files'][] = $path;
 
         // Other language (appmode)
         if ($this->appmode) {
@@ -101,7 +47,8 @@ class ScriptLoader
                 '!^(.*)(\.[a-z0-9]+)$!', '$1.' . $this->appmode . '$2', $path
             ));
             if ($path) {
-                $this->handler->appendFile($path);
+                $this->log('file in [' . $this->blocksStack[0] . ']', $path);
+                $this->getCurrentBlock()['files'][] = $path;
             }
         }
         return true;
@@ -111,7 +58,7 @@ class ScriptLoader
      * Attaches related to template files
      * @param string $path
      */
-    public function attachRelated($path)
+    public function attachViewRelated($path)
     {
         $dir = pathinfo($path, PATHINFO_DIRNAME);
         $name = $dir . '/_all';
@@ -122,33 +69,102 @@ class ScriptLoader
         $this->attachFile($name . '.js', true);
     }
 
-    // -- Static resources ---------------------------------------
-
-    protected $staticRes = [];
-
-    public function loadRes($path, $name, $bundle)
+    public function addVar($name, $value)
     {
-        if (!isset($this->staticRes[$bundle])) {
-            $this->staticRes[$bundle] = [];
-        } else if (isset($this->staticRes[$bundle][$name])) {
-            return;
+        $this->getCurrentBlock()['vars'][$name] = $value;
+    }
+
+    public function addCssImport($url)
+    {
+        $this->getCurrentBlock()['imports'][] = $url;
+    }
+
+    // -- Getters ---------------------------------------
+
+    public function getVariables($block)
+    {
+        return $this->blocks[$block]['vars'];
+    }
+
+    public function getFiles($blocks = null, $ext = null)
+    {
+        if (!$ext) {
+            return $this->blocks[$blocks];
+        } else {
+            $ret = [];
+            foreach ($this->blocks[$blocks] as $file) {
+                if (in_array($file, $ret)) {
+                    continue;
+                }
+                if (pathinfo($file, PATHINFO_EXTENSION) == $ext) {
+                    $ret[] = $file;
+                }
+            }
+            return $ret;
         }
-        $this->staticRes[$bundle][$name] = $path;
-        $imgpath = $this->resdir . '/' . $bundle;
-        if (!file_exists($imgpath)) {
-            mkdir($imgpath);
+    }
+
+    public function getImports($block)
+    {
+        return $this->blocks[$block]['imports'];
+    }
+
+    // -- Log ---------------------------------------
+
+    protected $log = [];
+
+    protected function log($tag, $msg)
+    {
+        $this->log[] = $tag . ': ' . $msg;
+    }
+
+    public function getLog()
+    {
+        return $this->log;
+    }
+
+    // -- Blocks ---------------------------------------
+
+    protected $blocks = [];
+    protected $blocksStack = [];
+
+    public function blockStart($name)
+    {
+        $this->log('block start', $name);
+        if (!isset($this->blocks[$name])) {
+            $this->blocks[$name] = [
+                'files'   => [],
+                'vars'    => [],
+                'imports' => [],
+            ];
         }
-        $imgpath .= '/' . $name;
-        if (file_exists($imgpath)) {
-            return;
+        array_unshift($this->blocksStack, $name);
+        $this->log('block', $this->blocksStack[0]);
+        return $this;
+    }
+
+    public function blockEnd()
+    {
+        $name = array_shift($this->blocksStack);
+        $this->log('block end', $name);
+        //
+        if (isset($this->blocksStack[0])) {
+            $this->log('block', $this->blocksStack[0]);
         }
-        try {
-            symlink($path, $imgpath);
-        } catch (\Exception $e) {
-            throw new \Exception(
-                'Cannot symlink  "' . $path . '" to "' . $imgpath . '"'
-            );
+        return $this;
+    }
+
+    public function getBlocks()
+    {
+        while (count($this->blocksStack)) {
+            $this->blockEnd();
         }
+        return array_keys($this->blocks);
+    }
+
+    protected function &getCurrentBlock()
+    {
+        return $this->blocks[$this->blocksStack[0]];
     }
 
 }

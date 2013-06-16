@@ -1,7 +1,7 @@
-{% for class, hash in hashes %}
-  <link href="{{ respath }}/{{ hash }}.css" rel="stylesheet" type="text/css" class="webapp_res_{{ class }}"/>
-  <script src="{{ respath }}/{{ hash }}.js" class="webapp_res_{{ class }}"></script>
-{% endfor %}
-{% for import in imports %}
-  <link href="{{ import }}" rel="stylesheet" type="text/css"/>
+{% for class, block in blocks %}
+  <script src="{{ respath }}/{{ block.js }}.js" class="{{ prefix }}{{ class }}"></script>
+  <link href="{{ respath }}/{{ block.css }}.css" rel="stylesheet" type="text/css" class="{{ prefix }}{{ class }}"/>
+  {% for import in block.imports %}
+    <link href="{{ import }}" rel="stylesheet" type="text/css"/>
+  {% endfor %}
 {% endfor %}

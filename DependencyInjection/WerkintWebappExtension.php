@@ -9,8 +9,9 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class WerkintWebappExtension extends Extension
 {
-    public function load(array $configs, ContainerBuilder $container)
-    {
+    public function load(
+        array $configs, ContainerBuilder $container
+    ) {
         $processor = new Processor();
         $config = $processor->processConfiguration(
             new Configuration($this->getAlias()), $configs

@@ -6,46 +6,58 @@ use JsMin;
 class Compiler
 {
 
-    /**
-     * @var ScriptHandler
-     */
-    protected $handler;
     protected $targetdir;
-
     protected $isDebug;
-
     protected $strictMode = false;
+    protected $revision;
 
-    public function __construct($handler, $targetdir, $isDebug)
+    public function __construct($params, $isDebug)
     {
-        // TODO: to service
-        if (!file_exists($targetdir)) {
-            throw new \Exception('Directory not found: ' . $targetdir);
+        $this->targetdir = $params['resdir'];
+        if (!file_exists($this->targetdir)) {
+            throw new \Exception('Directory not found: ' . $this->targetdir);
         }
-        $this->handler = $handler;
-        $this->targetdir = $targetdir;
         $this->isDebug = $isDebug;
+        $this->revision = substr(crc32(file_exists($params['revpath']) ?
+            file_get_contents($params['revpath']) : ''), 0, 6);
     }
 
-    public function compile($revision, $blockIn = null)
+    protected function getHash($data)
     {
-        $hash = $this->handler->getDataHash() . '_r' . $revision;
+        return substr(sha1(serialize($data)), 0, 10);
+    }
 
+    public function compile(
+        ScriptLoader $loader
+    ) {
         $blocks = [];
         $root = null;
-        foreach ($this->handler->getBlocks() as $block) {
-            $blocks[$block] = $blockPath = $hash . '_' . $block;
-            $blockPath = $this->targetdir . '/' . $blockPath;
+        foreach ($loader->getBlocks() as $block) {
+            $blockRev = '_r' . $this->revision . '_' . $block;
+            $vars = $loader->getVariables($block);
+            $blocks[$block]['imports'] = $loader->getImports($block);
 
+            // Files to compile
+            $filesCss = $loader->getFiles($block, 'scss');
+            $filesJs = $loader->getFiles($block, 'js');
+
+            // CSS
+            $name = $this->getHash($filesCss) . $blockRev;
+            $blocks[$block]['css'] = $name;
+            $blockPath = $this->targetdir . '/' . $name;
             // Compile, if needed
-            $files = $this->handler->getFiles($block, 'scss');
             if (!$this->isFresh($blockPath . '.css', $files)) {
-                $data = $this->loadStyles($blockPath . '.css', $files, $root);
+                $data = $this->loadStyles($vars, $blockPath . '.css', $files, $root);
                 file_put_contents($blockPath . '.scss', $data);
             }
-            $files = $this->handler->getFiles($block, 'js');
+
+            // JS
+            $name = $this->getHash($filesJs) . $blockRev;
+            $blocks[$block]['js'] = $name;
+            $blockPath = $this->targetdir . '/' . $name;
+            // Compile, if needed
             if (!$this->isFresh($blockPath . '.js', $files)) {
-                $this->loadScripts($blockPath . '.js', $files);
+                $this->loadScripts($vars, $blockPath . '.js', $files);
             }
 
             if ($block == '_root') {
@@ -53,15 +65,6 @@ class Compiler
             }
         }
 
-        if ($blockIn) {
-            if (!isset($blocks[$blockIn])) {
-                throw new \Exception('wrong block: ' . $blockIn);
-            } else {
-                return $blocks[$blockIn];
-            }
-        }
-
-        // Return hashes
         return $blocks;
     }
 
@@ -79,7 +82,7 @@ class Compiler
         return true;
     }
 
-    protected function loadStyles($filepath, &$files, $prefixData = null)
+    protected function loadStyles(array $vars, $filepath, &$files, $prefixData = null)
     {
         $data = [];
         $updVars = function ($vars, $prefix) use (&$data, &$updVars) {
@@ -94,7 +97,7 @@ class Compiler
                 $data[] = $pr . ': "' . str_replace('"', '\\"', $value) . '";';
             }
         };
-        $updVars($this->handler->getVariables(), '$const');
+        $updVars($vars, '$const');
         foreach ($files as $file) {
             $data[] = file_get_contents($file);
         }
@@ -127,14 +130,14 @@ class Compiler
         return $retdata;
     }
 
-    protected function loadScripts($filepath, &$files)
+    protected function loadScripts(array $vars, $filepath, &$files)
     {
         $data = [];
         if ($this->strictMode) {
             $data[] = '"use strict"';
         }
-        $data[] = 'window.CONST = {}';
-        foreach ($this->handler->getVariables() as $name => $value) {
+        $data[] = 'if(!window.CONST){window.CONST = {};}';
+        foreach ($vars as $name => $value) {
             if (is_array($value)) {
                 $value = json_encode($value);
             } elseif (is_scalar($value)) {
