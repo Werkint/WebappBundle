@@ -86,22 +86,21 @@ class ScriptLoader
         return $this->blocks[$block]['vars'];
     }
 
-    public function getFiles($blocks = null, $ext = null)
+    public function getFiles($block, $ext)
     {
-        if (!$ext) {
-            return $this->blocks[$blocks];
-        } else {
-            $ret = [];
-            foreach ($this->blocks[$blocks] as $file) {
-                if (in_array($file, $ret)) {
-                    continue;
-                }
-                if (pathinfo($file, PATHINFO_EXTENSION) == $ext) {
-                    $ret[] = $file;
-                }
+        $list = $this->blocks[$block]['files'];
+
+        $ret = [];
+        foreach ($list as $file) {
+            if (in_array($file, $ret)) {
+                continue;
             }
-            return $ret;
+            if (pathinfo($file, PATHINFO_EXTENSION) == $ext) {
+                $ret[] = $file;
+            }
         }
+
+        return $ret;
     }
 
     public function getImports($block)

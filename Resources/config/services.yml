@@ -28,6 +28,7 @@ services:
         arguments:
             - @templating.engine.twig
             - @werkint.webapp.scriptloader
+            - @werkint.webapp.compiler
             - %werkint_webapp%
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }

@@ -1,5 +1,5 @@
 <?php
-namespace Werkint\Bundle\loaderBundle\EventListener;
+namespace Werkint\Bundle\WebappBundle\EventListener;
 
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,7 +33,6 @@ class ViewInjector
         $blocks = $this->compiler->compile($this->loader);
         return [
             'blocks'  => $blocks,
-            'imports' => $this->loader->getImports(),
             'respath' => $this->respath,
             'prefix'  => 'webapp_res_',
         ];
@@ -63,7 +62,7 @@ class ViewInjector
         } else {
             if (($pos = mb_strrpos($content, '</head>')) !== false) {
                 $code = $this->templating->render(
-                    'WerkintloaderBundle:Templates:head.twig', $data
+                    'WerkintWebappBundle:Templates:head.twig', $data
                 );
                 $code = "\n" . str_replace("\n", '', $code) . "\n";
                 $content = mb_substr($content, 0, $pos) . $code . mb_substr($content, $pos);

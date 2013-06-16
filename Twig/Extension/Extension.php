@@ -30,7 +30,7 @@ class Extension extends Twig_Extension
     public function getGlobals()
     {
         return [
-            'const' => $this->webapp->getVars(),
+            'const' => $this->webapp->getLoader()->getVariables('_root'),
         ];
     }
 

@@ -15,7 +15,7 @@ class Template
     public function __construct(
         ScriptLoader $loader
     ) {
-        $this->handler = $loader;
+        $this->loader = $loader;
     }
 
     public function templateDisplayPost(TemplateEvent $e)
@@ -28,7 +28,7 @@ class Template
         $name = $e->getBlockName();
         if (strpos($name, static::BLOCK_PREFIX) === 0) {
             $tpl = substr($name, strlen(static::BLOCK_PREFIX));
-            $this->handler->blockStart($tpl);
+            $this->loader->blockStart($tpl);
         }
     }
 
@@ -37,7 +37,7 @@ class Template
         $name = $e->getBlockName();
         if (strpos($name, static::BLOCK_PREFIX) === 0) {
             $tpl = substr($name, strlen(static::BLOCK_PREFIX));
-            $this->handler->blockEnd($tpl);
+            $this->loader->blockEnd($tpl);
         }
     }
 }

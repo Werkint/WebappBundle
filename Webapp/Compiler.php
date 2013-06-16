@@ -46,9 +46,13 @@ class Compiler
             $blocks[$block]['css'] = $name;
             $blockPath = $this->targetdir . '/' . $name;
             // Compile, if needed
-            if (!$this->isFresh($blockPath . '.css', $files)) {
-                $data = $this->loadStyles($vars, $blockPath . '.css', $files, $root);
+            if (!$this->isFresh($blockPath . '.css', $filesCss)) {
+                $data = $this->loadStyles($vars, $blockPath . '.css', $filesCss, $root);
                 file_put_contents($blockPath . '.scss', $data);
+            }
+
+            if ($block == '_root') {
+                $root = file_get_contents($blockPath . '.scss');
             }
 
             // JS
@@ -56,12 +60,8 @@ class Compiler
             $blocks[$block]['js'] = $name;
             $blockPath = $this->targetdir . '/' . $name;
             // Compile, if needed
-            if (!$this->isFresh($blockPath . '.js', $files)) {
-                $this->loadScripts($vars, $blockPath . '.js', $files);
-            }
-
-            if ($block == '_root') {
-                $root = file_get_contents($blockPath . '.scss');
+            if (!$this->isFresh($blockPath . '.js', $filesJs)) {
+                $this->loadScripts($vars, $blockPath . '.js', $filesJs);
             }
         }
 
@@ -82,7 +82,7 @@ class Compiler
         return true;
     }
 
-    protected function loadStyles(array $vars, $filepath, &$files, $prefixData = null)
+    protected function loadStyles(array $vars, $filepath, array &$files, $prefixData = null)
     {
         $data = [];
         $updVars = function ($vars, $prefix) use (&$data, &$updVars) {
@@ -130,7 +130,7 @@ class Compiler
         return $retdata;
     }
 
-    protected function loadScripts(array $vars, $filepath, &$files)
+    protected function loadScripts(array $vars, $filepath, array &$files)
     {
         $data = [];
         if ($this->strictMode) {

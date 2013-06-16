@@ -12,6 +12,11 @@ class Webapp
         $this->loader = $loader;
     }
 
+    public function getLoader()
+    {
+        return $this->loader;
+    }
+
     public function attachFile($name)
     {
         $this->loader->attachFile($name);
