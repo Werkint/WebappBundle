@@ -30,25 +30,38 @@ class ViewInjector
             return;
         }
 
-        // do not capture redirects or modify XML HTTP Requests
-        if ($event->getRequest()->isXmlHttpRequest() || $event->getResponse()->isRedirect()) {
+        // do not capture redirects
+        if ($event->getResponse()->isRedirect()) {
             return;
         }
 
         $response = $event->getResponse();
         $content = $response->getContent();
-        if (($pos = mb_strripos($content, '</head>')) !== false) {
-            $data = [
-                'hashes'  => $this->webapp->compile(),
-                'imports' => $this->webapp->getHandler()->getImports(),
-                'respath' => $this->parameters['respath'],
-            ];
-            $code = $this->templating->render(
-                'WerkintWebappBundle:Templates:head.twig', $data
-            );
-            $code = "\n" . str_replace("\n", '', $code) . "\n";
-            $content = mb_substr($content, 0, $pos) . $code . mb_substr($content, $pos);
-            $response->setContent($content);
+        if ($event->getRequest()->isXmlHttpRequest()) {
+            if (($pos = mb_strrpos($content, '[[PAGEPATH]]')) !== false) {
+                $path = $this->parameters['respath'];
+                $path = $path . '/' . $this->webapp->compile('page');
+                $data = json_encode([
+                    'path'  => $path,
+                    'class' => 'webapp_res_page',
+                ]);
+                $content = mb_substr($content, 0, $pos) . $data . mb_substr($content, $pos + strlen('[[PAGEPATH]]'));
+                $response->setContent($content);
+            }
+        } else {
+            if (($pos = mb_strrpos($content, '</head>')) !== false) {
+                $data = [
+                    'hashes'  => $this->webapp->compile(),
+                    'imports' => $this->webapp->getHandler()->getImports(),
+                    'respath' => $this->parameters['respath'],
+                ];
+                $code = $this->templating->render(
+                    'WerkintWebappBundle:Templates:head.twig', $data
+                );
+                $code = "\n" . str_replace("\n", '', $code) . "\n";
+                $content = mb_substr($content, 0, $pos) . $code . mb_substr($content, $pos);
+                $response->setContent($content);
+            }
         }
     }
 }

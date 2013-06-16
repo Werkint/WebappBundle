@@ -27,7 +27,7 @@ class Compiler
         $this->isDebug = $isDebug;
     }
 
-    public function compile($revision)
+    public function compile($revision, $blockIn = null)
     {
         $hash = $this->handler->getDataHash() . '_r' . $revision;
 
@@ -50,6 +50,14 @@ class Compiler
 
             if ($block == '_root') {
                 $root = file_get_contents($blockPath . '.scss');
+            }
+        }
+
+        if ($blockIn) {
+            if (!isset($blocks[$blockIn])) {
+                throw new \Exception('wrong block: ' . $blockIn);
+            } else {
+                return $blocks[$blockIn];
             }
         }
 

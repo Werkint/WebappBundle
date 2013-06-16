@@ -105,7 +105,10 @@ class ScriptHandler
     {
         $name = array_shift($this->blocksStack);
         $this->log('block end', $name);
-        $this->log('block', $this->blocksStack[0]);
+        //
+        if (isset($this->blocksStack[0])) {
+            $this->log('block', $this->blocksStack[0]);
+        }
         return $this;
     }
 

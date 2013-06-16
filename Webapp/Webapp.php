@@ -55,7 +55,7 @@ class Webapp
         $this->handler->addCssImport($url);
     }
 
-    public function compile()
+    public function compile($block = null)
     {
         $this->handler->blockEnd();
         $compiler = new Compiler(
@@ -63,7 +63,7 @@ class Webapp
         );
         $revision = substr(crc32(file_exists($this->params['revpath']) ?
             file_get_contents($this->params['revpath']) : ''), 0, 6);
-        return $compiler->compile($revision);
+        return $compiler->compile($revision, $block);
     }
 
     public function getVars()
