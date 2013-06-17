@@ -21,6 +21,13 @@ class ScriptLoader
         $this->addVar('webapp-res', $this->respath);
     }
 
+    protected $isSplit;
+
+    public function setIsSplit($isSplit)
+    {
+        $this->isSplit = (bool)$isSplit;
+    }
+
     /**
      * Attaches one script
      * @param string $pathin
@@ -108,6 +115,41 @@ class ScriptLoader
         return $this->blocks[$block]['imports'];
     }
 
+    // -- Packages ---------------------------------------
+
+    protected $packages = [];
+
+    protected function &getPackageList($block = null)
+    {
+        if ($this->isSplit) {
+            $list = & $this->getCurrentBlock($block)['packages'];
+        } else {
+            $list = & $this->packages;
+        }
+        return $list;
+    }
+
+    public function addPackage($name, $block = null)
+    {
+        $this->getPackageList($block)[] = $name;
+        return $this;
+    }
+
+    public function isPackageLoaded($name)
+    {
+        return in_array($name, $this->getPackageList());
+    }
+
+    public function getPackages($block = null)
+    {
+        if ($this->isSplit) {
+            $ret =  $this->blocks[$block]['packages'];
+        } else {
+            $ret = $this->packages;
+        }
+        return $ret;
+    }
+
     // -- Log ---------------------------------------
 
     protected $log = [];
@@ -130,13 +172,7 @@ class ScriptLoader
     public function blockStart($name)
     {
         $this->log('block start', $name);
-        if (!isset($this->blocks[$name])) {
-            $this->blocks[$name] = [
-                'files'   => [],
-                'vars'    => [],
-                'imports' => [],
-            ];
-        }
+        $this->getCurrentBlock($name);
         array_unshift($this->blocksStack, $name);
         $this->log('block', $this->blocksStack[0]);
         return $this;
@@ -161,9 +197,20 @@ class ScriptLoader
         return array_keys($this->blocks);
     }
 
-    protected function &getCurrentBlock()
+    protected function &getCurrentBlock($block = null)
     {
-        return $this->blocks[$this->blocksStack[0]];
+        if (!$block) {
+            $block = $this->blocksStack[0];
+        }
+        if (!isset($this->blocks[$block])) {
+            $this->blocks[$block] = [
+                'files'    => [],
+                'vars'     => [],
+                'imports'  => [],
+                'packages' => [],
+            ];
+        }
+        return $this->blocks[$block];
     }
 
 }

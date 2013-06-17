@@ -44,12 +44,23 @@ class ViewInjector
             return;
         }
 
+        $request = $event->getRequest();
+        $response = $event->getResponse();
+
         // do not capture redirects
-        if ($event->getResponse()->isRedirect()) {
+        if ($response->isRedirect()) {
+            if ($request->server->get('HTTP_' . Request::HEADER_PJAX)) {
+                $response->setStatusCode(200);
+                $response->headers->set(
+                    Request::HEADER_NEEDREDIRECT,
+                    $response->headers->get('Location')
+                );
+                $response->headers->remove('Location');
+                $response->setContent('<p>Перенаправление...</p>');
+            }
             return;
         }
 
-        $response = $event->getResponse();
         $content = $response->getContent();
         $data = $this->getTemplateData();
 

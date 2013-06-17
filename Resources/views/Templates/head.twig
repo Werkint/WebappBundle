@@ -1,6 +1,6 @@
 {% for class, block in blocks %}
-  <script src="{{ respath }}/{{ block.js }}.js" class="{{ prefix }}{{ class }}"></script>
-  <link href="{{ respath }}/{{ block.css }}.css" rel="stylesheet" type="text/css" class="{{ prefix }}{{ class }}"/>
+  <script src="{{ respath }}/{{ block.js }}.js" data-hash="{{ block.js }}" class="{{ prefix }}{{ class }}"></script>
+  <link href="{{ respath }}/{{ block.css }}.css" data-hash="{{ block.css }}" rel="stylesheet" type="text/css" class="{{ prefix }}{{ class }}"/>
   {% for import in block.imports %}
     <link href="{{ import }}" rel="stylesheet" type="text/css"/>
   {% endfor %}

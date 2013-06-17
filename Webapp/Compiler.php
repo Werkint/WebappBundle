@@ -39,6 +39,7 @@ class Compiler
 
             // Files to compile
             $filesCss = $loader->getFiles($block, 'scss');
+            // var_dump($filesCss);die();
             $filesJs = $loader->getFiles($block, 'js');
 
             // CSS
@@ -47,7 +48,7 @@ class Compiler
             $blockPath = $this->targetdir . '/' . $name;
             // Compile, if needed
             if (!$this->isFresh($blockPath . '.css', $filesCss)) {
-                $data = $this->loadStyles($vars, $blockPath . '.css', $filesCss, $root);
+                $data = $this->loadStyles($vars, $block, $blockPath . '.css', $filesCss, $root);
                 file_put_contents($blockPath . '.scss', $data);
             }
 
@@ -61,7 +62,10 @@ class Compiler
             $blockPath = $this->targetdir . '/' . $name;
             // Compile, if needed
             if (!$this->isFresh($blockPath . '.js', $filesJs)) {
-                $this->loadScripts($vars, $blockPath . '.js', $filesJs);
+                if ($block == 'page') {
+                    $vars['_packages'] = $loader->getPackages($block);
+                }
+                $this->loadScripts($vars, $block, $blockPath . '.js', $filesJs);
             }
         }
 
@@ -82,7 +86,7 @@ class Compiler
         return true;
     }
 
-    protected function loadStyles(array $vars, $filepath, array &$files, $prefixData = null)
+    protected function loadStyles(array $vars, $block, $filepath, array &$files, $prefixData = null)
     {
         $data = [];
         $updVars = function ($vars, $prefix) use (&$data, &$updVars) {
@@ -130,13 +134,20 @@ class Compiler
         return $retdata;
     }
 
-    protected function loadScripts(array $vars, $filepath, array &$files)
+    protected function loadScripts(array $vars, $block, $filepath, array &$files)
     {
         $data = [];
         if ($this->strictMode) {
             $data[] = '"use strict"';
         }
         $data[] = 'if(!window.CONST){window.CONST = {};}';
+
+        $prefix = $block != '_root' ? $block : '';
+        if ($prefix) {
+            $data[] = 'window.CONST.' . $prefix . ' = {}';
+            $prefix .= '.';
+        }
+
         foreach ($vars as $name => $value) {
             if (is_array($value)) {
                 $value = json_encode($value);
@@ -145,7 +156,7 @@ class Compiler
             } else {
                 throw new \Exception('Wrong variable type: ' . gettype($value));
             }
-            $data[] = 'window.CONST.' . str_replace('-', '_', $name) . ' = ' . $value;
+            $data[] = 'window.CONST.' . $prefix . str_replace('-', '_', $name) . ' = ' . $value;
         }
         foreach ($files as $file) {
             $data[] = file_get_contents($file);

@@ -32,4 +32,8 @@ class Webapp
         $this->loader->addVar($name, $value);
     }
 
+    public function setIsSplit($flag){
+        $this->loader->setIsSplit($flag);
+    }
+
 }

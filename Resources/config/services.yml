@@ -32,6 +32,12 @@ services:
             - %werkint_webapp%
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+    werkint.webapp.listener.request:
+        class: Werkint\Bundle\WebappBundle\EventListener\Request
+        arguments:
+            - @werkint.webapp.scriptloader
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onRequest, priority: -10 }
     werkint.webapp.listener.ajaxexception:
         class: Werkint\Bundle\WebappBundle\EventListener\AjaxException
         arguments:
