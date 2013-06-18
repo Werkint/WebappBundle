@@ -10,10 +10,12 @@ services:
             - %kernel.debug%
             - %appmode%
     werkint.webapp.compiler:
-        class: Werkint\Bundle\WebappBundle\Webapp\Compiler
+        class: Werkint\Bundle\WebappBundle\Webapp\Compiler\Compiler
         arguments:
             - %werkint_webapp%
             - %kernel.debug%
+        tags:
+            - { name: kernel.cache_clearer, priority: 0 }
 
     werkint.webapp.listener.template:
         class: Werkint\Bundle\WebappBundle\EventListener\Template

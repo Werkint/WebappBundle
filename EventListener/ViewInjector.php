@@ -5,7 +5,7 @@ use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Werkint\Bundle\WebappBundle\Webapp\Compiler;
+use Werkint\Bundle\WebappBundle\Webapp\Compiler\Compiler;
 use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
 
 class ViewInjector
