@@ -32,9 +32,10 @@ class ViewInjector
     {
         $blocks = $this->compiler->compile($this->loader);
         return [
-            'blocks'  => $blocks,
-            'respath' => $this->respath,
-            'prefix'  => 'webapp_res_',
+            'blocks'   => $blocks,
+            'packages' => $this->loader->getPackages('page'),
+            'respath'  => $this->respath,
+            'prefix'   => 'webapp_res_',
         ];
     }
 

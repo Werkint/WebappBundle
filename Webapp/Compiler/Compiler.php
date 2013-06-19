@@ -69,9 +69,6 @@ class Compiler implements CacheClearerInterface
             $blockPath = $this->targetdir . '/' . $name;
             // Compile, if needed
             if (!$this->isFresh($blockPath . '.js', $filesJs)) {
-                if ($block == 'page') {
-                    $vars['_packages'] = $loader->getPackages($block);
-                }
                 $compilerScript->compile($vars, $block, $blockPath . '.js', $filesJs);
             }
         }

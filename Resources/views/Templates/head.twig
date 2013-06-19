@@ -1,7 +1,21 @@
+<script src="/res/js/jquery-2.0.2.min.js"></script>
+<script src="/res/js/webapp.js"></script>
 {% for class, block in blocks %}
-  <script src="{{ respath }}/{{ block.js }}.js" data-hash="{{ block.js }}" class="{{ prefix }}{{ class }}"></script>
-  <link href="{{ respath }}/{{ block.css }}.css" data-hash="{{ block.css }}" rel="stylesheet" type="text/css" class="{{ prefix }}{{ class }}"/>
   {% for import in block.imports %}
-    <link href="{{ import }}" rel="stylesheet" type="text/css"/>
+    {% if import[1] == 'css' %}
+      <link href="{{ import }}" rel="stylesheet" type="text/css"/>
+    {% elseif import[1] == 'js' %}
+      <script>
+        CONST._imports.add('{{ import[0] }}', '{{ import[1] }}');
+      </script>
+    {% endif %}
   {% endfor %}
+  <link href="{{ respath }}/{{ block.css }}.css" data-hash="{{ block.css }}" rel="stylesheet" type="text/css" class="{{ prefix }}{{ class }}"/>
+  <script>
+    CONST._imports.add('{{ respath }}/{{ block.js }}.js', '{{ block.js }}', '{{ prefix }}{{ class }}');
+  </script>
 {% endfor %}
+<script>
+  CONST._packages = ['{{ packages|join('\', \'')|raw }}'];
+  CONST._imports.run();
+</script>

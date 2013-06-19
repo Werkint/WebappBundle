@@ -20,11 +20,10 @@ class ScriptCompiler
         if ($this->strictMode) {
             $data[] = '"use strict"';
         }
-        $data[] = 'if(!window.CONST){window.CONST = {};}';
 
         $prefix = $block != '_root' ? $block : '';
         if ($prefix) {
-            $data[] = 'window.CONST.' . $prefix . ' = {}';
+            $data[] = 'CONST.' . $prefix . ' = {}';
             $prefix .= '.';
         }
 
@@ -36,7 +35,7 @@ class ScriptCompiler
             } else {
                 throw new \Exception('Wrong variable type: ' . gettype($value));
             }
-            $data[] = 'window.CONST.' . $prefix . str_replace('-', '_', $name) . ' = ' . $value;
+            $data[] = 'CONST.' . $prefix . str_replace('-', '_', $name) . ' = ' . $value;
         }
         foreach ($files as $file) {
             $data[] = file_get_contents($file);

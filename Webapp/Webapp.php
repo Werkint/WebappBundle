@@ -22,9 +22,14 @@ class Webapp
         $this->loader->attachFile($name);
     }
 
-    public function addCssImport($url)
+    public function addImportCss($url)
     {
-        $this->loader->addCssImport($url);
+        $this->loader->addImport($url, 'css');
+    }
+
+    public function addImportJs($url)
+    {
+        $this->loader->addImport($url, 'js');
     }
 
     public function addVar($name, $value)
@@ -32,7 +37,8 @@ class Webapp
         $this->loader->addVar($name, $value);
     }
 
-    public function setIsSplit($flag){
+    public function setIsSplit($flag)
+    {
         $this->loader->setIsSplit($flag);
     }
 

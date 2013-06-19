@@ -27,12 +27,15 @@ class Request
         }
 
         $request = $event->getRequest();
-        $list = $request->server->get('HTTP_'.static::HEADER_PACKAGES);
-        if ($list) {
-            $list = json_decode($list);
-            foreach ($list as $name) {
-                $this->loader->addPackage($name, 'page');
-            }
+        $list = ['jquery'];
+
+        $listPjax = $request->server->get('HTTP_' . static::HEADER_PACKAGES);
+        if ($listPjax) {
+            $list = array_merge($list, json_decode($listPjax));
+        }
+
+        foreach ($list as $name) {
+            $this->loader->addPackage($name, 'page');
         }
     }
 }

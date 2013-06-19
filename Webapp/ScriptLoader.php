@@ -81,9 +81,12 @@ class ScriptLoader
         $this->getCurrentBlock()['vars'][$name] = $value;
     }
 
-    public function addCssImport($url)
+    public function addImport($url, $type)
     {
-        $this->getCurrentBlock()['imports'][] = $url;
+        if (!in_array($type, ['js', 'css'])) {
+            throw new \Exception('Wrong import type: ' . $type);
+        }
+        $this->getCurrentBlock()['imports'][] = [$url, $type, sha1($type . $url)];
     }
 
     // -- Getters ---------------------------------------
@@ -143,7 +146,7 @@ class ScriptLoader
     public function getPackages($block = null)
     {
         if ($this->isSplit) {
-            $ret =  $this->blocks[$block]['packages'];
+            $ret = $this->blocks[$block]['packages'];
         } else {
             $ret = $this->packages;
         }
