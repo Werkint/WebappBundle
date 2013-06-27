@@ -76,4 +76,11 @@ class Webapp
         $this->handler->addVar($name, $value);
     }
 
+    public function addVars(array $vars)
+    {
+        foreach ($vars as $name => $var) {
+            $this->addVar($name, $var);
+        }
+    }
+
 }
