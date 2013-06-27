@@ -2,25 +2,44 @@ services:
     werkint.webapp:
         class: Werkint\Bundle\WebappBundle\Webapp\Webapp
         arguments:
+            - @werkint.webapp.scriptloader
+    werkint.webapp.scriptloader:
+        class: Werkint\Bundle\WebappBundle\Webapp\ScriptLoader
+        arguments:
             - %werkint_webapp%
             - %kernel.debug%
             - %appmode%
+    werkint.webapp.compiler:
+        class: Werkint\Bundle\WebappBundle\Webapp\Compiler\Compiler
+        arguments:
+            - %werkint_webapp%
+            - %kernel.debug%
+        tags:
+            - { name: kernel.cache_clearer, priority: 0 }
+
     werkint.webapp.listener.template:
         class: Werkint\Bundle\WebappBundle\EventListener\Template
         arguments:
-            - @werkint.webapp
+            - @werkint.webapp.scriptloader
         tags:
-            - { name: kernel.event_listener, event: werkint.webapp.postconstruct, method: templateConstruct }
+            - { name: kernel.event_listener, event: werkint.webapp.displaypost, method: templateDisplayPost }
             - { name: kernel.event_listener, event: werkint.webapp.blockpre, method: templateBlockStart }
             - { name: kernel.event_listener, event: werkint.webapp.blockpost, method: templateBlockEnd }
     werkint.webapp.listener.viewinjector:
         class: Werkint\Bundle\WebappBundle\EventListener\ViewInjector
         arguments:
             - @templating.engine.twig
-            - @werkint.webapp
+            - @werkint.webapp.scriptloader
+            - @werkint.webapp.compiler
             - %werkint_webapp%
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+    werkint.webapp.listener.request:
+        class: Werkint\Bundle\WebappBundle\EventListener\Request
+        arguments:
+            - @werkint.webapp.scriptloader
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onRequest, priority: -10 }
     werkint.webapp.listener.ajaxexception:
         class: Werkint\Bundle\WebappBundle\EventListener\AjaxException
         arguments:

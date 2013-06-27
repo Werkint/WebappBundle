@@ -7,40 +7,35 @@ use Werkint\Bundle\WebappBundle\Webapp\Webapp;
 
 class Extension extends Twig_Extension
 {
+    const EXT_NAME = 'werkint.webapp';
 
-    /**
-     * @var EventDispatcher
-     */
-    public static $dispatcher;
+    public $dispatcher;
     public $webapp;
 
-    public function __construct(Webapp $webapp, EventDispatcher $dispatcher)
-    {
+    public function __construct(
+        Webapp $webapp,
+        EventDispatcher $dispatcher
+    ) {
         $this->webapp = $webapp;
-        static::$dispatcher = $dispatcher;
+        $this->dispatcher = $dispatcher;
     }
 
-    public function getNodeVisitors()
+    public function getTemplateEvent()
     {
-        return [
-            new NodeVisitor(),
-        ];
+        return new TemplateEvent(
+            $this->dispatcher
+        );
     }
 
     public function getGlobals()
     {
         return [
-            'const' => $this->webapp->getVars(),
+            'const' => $this->webapp->getLoader()->getVariables('_root'),
         ];
     }
 
-    /**
-     * Returns the name of the extension.
-     *
-     * @return string The extension name
-     */
     public function getName()
     {
-        return 'werkint.webapp';
+        return self::EXT_NAME;
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Werkint\Bundle\WebappBundle\Hacks;
+namespace Werkint\Bundle\WebappBundle\Twig\Extension;
 
 use Symfony\Bundle\TwigBundle\Loader\FilesystemLoader;
 

@@ -1,5 +1,5 @@
 <?php
-namespace Werkint\Bundle\WebappBundle\Hacks;
+namespace Werkint\Bundle\WebappBundle\TemplateName;
 
 
 use Doctrine\Common\Util\ClassUtils;

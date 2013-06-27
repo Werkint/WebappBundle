@@ -1,33 +1,15 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp;
 
-use Symfony\Component\DependencyInjection\Container;
-
 class Webapp
 {
 
-    protected $params;
     protected $loader;
-    protected $handler;
-
-    protected $isDebug;
 
     public function __construct(
-        $params, $isDebug, $appmode
+        ScriptLoader $loader
     ) {
-        $this->params = $params;
-        $this->handler = new ScriptHandler();
-
-        $this->loader = new ScriptLoader(
-            $this->handler,
-            $this->params['resdir'],
-            $appmode,
-            $this->params['scripts']
-        );
-        $this->handler->blockStart('_root');
-
-        $this->handler->addVar('webapp-res', $this->params['respath']);
-        $this->isDebug = $isDebug;
+        $this->loader = $loader;
     }
 
     public function getLoader()
@@ -35,45 +17,29 @@ class Webapp
         return $this->loader;
     }
 
-    public function getHandler()
-    {
-        return $this->handler;
-    }
-
-    public function attach($name)
-    {
-        $this->loader->attach($name);
-    }
-
     public function attachFile($name)
     {
         $this->loader->attachFile($name);
     }
 
-    public function addCssImport($url)
+    public function addImportCss($url)
     {
-        $this->handler->addCssImport($url);
+        $this->loader->addImport($url, 'css');
     }
 
-    public function compile($block = null)
+    public function addImportJs($url)
     {
-        $this->handler->blockEnd();
-        $compiler = new Compiler(
-            $this->handler, $this->params['resdir'], $this->isDebug
-        );
-        $revision = substr(crc32(file_exists($this->params['revpath']) ?
-            file_get_contents($this->params['revpath']) : ''), 0, 6);
-        return $compiler->compile($revision, $block);
-    }
-
-    public function getVars()
-    {
-        return $this->handler->getVariables();
+        $this->loader->addImport($url, 'js');
     }
 
     public function addVar($name, $value)
     {
-        $this->handler->addVar($name, $value);
+        $this->loader->addVar($name, $value);
+    }
+
+    public function setIsSplit($flag)
+    {
+        $this->loader->setIsSplit($flag);
     }
 
     public function addVars(array $vars)

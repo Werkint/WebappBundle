@@ -2,67 +2,48 @@
 namespace Werkint\Bundle\WebappBundle\Twig\Extension;
 
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class TemplateEvent extends Event
 {
+    protected $dispatcher;
 
-    public $templateName;
-    public $templatePath;
-    public $data;
-
-    protected static function getEvent()
-    {
-        return new static();
+    public function __construct(
+        EventDispatcher $dispatcher
+    ) {
+        $this->dispatcher = $dispatcher;
     }
 
-    protected function dispatch($eventName)
+    public function dispatch($eventName)
     {
-        Extension::$dispatcher->dispatch(
+        return $this->dispatcher->dispatch(
             $eventName,
             $this
         );
     }
 
-    public static function blockPre($name)
-    {
-        static::getEvent()
-            ->setData($name)
-            ->dispatch('werkint.webapp.blockpre');
-    }
-
-    public static function blockPost($name)
-    {
-        static::getEvent()
-            ->setData($name)
-            ->dispatch('werkint.webapp.blockpost');
-    }
-
-    public static function postConstruct($name, $path)
-    {
-        static::getEvent()
-            ->setTemplateName($name)
-            ->setTemplatePath($path)
-            ->dispatch('werkint.webapp.postconstruct');
-    }
+    public $templateName;
+    public $templatePath;
+    public $blockName;
 
     // -- Getters/Setters ---------------------------------------
 
     /**
-     * @param mixed $data
+     * @param mixed $blockName
      * @return $this
      */
-    public function setData($data)
+    public function setBlockName($blockName)
     {
-        $this->data = $data;
+        $this->blockName = $blockName;
         return $this;
     }
 
     /**
      * @return mixed
      */
-    public function getData()
+    public function getBlockName()
     {
-        return $this->data;
+        return $this->blockName;
     }
 
     /**

@@ -1,79 +1,31 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp;
 
-/**
- * Goes through dependency tree, ataches package with dependencies
- */
 class ScriptLoader
 {
 
-    /** @var ScriptHandler */
-    protected $handler;
-    /** @var string Cash directory */
     protected $resdir;
-    /** @var string Scripts directory */
-    protected $scripts;
-    /** @var string Subenvironment (for example, language) */
+    protected $respath;
     protected $appmode;
+    protected $isDebug;
 
     public function __construct(
-        $handler, $resdir, $appmode, $scripts
+        $params, $isDebug, $appmode
     ) {
-        $this->handler = $handler;
+        $this->resdir = $params['resdir'];
+        $this->respath = $params['respath'];
         $this->appmode = $appmode;
-        $this->resdir = $resdir;
-        $this->scripts = $scripts;
+        $this->isDebug = $isDebug;
 
-        $this->packages = [];
-        foreach (file($this->scripts . '/.packages') as $package) {
-            $this->packages[trim($package)] = trim($package);
-        }
+        $this->blockStart('_root');
+        $this->addVar('webapp-res', $this->respath);
     }
 
-    /**
-     * Attaches package
-     * @param $name
-     * @throws \Exception
-     */
-    public function attach($name)
+    protected $isSplit;
+
+    public function setIsSplit($isSplit)
     {
-        if (!isset($this->packages[$name])) {
-            throw new \Exception('Package not found: ' . $name);
-        }
-        if ($this->handler->wasLoaded($name)) {
-            // Package already was loaded
-            return;
-        }
-        // Package data
-        $path = $this->scripts . '/' . $name;
-        $meta = parse_ini_file($path . '/.package.ini');
-
-        // Dependencies
-        foreach (explode(',', $meta['deps']) as $dep) {
-            if (!($dep = trim($dep))) {
-                continue;
-            }
-            $this->attach($dep);
-        }
-
-        // Scripts
-        foreach (explode(',', $meta['files']) as $file) {
-            if (!($file = trim($file))) {
-                continue;
-            }
-            $this->attachFile($path . '/' . $file);
-        }
-
-        // Resources
-        foreach (explode(',', $meta['res']) as $file) {
-            if (!($file = trim($file))) {
-                continue;
-            }
-            $this->loadRes($path . '/' . $file, $file, $name);
-        }
-
-        // Loaded successfully
-        $this->handler->setLoaded($name);
+        $this->isSplit = (bool)$isSplit;
     }
 
     /**
@@ -93,7 +45,8 @@ class ScriptLoader
                 return false;
             }
         }
-        $this->handler->appendFile($path);
+        $this->log('file in [' . $this->blocksStack[0] . ']', $path);
+        $this->getCurrentBlock()['files'][] = $path;
 
         // Other language (appmode)
         if ($this->appmode) {
@@ -101,7 +54,8 @@ class ScriptLoader
                 '!^(.*)(\.[a-z0-9]+)$!', '$1.' . $this->appmode . '$2', $path
             ));
             if ($path) {
-                $this->handler->appendFile($path);
+                $this->log('file in [' . $this->blocksStack[0] . ']', $path);
+                $this->getCurrentBlock()['files'][] = $path;
             }
         }
         return true;
@@ -111,7 +65,7 @@ class ScriptLoader
      * Attaches related to template files
      * @param string $path
      */
-    public function attachRelated($path)
+    public function attachViewRelated($path)
     {
         $dir = pathinfo($path, PATHINFO_DIRNAME);
         $name = $dir . '/_all';
@@ -122,33 +76,144 @@ class ScriptLoader
         $this->attachFile($name . '.js', true);
     }
 
-    // -- Static resources ---------------------------------------
-
-    protected $staticRes = [];
-
-    public function loadRes($path, $name, $bundle)
+    public function addVar($name, $value)
     {
-        if (!isset($this->staticRes[$bundle])) {
-            $this->staticRes[$bundle] = [];
-        } else if (isset($this->staticRes[$bundle][$name])) {
-            return;
+        $this->getCurrentBlock()['vars'][$name] = $value;
+    }
+
+    public function addImport($url, $type)
+    {
+        if (!in_array($type, ['js', 'css'])) {
+            throw new \Exception('Wrong import type: ' . $type);
         }
-        $this->staticRes[$bundle][$name] = $path;
-        $imgpath = $this->resdir . '/' . $bundle;
-        if (!file_exists($imgpath)) {
-            mkdir($imgpath);
+        $this->getCurrentBlock()['imports'][] = [$url, $type, sha1($type . $url)];
+    }
+
+    // -- Getters ---------------------------------------
+
+    public function getVariables($block)
+    {
+        return $this->blocks[$block]['vars'];
+    }
+
+    public function getFiles($block, $ext)
+    {
+        $list = $this->blocks[$block]['files'];
+
+        $ret = [];
+        foreach ($list as $file) {
+            if (in_array($file, $ret)) {
+                continue;
+            }
+            if (pathinfo($file, PATHINFO_EXTENSION) == $ext) {
+                $ret[] = $file;
+            }
         }
-        $imgpath .= '/' . $name;
-        if (file_exists($imgpath)) {
-            return;
+
+        return $ret;
+    }
+
+    public function getImports($block)
+    {
+        return $this->blocks[$block]['imports'];
+    }
+
+    // -- Packages ---------------------------------------
+
+    protected $packages = [];
+
+    protected function &getPackageList($block = null)
+    {
+        if ($this->isSplit) {
+            $list = & $this->getCurrentBlock($block)['packages'];
+        } else {
+            $list = & $this->packages;
         }
-        try {
-            symlink($path, $imgpath);
-        } catch (\Exception $e) {
-            throw new \Exception(
-                'Cannot symlink  "' . $path . '" to "' . $imgpath . '"'
-            );
+        return $list;
+    }
+
+    public function addPackage($name, $block = null)
+    {
+        $this->getPackageList($block)[] = $name;
+        return $this;
+    }
+
+    public function isPackageLoaded($name)
+    {
+        return in_array($name, $this->getPackageList());
+    }
+
+    public function getPackages($block = null)
+    {
+        if ($this->isSplit) {
+            $ret = $this->blocks[$block]['packages'];
+        } else {
+            $ret = $this->packages;
         }
+        return $ret;
+    }
+
+    // -- Log ---------------------------------------
+
+    protected $log = [];
+
+    protected function log($tag, $msg)
+    {
+        $this->log[] = $tag . ': ' . $msg;
+    }
+
+    public function getLog()
+    {
+        return $this->log;
+    }
+
+    // -- Blocks ---------------------------------------
+
+    protected $blocks = [];
+    protected $blocksStack = [];
+
+    public function blockStart($name)
+    {
+        $this->log('block start', $name);
+        $this->getCurrentBlock($name);
+        array_unshift($this->blocksStack, $name);
+        $this->log('block', $this->blocksStack[0]);
+        return $this;
+    }
+
+    public function blockEnd()
+    {
+        $name = array_shift($this->blocksStack);
+        $this->log('block end', $name);
+        //
+        if (isset($this->blocksStack[0])) {
+            $this->log('block', $this->blocksStack[0]);
+        }
+        return $this;
+    }
+
+    public function getBlocks()
+    {
+        while (count($this->blocksStack)) {
+            $this->blockEnd();
+        }
+        return array_keys($this->blocks);
+    }
+
+    protected function &getCurrentBlock($block = null)
+    {
+        if (!$block) {
+            $block = $this->blocksStack[0];
+        }
+        if (!isset($this->blocks[$block])) {
+            $this->blocks[$block] = [
+                'files'    => [],
+                'vars'     => [],
+                'imports'  => [],
+                'packages' => [],
+            ];
+        }
+        return $this->blocks[$block];
     }
 
 }

@@ -5,23 +5,38 @@ use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Werkint\Bundle\WebappBundle\Webapp\Webapp;
+use Werkint\Bundle\WebappBundle\Webapp\Compiler\Compiler;
+use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
 
 class ViewInjector
 {
 
     protected $templating;
-    protected $webapp;
-    protected $parameters;
+    protected $loader;
+    protected $compiler;
+    protected $respath;
 
     public function __construct(
         TwigEngine $templating,
-        Webapp $webapp,
+        ScriptLoader $loader,
+        Compiler $compiler,
         $parameters
     ) {
         $this->templating = $templating;
-        $this->webapp = $webapp;
-        $this->parameters = $parameters;
+        $this->loader = $loader;
+        $this->compiler = $compiler;
+        $this->respath = $parameters['respath'];
+    }
+
+    protected function getTemplateData()
+    {
+        $blocks = $this->compiler->compile($this->loader);
+        return [
+            'blocks'   => $blocks,
+            'packages' => $this->loader->getPackages('page'),
+            'respath'  => $this->respath,
+            'prefix'   => 'webapp_res_',
+        ];
     }
 
     public function onKernelResponse(FilterResponseEvent $event)
@@ -30,31 +45,34 @@ class ViewInjector
             return;
         }
 
+        $request = $event->getRequest();
+        $response = $event->getResponse();
+
         // do not capture redirects
-        if ($event->getResponse()->isRedirect()) {
+        if ($response->isRedirect()) {
+            if ($request->server->get('HTTP_' . Request::HEADER_PJAX)) {
+                $response->setStatusCode(200);
+                $response->headers->set(
+                    Request::HEADER_NEEDREDIRECT,
+                    $response->headers->get('Location')
+                );
+                $response->headers->remove('Location');
+                $response->setContent('<p>Перенаправление...</p>');
+            }
             return;
         }
 
-        $response = $event->getResponse();
         $content = $response->getContent();
+        $data = $this->getTemplateData();
+
         if ($event->getRequest()->isXmlHttpRequest()) {
             if (($pos = mb_strrpos($content, '[[PAGEPATH]]')) !== false) {
-                $path = $this->parameters['respath'];
-                $path = $path . '/' . $this->webapp->compile('page');
-                $data = json_encode([
-                    'path'  => $path,
-                    'class' => 'webapp_res_page',
-                ]);
+                $data = json_encode($data);
                 $content = mb_substr($content, 0, $pos) . $data . mb_substr($content, $pos + strlen('[[PAGEPATH]]'));
                 $response->setContent($content);
             }
         } else {
             if (($pos = mb_strrpos($content, '</head>')) !== false) {
-                $data = [
-                    'hashes'  => $this->webapp->compile(),
-                    'imports' => $this->webapp->getHandler()->getImports(),
-                    'respath' => $this->parameters['respath'],
-                ];
                 $code = $this->templating->render(
                     'WerkintWebappBundle:Templates:head.twig', $data
                 );
