@@ -42,4 +42,11 @@ class Webapp
         $this->loader->setIsSplit($flag);
     }
 
+    public function addVars(array $vars)
+    {
+        foreach ($vars as $name => $var) {
+            $this->addVar($name, $var);
+        }
+    }
+
 }
