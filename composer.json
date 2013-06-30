@@ -9,11 +9,12 @@
             "email": "bogdan@yurov.me"
         }
     ],
+    "version":     "1.0.0",
     "require":     {
-        "php":                 ">=5.4",
-        "nick4fake/phpsass":   "*",
-        "nick4fake/jsmin":     "*",
-        "nick4fake/minifycss": "*"
+        "werkint/phpsass":   "*",
+        "werkint/jsmin":     "*",
+        "werkint/minifycss": "*",
+        "php":               ">=5.4"
     },
     "target-dir":  "Werkint/Bundle/WebappBundle",
     "autoload":    {
