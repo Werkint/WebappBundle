@@ -42,6 +42,7 @@ class Compiler implements CacheClearerInterface
         foreach ($loader->getBlocks() as $block) {
             $blockRev = '_r' . $this->revision . '_' . $block;
             $vars = $loader->getVariables($block);
+            $varHash = substr($this->getHash($vars), 0, 5);
             $blocks[$block]['imports'] = $loader->getImports($block);
 
             // Files to compile
@@ -50,7 +51,7 @@ class Compiler implements CacheClearerInterface
             $filesJs = $loader->getFiles($block, 'js');
 
             // CSS
-            $name = $this->getHash($filesCss) . $blockRev;
+            $name = $this->getHash($filesCss) . '.' . $varHash . $blockRev;
             $blocks[$block]['css'] = $name;
             $blockPath = $this->targetdir . '/' . $name;
             // Compile, if needed
@@ -64,7 +65,7 @@ class Compiler implements CacheClearerInterface
             }
 
             // JS
-            $name = $this->getHash($filesJs) . $blockRev;
+            $name = $this->getHash($filesJs) . '.' . $varHash . $blockRev;
             $blocks[$block]['js'] = $name;
             $blockPath = $this->targetdir . '/' . $name;
             // Compile, if needed
