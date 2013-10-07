@@ -32,6 +32,8 @@ class ScriptCompiler
                 $value = json_encode($value);
             } elseif (is_scalar($value)) {
                 $value = '"' . str_replace('"', '\\"', $value) . '"';
+            } elseif ($value === null) {
+                $value = 'null';
             } else {
                 throw new \Exception('Wrong variable type: ' . gettype($value));
             }
