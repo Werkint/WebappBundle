@@ -13,7 +13,10 @@
         "werkint/phpsass":   "*",
         "werkint/jsmin":     "*",
         "werkint/minifycss": "*",
-        "php":               ">=5.4"
+
+        "friendsofsymfony/rest-bundle": "*",
+
+        "php": ">=5.4"
     },
     "target-dir":  "Werkint/Bundle/WebappBundle",
     "autoload":    {
