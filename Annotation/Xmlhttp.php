@@ -8,6 +8,7 @@ namespace Werkint\Bundle\WebappBundle\Annotation;
 class Xmlhttp extends Post
 {
     const HEADER_VALUE = 'XMLHttpRequest';
+    const KEYNAME = '_x_requested';
 
     public function __construct(
         array $data
@@ -15,7 +16,7 @@ class Xmlhttp extends Post
         parent::__construct($data);
 
         $requirements = $this->getRequirements();
-        $requirements['_x_requested'] = static::HEADER_VALUE;
+        $requirements[static::KEYNAME] = static::HEADER_VALUE;
         $this->setRequirements($requirements);
 
         $defaults = $this->getDefaults();

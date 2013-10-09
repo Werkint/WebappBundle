@@ -46,6 +46,12 @@ services:
             - %kernel.debug%
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+    werkint.webapp.listener.ajaxfilter:
+        class: Werkint\Bundle\WebappBundle\EventListener\AjaxFilter
+        arguments:
+            - @router
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
     werkint.webapp.listener.twigextension:
         class: Werkint\Bundle\WebappBundle\Twig\Extension\Extension
         arguments:

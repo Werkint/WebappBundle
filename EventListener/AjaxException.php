@@ -7,7 +7,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class AjaxException
 {
-
     protected $isDebug;
 
     public function __construct($isDebug)
