@@ -6,6 +6,11 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Werkint\Bundle\WebappBundle\Twig\Extension\TemplateEvent;
 use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
 
+/**
+ * Template.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 class Template
 {
     const BLOCK_PREFIX = 'break_';

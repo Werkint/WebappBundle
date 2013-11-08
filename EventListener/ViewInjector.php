@@ -8,6 +8,11 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Werkint\Bundle\WebappBundle\Webapp\Compiler\Compiler;
 use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
 
+/**
+ * ViewInjector.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 class ViewInjector
 {
 

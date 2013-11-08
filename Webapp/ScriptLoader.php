@@ -1,6 +1,11 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp;
 
+/**
+ * ScriptLoader.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 class ScriptLoader
 {
 

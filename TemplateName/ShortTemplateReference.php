@@ -3,6 +3,11 @@ namespace Werkint\Bundle\WebappBundle\TemplateName;
 
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
 
+/**
+ * ShortTemplateReference.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 class ShortTemplateReference extends TemplateReference
 {
     /**

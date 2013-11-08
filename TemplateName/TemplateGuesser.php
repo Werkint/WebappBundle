@@ -6,6 +6,11 @@ use Doctrine\Common\Util\ClassUtils;
 use Sensio\Bundle\FrameworkExtraBundle\Templating\TemplateGuesser as TemplateGuesserRef;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * TemplateGuesser.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 class TemplateGuesser extends TemplateGuesserRef
 {
 

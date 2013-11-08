@@ -1,6 +1,11 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp\Compiler;
 
+/**
+ * StyleCompiler.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 class StyleCompiler
 {
     protected $isDebug;

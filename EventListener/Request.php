@@ -6,6 +6,11 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
 
+/**
+ * Request.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 class Request
 {
     const HEADER_PACKAGES = 'X_MY_PACKAGES';

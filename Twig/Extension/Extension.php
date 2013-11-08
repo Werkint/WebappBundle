@@ -5,6 +5,11 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Twig_Extension;
 use Werkint\Bundle\WebappBundle\Webapp\Webapp;
 
+/**
+ * Extension.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 class Extension extends Twig_Extension
 {
     const EXT_NAME = 'werkint.webapp';

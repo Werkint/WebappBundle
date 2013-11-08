@@ -3,6 +3,11 @@ namespace Werkint\Bundle\WebappBundle\Webapp\Compiler;
 
 use JsMin;
 
+/**
+ * ScriptCompiler.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 class ScriptCompiler
 {
     protected $strictMode;

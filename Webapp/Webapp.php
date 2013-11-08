@@ -1,6 +1,11 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp;
 
+/**
+ * Webapp.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 class Webapp
 {
 

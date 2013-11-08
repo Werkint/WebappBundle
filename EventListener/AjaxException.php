@@ -5,6 +5,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
+/**
+ * AjaxException.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 class AjaxException
 {
     protected $isDebug;

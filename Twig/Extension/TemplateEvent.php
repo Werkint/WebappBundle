@@ -4,6 +4,11 @@ namespace Werkint\Bundle\WebappBundle\Twig\Extension;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+/**
+ * TemplateEvent.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 class TemplateEvent extends Event
 {
     protected $dispatcher;

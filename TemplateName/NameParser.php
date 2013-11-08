@@ -5,6 +5,11 @@ use Symfony\Bundle\FrameworkBundle\Templating\TemplateNameParser;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
 use Symfony\Component\Templating\TemplateReferenceInterface;
 
+/**
+ * NameParser.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 class NameParser extends TemplateNameParser
 {
     /**

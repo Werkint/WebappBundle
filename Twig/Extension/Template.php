@@ -3,6 +3,11 @@ namespace Werkint\Bundle\WebappBundle\Twig\Extension;
 
 use Twig_Template;
 
+/**
+ * Template.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 abstract class Template extends Twig_Template
 {
     const BLOCK_PREFIX = 'globalhook_';

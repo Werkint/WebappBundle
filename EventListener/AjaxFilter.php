@@ -8,6 +8,11 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Router;
 use Werkint\Bundle\WebappBundle\Annotation\Xmlhttp;
 
+/**
+ * AjaxFilter.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 class AjaxFilter
 {
     const ERROR_CODE = 403;

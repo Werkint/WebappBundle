@@ -5,6 +5,11 @@ use Twig_Extension;
 use Twig_SimpleFilter;
 use Twig_SimpleFunction;
 
+/**
+ * AbstractExtension.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
 abstract class AbstractExtension extends Twig_Extension
 {
     const EXT_NAME = 'undefined';

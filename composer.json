@@ -1,8 +1,7 @@
 {
     "name":        "werkint/webapp-bundle",
-    "type":        "library",
     "description": "Symfony2 Webapp bundle",
-    "license":     "GPL",
+    "license":     "GPL-3.0+",
     "authors":     [
         {
             "name":  "Bogdan Yurov",

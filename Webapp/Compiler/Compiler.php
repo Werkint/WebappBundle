@@ -5,7 +5,13 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
 use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
 
-class Compiler implements CacheClearerInterface
+/**
+ * Compiler.
+ *
+ * @author Bogdan Yurov <bogdan@yurov.me>
+ */
+class Compiler implements
+    CacheClearerInterface
 {
 
     protected $targetdir;
