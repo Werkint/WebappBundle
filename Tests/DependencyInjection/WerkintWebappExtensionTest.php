@@ -22,7 +22,6 @@ class WerkintWebappExtensionTest extends \PHPUnit_Framework_TestCase
     public function testConfig()
     {
         $container = $this->loadContainer([
-            'scripts' => '',
             'respath' => '',
             'resdir'  => '',
             'revpath' => '',
@@ -34,7 +33,6 @@ class WerkintWebappExtensionTest extends \PHPUnit_Framework_TestCase
     public function testServices()
     {
         $container = $this->loadContainer([
-            'scripts' => '',
             'respath' => '',
             'resdir'  => '',
             'revpath' => '',
