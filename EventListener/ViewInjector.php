@@ -15,17 +15,22 @@ use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
  */
 class ViewInjector
 {
-
     protected $templating;
     protected $loader;
     protected $compiler;
     protected $respath;
 
+    /**
+     * @param TwigEngine   $templating
+     * @param ScriptLoader $loader
+     * @param Compiler     $compiler
+     * @param array        $parameters
+     */
     public function __construct(
         TwigEngine $templating,
         ScriptLoader $loader,
         Compiler $compiler,
-        $parameters
+        array $parameters
     ) {
         $this->templating = $templating;
         $this->loader = $loader;
@@ -33,6 +38,9 @@ class ViewInjector
         $this->respath = $parameters['respath'];
     }
 
+    /**
+     * @return array
+     */
     protected function getTemplateData()
     {
         $blocks = $this->compiler->compile($this->loader);
@@ -44,6 +52,9 @@ class ViewInjector
         ];
     }
 
+    /**
+     * @param FilterResponseEvent $event
+     */
     public function onKernelResponse(FilterResponseEvent $event)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
@@ -87,4 +98,5 @@ class ViewInjector
             }
         }
     }
+
 }

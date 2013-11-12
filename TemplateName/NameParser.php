@@ -57,4 +57,5 @@ class NameParser extends TemplateNameParser
 
         return $this->cache[$name] = $template;
     }
+
 }

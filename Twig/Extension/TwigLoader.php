@@ -10,7 +10,9 @@ use Symfony\Bundle\TwigBundle\Loader\FilesystemLoader;
  */
 class TwigLoader extends FilesystemLoader
 {
-
+    /**
+     * {@inheritdoc}
+     */
     public function findTemplate($template)
     {
         return parent::findTemplate($template);

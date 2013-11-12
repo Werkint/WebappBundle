@@ -14,6 +14,9 @@ abstract class AbstractExtension extends Twig_Extension
 {
     const EXT_NAME = 'undefined';
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return static::EXT_NAME;
@@ -21,8 +24,16 @@ abstract class AbstractExtension extends Twig_Extension
 
     protected $filters = [];
 
-    public function addFilter($name, $isSafe, callable $callable)
-    {
+    /**
+     * @param string   $name
+     * @param bool     $isSafe
+     * @param callable $callable
+     */
+    public function addFilter(
+        $name,
+        $isSafe,
+        callable $callable
+    ) {
         $safe = ['is_safe' => ['all']];
         $this->filters[$name] = new Twig_SimpleFilter($name, $callable, $isSafe ? $safe : []);
     }
@@ -38,6 +49,9 @@ abstract class AbstractExtension extends Twig_Extension
         return $filter->getCallable();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFilters()
     {
         return $this->filters;
@@ -45,12 +59,23 @@ abstract class AbstractExtension extends Twig_Extension
 
     protected $functions = [];
 
-    public function addFunction($name, $isSafe, callable $callable)
-    {
+    /**
+     * @param string   $name
+     * @param bool     $isSafe
+     * @param callable $callable
+     */
+    public function addFunction(
+        $name,
+        $isSafe,
+        callable $callable
+    ) {
         $safe = ['is_safe' => ['all']];
         $this->functions[$name] = new Twig_SimpleFunction($name, $callable, $isSafe ? $safe : []);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFunctions()
     {
         return $this->functions;
@@ -58,6 +83,9 @@ abstract class AbstractExtension extends Twig_Extension
 
     protected $globals = [];
 
+    /**
+     * {@inheritdoc}
+     */
     public function getGlobals()
     {
         return $this->globals;

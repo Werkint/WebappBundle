@@ -13,12 +13,23 @@ class ScriptCompiler
     protected $strictMode;
     protected $isDebug;
 
+    /**
+     * @param bool $isDebug
+     * @param      bool strictMode
+     */
     public function __construct($isDebug, $strictMode)
     {
         $this->isDebug = $isDebug;
         $this->strictMode = $strictMode;
     }
 
+    /**
+     * @param array  $vars
+     * @param string $block
+     * @param string $filepath
+     * @param array  $files
+     * @throws \Exception
+     */
     public function compile(array $vars, $block, $filepath, array &$files)
     {
         $data = [];

@@ -13,7 +13,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TemplateGuesser extends TemplateGuesserRef
 {
-
+    /**
+     * {@inheritdoc}
+     */
     public function guessTemplateName($controller, Request $request, $engine = 'twig')
     {
         $className = class_exists('Doctrine\Common\Util\ClassUtils') ? ClassUtils::getClass($controller[0]) : get_class($controller[0]);

@@ -17,17 +17,26 @@ class Template
 
     protected $loader;
 
+    /**
+     * @param ScriptLoader $loader
+     */
     public function __construct(
         ScriptLoader $loader
     ) {
         $this->loader = $loader;
     }
 
+    /**
+     * @param TemplateEvent $e
+     */
     public function templateDisplayPost(TemplateEvent $e)
     {
         $this->loader->attachViewRelated($e->templatePath);
     }
 
+    /**
+     * @param TemplateEvent $e
+     */
     public function templateBlockStart(TemplateEvent $e)
     {
         $name = $e->getBlockName();
@@ -37,6 +46,9 @@ class Template
         }
     }
 
+    /**
+     * @param TemplateEvent $e
+     */
     public function templateBlockEnd(TemplateEvent $e)
     {
         $name = $e->getBlockName();
@@ -45,4 +57,5 @@ class Template
             $this->loader->blockEnd($tpl);
         }
     }
+
 }

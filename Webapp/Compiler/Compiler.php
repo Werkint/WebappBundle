@@ -13,12 +13,15 @@ use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
 class Compiler implements
     CacheClearerInterface
 {
-
     protected $targetdir;
     protected $isDebug;
     protected $strictMode = false;
     protected $revision;
 
+    /**
+     * @param string $params
+     * @param bool   $isDebug
+     */
     public function __construct($params, $isDebug)
     {
         $this->targetdir = $params['resdir'];
@@ -30,11 +33,19 @@ class Compiler implements
             file_get_contents($params['revpath']) : ''), 0, 6);
     }
 
+    /**
+     * @param string $data
+     * @return string
+     */
     protected function getHash($data)
     {
         return substr(sha1(serialize($data)), 0, 10);
     }
 
+    /**
+     * @param ScriptLoader $loader
+     * @return array
+     */
     public function compile(
         ScriptLoader $loader
     ) {
@@ -83,6 +94,11 @@ class Compiler implements
         return $blocks;
     }
 
+    /**
+     * @param string $filepath
+     * @param array  $files
+     * @return bool
+     */
     protected function isFresh($filepath, &$files)
     {
         if (!file_exists($filepath)) {
@@ -99,6 +115,9 @@ class Compiler implements
 
     // -- CacheClearerInterface ---------------------------------------
 
+    /**
+     * @param string $cacheDir
+     */
     public function clear($cacheDir)
     {
         $fs = new Filesystem();

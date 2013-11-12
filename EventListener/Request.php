@@ -19,12 +19,18 @@ class Request
 
     protected $loader;
 
+    /**
+     * @param ScriptLoader $loader
+     */
     public function __construct(
         ScriptLoader $loader
     ) {
         $this->loader = $loader;
     }
 
+    /**
+     * @param GetResponseEvent $event
+     */
     public function onRequest(GetResponseEvent $event)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
@@ -43,4 +49,5 @@ class Request
             $this->loader->addPackage($name, 'page');
         }
     }
+
 }

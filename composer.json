@@ -9,6 +9,8 @@
         }
     ],
     "require":     {
+        "symfony/framework-bundle": "2.3.*",
+
         "werkint/phpsass":   "*",
         "werkint/jsmin":     "*",
         "werkint/minifycss": "*",
@@ -22,5 +24,12 @@
         "psr-0": {
             "Werkint\\Bundle\\WebappBundle": ""
         }
-    }
+    },
+    "extra":       {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
+    },
+
+    "minimum-stability": "dev"
 }

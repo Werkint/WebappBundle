@@ -22,6 +22,9 @@ abstract class Template extends Twig_Template
             ->getExtension(Extension::EXT_NAME);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getEvent()
     {
         return $this
@@ -29,8 +32,13 @@ abstract class Template extends Twig_Template
             ->getTemplateEvent();
     }
 
-    public function display(array $context, array $blocks = [])
-    {
+    /**
+     * {@inheritdoc}
+     */
+    public function display(
+        array $context,
+        array $blocks = []
+    ) {
         // call parent
         parent::display($context, $blocks);
 
@@ -47,8 +55,14 @@ abstract class Template extends Twig_Template
             ->dispatch('werkint.webapp.displaypost');
     }
 
-    public function displayBlock($name, array $context, array $blocks = [])
-    {
+    /**
+     * {@inheritdoc}
+     */
+    public function displayBlock(
+        $name,
+        array $context,
+        array $blocks = []
+    ) {
         $tpl = null;
         // if block is marked to trigger event
         if (strpos($name, static::BLOCK_PREFIX) === 0) {

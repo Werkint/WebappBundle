@@ -10,11 +10,23 @@ class StyleCompiler
 {
     protected $isDebug;
 
+    /**
+     * @param bool $isDebug
+     */
     public function __construct($isDebug)
     {
         $this->isDebug = $isDebug;
     }
 
+    /**
+     * @param array       $vars
+     * @param string      $block
+     * @param string      $filepath
+     * @param array       $files
+     * @param string|null $prefixData
+     * @return string
+     * @throws \Exception
+     */
     public function compile(array $vars, $block, $filepath, array &$files, $prefixData = null)
     {
         $data = [];

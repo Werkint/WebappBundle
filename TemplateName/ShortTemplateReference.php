@@ -29,4 +29,5 @@ class ShortTemplateReference extends TemplateReference
     {
         return sprintf('%s:%s:%s.%s', $this->parameters['bundle'], $this->parameters['controller'], $this->parameters['name'], $this->parameters['engine']);
     }
+
 }

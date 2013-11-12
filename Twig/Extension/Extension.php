@@ -17,6 +17,10 @@ class Extension extends Twig_Extension
     public $dispatcher;
     public $webapp;
 
+    /**
+     * @param Webapp          $webapp
+     * @param EventDispatcher $dispatcher
+     */
     public function __construct(
         Webapp $webapp,
         EventDispatcher $dispatcher
@@ -25,6 +29,9 @@ class Extension extends Twig_Extension
         $this->dispatcher = $dispatcher;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTemplateEvent()
     {
         return new TemplateEvent(
@@ -32,6 +39,9 @@ class Extension extends Twig_Extension
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getGlobals()
     {
         return [
@@ -39,8 +49,12 @@ class Extension extends Twig_Extension
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return self::EXT_NAME;
     }
+
 }

@@ -13,12 +13,19 @@ class TemplateEvent extends Event
 {
     protected $dispatcher;
 
+    /**
+     * @param EventDispatcher $dispatcher
+     */
     public function __construct(
         EventDispatcher $dispatcher
     ) {
         $this->dispatcher = $dispatcher;
     }
 
+    /**
+     * @param $eventName
+     * @return Event
+     */
     public function dispatch($eventName)
     {
         return $this->dispatcher->dispatch(
@@ -86,6 +93,5 @@ class TemplateEvent extends Event
     {
         return $this->templatePath;
     }
-
 
 }

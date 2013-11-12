@@ -14,20 +14,27 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class WerkintWebappExtension extends Extension
 {
+    /**
+     * {@inheritdoc}
+     */
     public function load(
         array $configs,
         ContainerBuilder $container
     ) {
         $processor = new Processor();
         $config = $processor->processConfiguration(
-            new Configuration($this->getAlias()), $configs
+            new Configuration($this->getAlias()),
+            $configs
         );
         $container->setParameter(
-            $this->getAlias(), $config
+            $this->getAlias(),
+            $config
         );
         $loader = new YamlFileLoader(
-            $container, new FileLocator(__DIR__ . '/../Resources/config')
+            $container,
+            new FileLocator(__DIR__ . '/../Resources/config')
         );
         $loader->load('services.yml');
     }
+
 }

@@ -19,12 +19,19 @@ class AjaxFilter
 
     protected $router;
 
+    /**
+     * @param Router $router
+     */
     public function __construct(
         Router $router
     ) {
         $this->router = $router;
     }
 
+    /**
+     * @param FilterControllerEvent $event
+     * @throws HttpException
+     */
     public function onKernelController(FilterControllerEvent $event)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
@@ -42,4 +49,5 @@ class AjaxFilter
             }
         }
     }
+
 }
