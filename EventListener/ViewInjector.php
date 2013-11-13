@@ -1,11 +1,10 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\EventListener;
 
-use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Werkint\Bundle\WebappBundle\Webapp\Compiler\Compiler;
+use Symfony\Component\Templating\EngineInterface;
+use Werkint\Bundle\WebappBundle\Webapp\Compiler;
 use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
 
 /**
@@ -15,19 +14,24 @@ use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
  */
 class ViewInjector
 {
+    const TEMPLATE = 'WerkintWebappBundle:Templates:head.twig';
+    const TAG_AJAX = '[[PAGEPATH]]';
+    const TAG_HEAD = '</head>';
+    const PREFIX = 'webapp_res_';
+
     protected $templating;
     protected $loader;
     protected $compiler;
-    protected $respath;
+    protected $parameters;
 
     /**
-     * @param TwigEngine   $templating
-     * @param ScriptLoader $loader
-     * @param Compiler     $compiler
-     * @param array        $parameters
+     * @param EngineInterface $templating
+     * @param ScriptLoader    $loader
+     * @param Compiler        $compiler
+     * @param array           $parameters
      */
     public function __construct(
-        TwigEngine $templating,
+        EngineInterface $templating,
         ScriptLoader $loader,
         Compiler $compiler,
         array $parameters
@@ -35,7 +39,7 @@ class ViewInjector
         $this->templating = $templating;
         $this->loader = $loader;
         $this->compiler = $compiler;
-        $this->respath = $parameters['respath'];
+        $this->parameters = $parameters;
     }
 
     /**
@@ -44,12 +48,11 @@ class ViewInjector
     protected function getTemplateData()
     {
         $blocks = $this->compiler->compile($this->loader);
-        return [
+        return array_merge($this->parameters, [
             'blocks'   => $blocks,
             'packages' => $this->loader->getPackages('page'),
-            'respath'  => $this->respath,
-            'prefix'   => 'webapp_res_',
-        ];
+            'prefix'   => static::PREFIX,
+        ]);
     }
 
     /**
@@ -66,22 +69,24 @@ class ViewInjector
         $content = $response->getContent();
         $data = $this->getTemplateData();
 
-        // TODO: add custom tag for injection
+        // TODO: set custom tags for injection
         if ($event->getRequest()->isXmlHttpRequest()) {
-            if (($pos = mb_strrpos($content, '[[PAGEPATH]]')) !== false) {
-                $data = json_encode($data);
-                $content = mb_substr($content, 0, $pos) . $data . mb_substr($content, $pos + strlen('[[PAGEPATH]]'));
-                $response->setContent($content);
+            $pos = mb_strrpos($content, static::TAG_AJAX);
+            if ($pos === false) {
+                return false;
             }
+            $data = json_encode($data);
+            $content = mb_substr($content, 0, $pos) . $data . mb_substr($content, $pos + strlen(static::TAG_AJAX));
+            $response->setContent($content);
         } else {
-            if (($pos = mb_strrpos($content, '</head>')) !== false) {
-                $code = $this->templating->render(
-                    'WerkintWebappBundle:Templates:head.twig', $data
-                );
-                $code = "\n" . str_replace("\n", '', $code) . "\n";
-                $content = mb_substr($content, 0, $pos) . $code . mb_substr($content, $pos);
-                $response->setContent($content);
+            $pos = mb_strrpos($content, static::TAG_HEAD);
+            if ($pos === false) {
+                return false;
             }
+            $code = $this->templating->render(static::TEMPLATE, $data);
+            $code = "\n" . str_replace("\n", '', $code) . "\n";
+            $content = mb_substr($content, 0, $pos) . $code . mb_substr($content, $pos);
+            $response->setContent($content);
         }
     }
 

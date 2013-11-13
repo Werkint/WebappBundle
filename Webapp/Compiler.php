@@ -1,8 +1,12 @@
 <?php
-namespace Werkint\Bundle\WebappBundle\Webapp\Compiler;
+namespace Werkint\Bundle\WebappBundle\Webapp;
 
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
+use Werkint\Bundle\WebappBundle\Webapp\Compiler\ScriptsCompiler;
+use Werkint\Bundle\WebappBundle\Webapp\Compiler\StylesCompiler;
+use Werkint\Bundle\WebappBundle\Webapp\Processor\ScriptsProcessor;
+use Werkint\Bundle\WebappBundle\Webapp\Processor\StylesProcessor;
 use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
 
 /**
@@ -21,12 +25,15 @@ class Compiler implements
     /**
      * @param string $params
      * @param bool   $isDebug
+     * @throws \InvalidArgumentException
      */
-    public function __construct($params, $isDebug)
-    {
+    public function __construct(
+        $params,
+        $isDebug = false
+    ) {
         $this->targetdir = $params['resdir'];
         if (!file_exists($this->targetdir)) {
-            throw new \Exception('Directory not found: ' . $this->targetdir);
+            throw new \InvalidArgumentException('Directory not found: ' . $this->targetdir);
         }
         $this->isDebug = $isDebug;
         $this->revision = substr(crc32(file_exists($params['revpath']) ?
@@ -53,12 +60,19 @@ class Compiler implements
         $root = null;
 
         // compilers
-        $compilerScript = new ScriptCompiler($this->isDebug, $this->strictMode);
-        $compilerStyle = new StyleCompiler($this->isDebug);
+        $compilerScript = new ScriptsCompiler(
+            new ScriptsProcessor($this->isDebug),
+            $this->strictMode
+        );
+        $compilerStyle = new StylesCompiler(
+            new StylesProcessor($this->isDebug)
+        );
 
+        // TODO: caching
         foreach ($loader->getBlocks() as $block) {
             $blockRev = '_r' . $this->revision . '_' . $block;
             $vars = $loader->getVariables($block);
+            // TODO: variable hash for css/js different
             $varHash = substr($this->getHash($vars), 0, 5);
             $blocks[$block]['imports'] = $loader->getImports($block);
 
@@ -72,11 +86,11 @@ class Compiler implements
             $blockPath = $this->targetdir . '/' . $name;
             // Compile, if needed
             if (!$this->isFresh($blockPath . '.css', $filesCss)) {
-                $data = $compilerStyle->compile($vars, $block, $blockPath . '.css', $filesCss, $root);
+                $data = $compilerStyle->compile($vars, $blockPath . '.css', $filesCss, $root);
                 file_put_contents($blockPath . '.scss', $data);
             }
 
-            if ($block == '_root') {
+            if ($block == ScriptLoader::ROOT_BLOCK) {
                 $root = file_get_contents($blockPath . '.scss');
             }
 

@@ -45,7 +45,7 @@ class Extension extends \Twig_Extension
     public function getGlobals()
     {
         return [
-            static::VAR_PREFIX => $this->loader->getVariables('_root'),
+            static::VAR_PREFIX => $this->loader->getVariables(ScriptLoader::ROOT_BLOCK),
         ];
     }
 

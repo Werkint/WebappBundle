@@ -89,3 +89,5 @@ Firstly, create a directory for downloaded scripts, for example "app/scripts". T
 ```
 
 Now, every time you invoke compsoser update, Scrips are updated;
+
+Note, that library does not support IE<9, Firefox<4, Opera<12.

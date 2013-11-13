@@ -1,5 +1,5 @@
-<script src="/res/js/jquery-2.0.2.min.js"></script>
-<script src="/res/js/webapp.js"></script>
+<script src="{{ paths.jquery }}"></script>
+<script src="{{ paths.webapp }}"></script>
 {% for class, block in blocks %}
   {% for import in block.imports %}
     {% if import[1] == 'css' %}

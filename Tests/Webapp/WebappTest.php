@@ -3,7 +3,6 @@ namespace Werkint\Bundle\WebappBundle\Tests\Webapp;
 
 use Werkint\Bundle\WebappBundle\Webapp\Webapp;
 
-
 /**
  * WebappTest.
  *

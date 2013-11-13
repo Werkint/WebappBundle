@@ -36,6 +36,12 @@ class Configuration implements
                 ->scalarNode('respath')->isRequired()->end()
                 ->scalarNode('resdir')->isRequired()->end()
                 ->scalarNode('revpath')->isRequired()->end()
+                ->arrayNode('paths')
+                    ->children()
+                        ->scalarNode('jquery')->isRequired()->end()
+                        ->scalarNode('webapp')->isRequired()->end()
+                    ->end()
+                ->end()
             ->end()
         ;
         // @formatter:on

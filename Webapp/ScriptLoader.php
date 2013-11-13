@@ -277,9 +277,6 @@ class ScriptLoader
      */
     public function getBlocks()
     {
-        while (count($this->blocksStack)) {
-            $this->blockEnd();
-        }
         return array_keys($this->blocks);
     }
 

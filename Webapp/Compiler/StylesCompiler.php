@@ -1,34 +1,42 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp\Compiler;
 
+use Werkint\Bundle\WebappBundle\Webapp\Processor\DefaultProcessor;
+
 /**
- * StyleCompiler.
+ * StylesCompiler.
  *
  * @author Bogdan Yurov <bogdan@yurov.me>
  */
-class StyleCompiler
+class StylesCompiler
 {
-    protected $isDebug;
+    const VAR_PREFIX = 'const';
+
+    protected $processor;
 
     /**
-     * @param bool $isDebug
+     * @param DefaultProcessor $processor
      */
-    public function __construct($isDebug)
-    {
-        $this->isDebug = $isDebug;
+    public function __construct(
+        DefaultProcessor $processor
+    ) {
+        $this->processor = $processor;
     }
 
     /**
      * @param array       $vars
-     * @param string      $block
      * @param string      $filepath
      * @param array       $files
      * @param string|null $prefixData
      * @return string
      * @throws \Exception
      */
-    public function compile(array $vars, $block, $filepath, array &$files, $prefixData = null)
-    {
+    public function compile(
+        array $vars,
+        $filepath,
+        array $files,
+        $prefixData = null
+    ) {
         $data = [];
         $updVars = function ($vars, $prefix) use (&$data, &$updVars) {
             foreach ($vars as $name => $value) {
@@ -37,23 +45,21 @@ class StyleCompiler
                     $updVars($value, $pr);
                 }
                 if (!is_scalar($value)) {
+                    // Compiling only possible variables
                     continue;
                 }
-                $data[] = $pr . ': "' . str_replace('"', '\\"', $value) . '";';
+                $data[] = '$' . $pr . ':"' . str_replace('"', '\\"', $value) . '";';
             }
         };
-        $updVars($vars, '$const');
+        $updVars($vars, static::VAR_PREFIX);
         foreach ($files as $file) {
+            if (!file_exists($file)) {
+                throw new \InvalidArgumentException('File not found: ' . $file);
+            }
             $data[] = file_get_contents($file);
         }
         $data = join("\n", $data);
 
-        $parser = new \SassParser([
-            'style'  => 'nested',
-            'cache'  => false,
-            'syntax' => 'scss',
-            'debug'  => $this->isDebug,
-        ]);
         $retdata = $data;
 
         $hr = null;
@@ -61,17 +67,13 @@ class StyleCompiler
             $hr = '.HR' . sha1(microtime(true) . $filepath);
             $data = $prefixData . $hr . '{ display: none; }' . $data;
         }
-        try {
-            $data = $parser->toCss($data, false);
-            if ($prefixData) {
-                $data = substr($data, strpos($data, $hr));
-            }
-        } catch (\Exception $e) {
-            throw new \Exception(
-                'SCSS compiler error in file "' . $filepath . '": ' . $e->getMessage() . ', loaded files: ' . print_r($files, true)
-            );
+
+        $data = $this->processor->process($data);
+        if ($prefixData) {
+            $data = substr($data, 0, strpos($data, $hr));
         }
         file_put_contents($filepath, $data);
+
         return $retdata;
     }
 
