@@ -17,4 +17,5 @@ class WerkintWebappBundleTest extends \PHPUnit_Framework_TestCase
         $obj = new WerkintWebappBundle();
         $obj->build($containerBuilderMock);
     }
+
 }

@@ -8,33 +8,26 @@ namespace Werkint\Bundle\WebappBundle\Webapp;
  */
 class ScriptLoader
 {
-    protected $resdir;
-    protected $respath;
+    const TYPE_JS = 'js';
+    const TYPE_CSS = 'css';
+    const ROOT_BLOCK = '_root';
+
     protected $appmode;
     protected $isDebug;
 
     /**
-     * @param array  $params
-     * @param bool   $isDebug
-     * @param string $appmode
+     * @param bool        $isDebug
+     * @param string|null $appmode
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        array $params,
-        $isDebug,
-        $appmode
+        $isDebug = false,
+        $appmode = null
     ) {
-        if (!(isset($params['resdir']) && isset($params['respath']))) {
-            throw new \InvalidArgumentException('Wrong params');
-        }
-
-        $this->resdir = $params['resdir'];
-        $this->respath = $params['respath'];
         $this->appmode = $appmode;
         $this->isDebug = $isDebug;
 
-        $this->blockStart('_root');
-        $this->addVar('webapp-res', $this->respath);
+        $this->blockStart(static::ROOT_BLOCK);
     }
 
     protected $isSplit;
@@ -50,32 +43,34 @@ class ScriptLoader
     /**
      * Attaches one script
      *
-     * @param string $pathin
+     * @param string $path
      * @param bool   $ignore_check
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      * @return bool
      */
-    public function attachFile($pathin, $ignore_check = false)
+    public function attachFile($path, $ignore_check = false)
     {
-        $path = realpath($pathin);
-        if (!$path) {
+        if (!file_exists($path)) {
             if (!$ignore_check) {
-                throw new \Exception('Script not found: ' . $pathin);
-            } else {
-                return false;
+                throw new \InvalidArgumentException('Script not found: ' . $path);
             }
+        } else {
+            $path = realpath($path);
+            $this->log('file in [' . $this->blocksStack[0] . ']', $path);
+            $this->getCurrentBlock()['files'][] = $path;
         }
-        $this->log('file in [' . $this->blocksStack[0] . ']', $path);
-        $this->getCurrentBlock()['files'][] = $path;
 
-        // Other language (appmode)
+        // Other appmode
         if ($this->appmode) {
-            $path = realpath(preg_replace(
-                '!^(.*)(\.[a-z0-9]+)$!', '$1.' . $this->appmode . '$2', $path
-            ));
-            if ($path) {
-                $this->log('file in [' . $this->blocksStack[0] . ']', $path);
-                $this->getCurrentBlock()['files'][] = $path;
+            // TODO: preg_match
+            if (strpos($path, '.' . $this->appmode . '.') === false) {
+                $path = realpath(preg_replace(
+                    '!^(.*)(\.[a-z0-9]+)$!', '$1.' . $this->appmode . '$2', $path
+                ));
+                if ($path) {
+                    $this->log('file in [' . $this->blocksStack[0] . ']', $path);
+                    $this->getCurrentBlock()['files'][] = $path;
+                }
             }
         }
         return true;
@@ -85,14 +80,22 @@ class ScriptLoader
      * Attaches related to template files
      *
      * @param string $path
+     * @param bool   $ignore_check
+     * @throws \InvalidArgumentException
      */
-    public function attachViewRelated($path)
+    public function attachViewRelated($path, $ignore_check = false)
     {
+        if (!file_exists($path) && !$ignore_check) {
+            throw new \InvalidArgumentException('Wrong filename');
+        }
         $dir = pathinfo($path, PATHINFO_DIRNAME);
+        // TODO: caching
         $name = $dir . '/_all';
+        $this->attachFile($name . '.css', true);
         $this->attachFile($name . '.scss', true);
         $this->attachFile($name . '.js', true);
         $name = $dir . '/' . pathinfo($path, PATHINFO_FILENAME);
+        $this->attachFile($name . '.css', true);
         $this->attachFile($name . '.scss', true);
         $this->attachFile($name . '.js', true);
     }
@@ -109,12 +112,12 @@ class ScriptLoader
     /**
      * @param string $url
      * @param string $type
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function addImport($url, $type)
     {
-        if (!in_array($type, ['js', 'css'])) {
-            throw new \Exception('Wrong import type: ' . $type);
+        if (!in_array($type, [static::TYPE_JS, static::TYPE_CSS])) {
+            throw new \InvalidArgumentException('Wrong import type: ' . $type);
         }
         $this->getCurrentBlock()['imports'][] = [$url, $type, sha1($type . $url)];
     }
@@ -122,29 +125,31 @@ class ScriptLoader
     // -- Getters ---------------------------------------
 
     /**
-     * @param string $block
-     * @return mixed
+     * @param string|null $block
+     * @return array
      */
-    public function getVariables($block)
+    public function getVariables($block = null)
     {
-        return $this->blocks[$block]['vars'];
+        return $this->getCurrentBlock($block)['vars'];
     }
 
     /**
-     * @param string $block
-     * @param string $ext
+     * @param string|null $block
+     * @param string      $ext
      * @return array
      */
     public function getFiles($block, $ext)
     {
-        $list = $this->blocks[$block]['files'];
+        $list = $this->getCurrentBlock($block)['files'];
 
         $ret = [];
+        // TODO: cache
         foreach ($list as $file) {
-            if (in_array($file, $ret)) {
-                continue;
+            $file_ext = pathinfo($file, PATHINFO_EXTENSION);
+            if ($file_ext == 'scss') {
+                $file_ext = static::TYPE_CSS;
             }
-            if (pathinfo($file, PATHINFO_EXTENSION) == $ext) {
+            if ($file_ext == $ext) {
                 $ret[] = $file;
             }
         }
@@ -153,12 +158,12 @@ class ScriptLoader
     }
 
     /**
-     * @param string $block
-     * @return mixed
+     * @param string|null $block
+     * @return array[]
      */
-    public function getImports($block)
+    public function getImports($block = null)
     {
-        return $this->blocks[$block]['imports'];
+        return $this->getCurrentBlock($block)['imports'];
     }
 
     // -- Packages ---------------------------------------
@@ -191,12 +196,13 @@ class ScriptLoader
     }
 
     /**
-     * @param string $name
+     * @param string      $name
+     * @param string|null $block
      * @return bool
      */
-    public function isPackageLoaded($name)
+    public function isPackageLoaded($name, $block = null)
     {
-        return in_array($name, $this->getPackageList());
+        return in_array($name, $this->getPackageList($block));
     }
 
     /**
@@ -206,11 +212,11 @@ class ScriptLoader
     public function getPackages($block = null)
     {
         if ($this->isSplit) {
-            $ret = $this->blocks[$block]['packages'];
+            $ret = $this->getCurrentBlock($block)['packages'];
         } else {
             $ret = $this->packages;
         }
-        return $ret;
+        return array_unique($ret);
     }
 
     // -- Log ---------------------------------------
@@ -246,7 +252,7 @@ class ScriptLoader
     public function blockStart($name)
     {
         $this->log('block start', $name);
-        $this->getCurrentBlock($name);
+        $this->createBlock($name);
         array_unshift($this->blocksStack, $name);
         $this->log('block', $this->blocksStack[0]);
         return $this;
@@ -278,15 +284,29 @@ class ScriptLoader
     }
 
     /**
-     * @param null $block
-     * @return array
+     * @param string $name
+     * @return \array[]
      */
-    protected function &getCurrentBlock($block = null)
+    public function createBlock($name)
+    {
+        return $this->getCurrentBlock($name, true);
+    }
+
+    /**
+     * @param string|null $block
+     * @param bool        $createBlock
+     * @return array[]
+     * @throws \InvalidArgumentException
+     */
+    protected function &getCurrentBlock($block = null, $createBlock = false)
     {
         if (!$block) {
             $block = $this->blocksStack[0];
         }
         if (!isset($this->blocks[$block])) {
+            if (!$createBlock) {
+                throw new \InvalidArgumentException('Wrong block name');
+            }
             $this->blocks[$block] = [
                 'files'    => [],
                 'vars'     => [],

@@ -63,9 +63,8 @@ class Compiler implements
             $blocks[$block]['imports'] = $loader->getImports($block);
 
             // Files to compile
-            $filesCss = $loader->getFiles($block, 'scss');
-            // var_dump($filesCss);die();
-            $filesJs = $loader->getFiles($block, 'js');
+            $filesCss = $loader->getFiles($block, ScriptLoader::TYPE_CSS);
+            $filesJs = $loader->getFiles($block, ScriptLoader::TYPE_JS);
 
             // CSS
             $name = $this->getHash($filesCss) . '.' . $varHash . $blockRev;

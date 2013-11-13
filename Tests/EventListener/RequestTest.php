@@ -22,10 +22,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->loader = new ScriptLoader([
-            'resdir'  => '',
-            'respath' => '',
-        ], false, 'foo');
+        $this->loader = new ScriptLoader(false, 'foo');
         $this->listener = new Request($this->loader);
     }
 

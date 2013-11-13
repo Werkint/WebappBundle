@@ -40,7 +40,7 @@ class Webapp
      */
     public function addImportCss($url)
     {
-        $this->loader->addImport($url, 'css');
+        $this->loader->addImport($url, ScriptLoader::TYPE_CSS);
     }
 
     /**
@@ -48,7 +48,7 @@ class Webapp
      */
     public function addImportJs($url)
     {
-        $this->loader->addImport($url, 'js');
+        $this->loader->addImport($url, ScriptLoader::TYPE_JS);
     }
 
     /**
