@@ -31,11 +31,12 @@ class Template
      */
     public function templateDisplayPost(TemplateEvent $e)
     {
-        $this->loader->attachViewRelated($e->templatePath);
+        $this->loader->attachViewRelated($e->getTemplatePath());
     }
 
     /**
      * @param TemplateEvent $e
+     * @return bool
      */
     public function templateBlockStart(TemplateEvent $e)
     {
@@ -43,11 +44,13 @@ class Template
         if (strpos($name, static::BLOCK_PREFIX) === 0) {
             $tpl = substr($name, strlen(static::BLOCK_PREFIX));
             $this->loader->blockStart($tpl);
+            return true;
         }
     }
 
     /**
      * @param TemplateEvent $e
+     * @return bool
      */
     public function templateBlockEnd(TemplateEvent $e)
     {
@@ -55,6 +58,7 @@ class Template
         if (strpos($name, static::BLOCK_PREFIX) === 0) {
             $tpl = substr($name, strlen(static::BLOCK_PREFIX));
             $this->loader->blockEnd($tpl);
+            return true;
         }
     }
 

@@ -17,12 +17,17 @@ class ScriptLoader
      * @param array  $params
      * @param bool   $isDebug
      * @param string $appmode
+     * @throws \InvalidArgumentException
      */
     public function __construct(
         array $params,
         $isDebug,
         $appmode
     ) {
+        if (!(isset($params['resdir']) && isset($params['respath']))) {
+            throw new \InvalidArgumentException('Wrong params');
+        }
+
         $this->resdir = $params['resdir'];
         $this->respath = $params['respath'];
         $this->appmode = $appmode;

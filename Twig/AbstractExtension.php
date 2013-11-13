@@ -22,6 +22,7 @@ abstract class AbstractExtension extends Twig_Extension
         return static::EXT_NAME;
     }
 
+    /** @var Twig_SimpleFilter[] */
     protected $filters = [];
 
     /**
@@ -39,14 +40,12 @@ abstract class AbstractExtension extends Twig_Extension
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return callable
      */
     public function getFilter($name)
     {
-        $filter = $this->filters[$name];
-        /** @var Twig_SimpleFilter $filter */
-        return $filter->getCallable();
+        return $this->filters[$name]->getCallable();
     }
 
     /**
@@ -57,6 +56,7 @@ abstract class AbstractExtension extends Twig_Extension
         return $this->filters;
     }
 
+    /** @var Twig_SimpleFunction[] */
     protected $functions = [];
 
     /**
@@ -71,6 +71,15 @@ abstract class AbstractExtension extends Twig_Extension
     ) {
         $safe = ['is_safe' => ['all']];
         $this->functions[$name] = new Twig_SimpleFunction($name, $callable, $isSafe ? $safe : []);
+    }
+
+    /**
+     * @param string $name
+     * @return callable
+     */
+    public function getFunction($name)
+    {
+        return $this->functions[$name]->getCallable();
     }
 
     /**

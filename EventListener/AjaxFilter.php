@@ -30,12 +30,13 @@ class AjaxFilter
 
     /**
      * @param FilterControllerEvent $event
+     * @return bool
      * @throws HttpException
      */
     public function onKernelController(FilterControllerEvent $event)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-            return;
+            return false;
         }
 
         $request = $event->getRequest();
@@ -45,7 +46,7 @@ class AjaxFilter
 
         if (isset($reqs[Xmlhttp::KEYNAME])) {
             if ($reqs[Xmlhttp::KEYNAME] != $request->headers->get('X-Requested-With')) {
-                throw new HttpException(static::ERROR_CODE);
+                throw new HttpException(static::ERROR_CODE, 'Wrong request');
             }
         }
     }

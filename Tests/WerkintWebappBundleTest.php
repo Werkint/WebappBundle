@@ -1,5 +1,5 @@
 <?php
-namespace Werkint\Bundle\WebappBundle\Tests\Currency;
+namespace Werkint\Bundle\WebappBundle\Tests;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Werkint\Bundle\WebappBundle\WerkintWebappBundle;

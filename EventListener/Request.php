@@ -16,6 +16,7 @@ class Request
     const HEADER_PACKAGES = 'X_MY_PACKAGES';
     const HEADER_PJAX = 'X_PJAX';
     const HEADER_NEEDREDIRECT = 'X_MY_NEEDREDIRECT';
+    const DEFAULT_BLOCK = 'page';
 
     protected $loader;
 
@@ -30,11 +31,12 @@ class Request
 
     /**
      * @param GetResponseEvent $event
+     * @return bool
      */
     public function onRequest(GetResponseEvent $event)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-            return;
+            return false;
         }
 
         $request = $event->getRequest();
@@ -46,7 +48,7 @@ class Request
         }
 
         foreach ($list as $name) {
-            $this->loader->addPackage($name, 'page');
+            $this->loader->addPackage($name, static::DEFAULT_BLOCK);
         }
     }
 
