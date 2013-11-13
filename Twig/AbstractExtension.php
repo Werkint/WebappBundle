@@ -1,16 +1,12 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Twig;
 
-use Twig_Extension;
-use Twig_SimpleFilter;
-use Twig_SimpleFunction;
-
 /**
  * AbstractExtension.
  *
  * @author Bogdan Yurov <bogdan@yurov.me>
  */
-abstract class AbstractExtension extends Twig_Extension
+abstract class AbstractExtension extends \Twig_Extension
 {
     const EXT_NAME = 'undefined';
 
@@ -22,7 +18,7 @@ abstract class AbstractExtension extends Twig_Extension
         return static::EXT_NAME;
     }
 
-    /** @var Twig_SimpleFilter[] */
+    /** @var \Twig_SimpleFilter[] */
     protected $filters = [];
 
     /**
@@ -36,7 +32,7 @@ abstract class AbstractExtension extends Twig_Extension
         callable $callable
     ) {
         $safe = ['is_safe' => ['all']];
-        $this->filters[$name] = new Twig_SimpleFilter($name, $callable, $isSafe ? $safe : []);
+        $this->filters[$name] = new \Twig_SimpleFilter($name, $callable, $isSafe ? $safe : []);
     }
 
     /**
@@ -56,7 +52,7 @@ abstract class AbstractExtension extends Twig_Extension
         return $this->filters;
     }
 
-    /** @var Twig_SimpleFunction[] */
+    /** @var \Twig_SimpleFunction[] */
     protected $functions = [];
 
     /**
@@ -70,7 +66,7 @@ abstract class AbstractExtension extends Twig_Extension
         callable $callable
     ) {
         $safe = ['is_safe' => ['all']];
-        $this->functions[$name] = new Twig_SimpleFunction($name, $callable, $isSafe ? $safe : []);
+        $this->functions[$name] = new \Twig_SimpleFunction($name, $callable, $isSafe ? $safe : []);
     }
 
     /**

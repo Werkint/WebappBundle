@@ -33,6 +33,10 @@ services:
             - %werkint_webapp%
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+    werkint.webapp.listener.ajaxredirect:
+        class: Werkint\Bundle\WebappBundle\EventListener\AjaxRedirect
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
     werkint.webapp.listener.request:
         class: Werkint\Bundle\WebappBundle\EventListener\Request
         arguments:
@@ -54,7 +58,7 @@ services:
     werkint.webapp.listener.twigextension:
         class: Werkint\Bundle\WebappBundle\Twig\Extension\Extension
         arguments:
-            - @werkint.webapp
+            - @werkint.webapp.scriptloader
             - @event_dispatcher
         tags:
             -  { name: twig.extension }

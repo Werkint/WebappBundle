@@ -17,22 +17,24 @@ class AjaxException
     /**
      * @param bool $isDebug
      */
-    public function __construct($isDebug)
-    {
+    public function __construct(
+        $isDebug = false
+    ) {
         $this->isDebug = $isDebug;
     }
 
     /**
      * @param GetResponseForExceptionEvent $event
+     * @return bool
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-            return;
+            return false;
         }
 
         if (!$event->getRequest()->isXmlHttpRequest() || !$this->isDebug) {
-            return;
+            return false;
         }
         $exception = $event->getException();
 

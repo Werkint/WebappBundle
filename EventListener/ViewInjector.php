@@ -54,33 +54,19 @@ class ViewInjector
 
     /**
      * @param FilterResponseEvent $event
+     * @return bool
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-            return;
+            return false;
         }
 
-        $request = $event->getRequest();
         $response = $event->getResponse();
-
-        // do not capture redirects
-        if ($response->isRedirect()) {
-            if ($request->server->get('HTTP_' . Request::HEADER_PJAX)) {
-                $response->setStatusCode(200);
-                $response->headers->set(
-                    Request::HEADER_NEEDREDIRECT,
-                    $response->headers->get('Location')
-                );
-                $response->headers->remove('Location');
-                $response->setContent('<p>Перенаправление...</p>');
-            }
-            return;
-        }
-
         $content = $response->getContent();
         $data = $this->getTemplateData();
 
+        // TODO: add custom tag for injection
         if ($event->getRequest()->isXmlHttpRequest()) {
             if (($pos = mb_strrpos($content, '[[PAGEPATH]]')) !== false) {
                 $data = json_encode($data);

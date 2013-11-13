@@ -61,4 +61,5 @@ class AbstractExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals(0, count($this->ext->getGlobals()));
     }
+
 }

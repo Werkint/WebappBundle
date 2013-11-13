@@ -2,35 +2,35 @@
 namespace Werkint\Bundle\WebappBundle\Twig\Extension;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Twig_Extension;
-use Werkint\Bundle\WebappBundle\Webapp\Webapp;
+use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
 
 /**
  * Extension.
  *
  * @author Bogdan Yurov <bogdan@yurov.me>
  */
-class Extension extends Twig_Extension
+class Extension extends \Twig_Extension
 {
     const EXT_NAME = 'werkint.webapp';
+    const VAR_PREFIX = 'const';
 
     public $dispatcher;
-    public $webapp;
+    public $loader;
 
     /**
-     * @param Webapp          $webapp
+     * @param ScriptLoader    $loader
      * @param EventDispatcher $dispatcher
      */
     public function __construct(
-        Webapp $webapp,
+        ScriptLoader $loader,
         EventDispatcher $dispatcher
     ) {
-        $this->webapp = $webapp;
+        $this->loader = $loader;
         $this->dispatcher = $dispatcher;
     }
 
     /**
-     * {@inheritdoc}
+     * @return TemplateEvent
      */
     public function getTemplateEvent()
     {
@@ -45,7 +45,7 @@ class Extension extends Twig_Extension
     public function getGlobals()
     {
         return [
-            'const' => $this->webapp->getLoader()->getVariables('_root'),
+            static::VAR_PREFIX => $this->loader->getVariables('_root'),
         ];
     }
 
