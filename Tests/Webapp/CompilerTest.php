@@ -71,7 +71,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
      */
     public function testRevision()
     {
-        file_put_contents('1', $this->dir . '/foofile');
+        file_put_contents($this->dir . '/foofile', '1');
         $obj = new Compiler([
             'resdir'  => $this->dir,
             'revpath' => $this->dir . '/foofile',
@@ -80,12 +80,16 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $ret = $obj->compile($loader);
         $s11 = $ret[ScriptLoader::ROOT_BLOCK][ScriptLoader::TYPE_JS];
         $s12 = $ret[ScriptLoader::ROOT_BLOCK][ScriptLoader::TYPE_CSS];
-        file_put_contents('2', $this->dir . '/foofile');
+        file_put_contents($this->dir . '/foofile', '2');
+        $obj = new Compiler([
+            'resdir'  => $this->dir,
+            'revpath' => $this->dir . '/foofile',
+        ]);
         $ret = $obj->compile($loader);
         $s21 = $ret[ScriptLoader::ROOT_BLOCK][ScriptLoader::TYPE_JS];
         $s22 = $ret[ScriptLoader::ROOT_BLOCK][ScriptLoader::TYPE_CSS];
-        $this->assertEquals($s11, $s21);
-        $this->assertEquals($s12, $s22);
+        $this->assertNotEquals($s11, $s21);
+        $this->assertNotEquals($s12, $s22);
     }
 
     /**
