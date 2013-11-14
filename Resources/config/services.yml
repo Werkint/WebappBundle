@@ -9,7 +9,7 @@ services:
             - %kernel.debug%
             - %appmode%
     werkint.webapp.compiler:
-        class: Werkint\Bundle\WebappBundle\Webapp\Compiler\Compiler
+        class: Werkint\Bundle\WebappBundle\Webapp\Compiler
         arguments:
             - %werkint_webapp%
             - %kernel.debug%
