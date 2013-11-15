@@ -6,7 +6,8 @@ namespace Werkint\Bundle\WebappBundle\Webapp;
  *
  * @author Bogdan Yurov <bogdan@yurov.me>
  */
-class Webapp
+class Webapp implements
+    WebappInterface
 {
     protected $loader;
 
@@ -20,7 +21,7 @@ class Webapp
     }
 
     /**
-     * @return ScriptLoader
+     * {@inheritdoc}
      */
     public function getLoader()
     {
@@ -28,7 +29,7 @@ class Webapp
     }
 
     /**
-     * @param string $name
+     * {@inheritdoc}
      */
     public function attachFile($name)
     {
@@ -36,7 +37,7 @@ class Webapp
     }
 
     /**
-     * @param string $url
+     * {@inheritdoc}
      */
     public function addImportCss($url)
     {
@@ -44,7 +45,7 @@ class Webapp
     }
 
     /**
-     * @param string $url
+     * {@inheritdoc}
      */
     public function addImportJs($url)
     {
@@ -52,8 +53,7 @@ class Webapp
     }
 
     /**
-     * @param string $name
-     * @param mixed  $value
+     * {@inheritdoc}
      */
     public function addVar($name, $value)
     {
@@ -61,7 +61,7 @@ class Webapp
     }
 
     /**
-     * @param bool $flag
+     * {@inheritdoc}
      */
     public function setIsSplit($flag)
     {
@@ -69,7 +69,7 @@ class Webapp
     }
 
     /**
-     * @param array $vars
+     * {@inheritdoc}
      */
     public function addVars(array $vars)
     {

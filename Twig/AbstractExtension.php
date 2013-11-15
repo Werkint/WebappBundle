@@ -37,10 +37,14 @@ abstract class AbstractExtension extends \Twig_Extension
 
     /**
      * @param string $name
+     * @throws \InvalidArgumentException
      * @return callable
      */
     public function getFilter($name)
     {
+        if (!isset($this->filters[$name])) {
+            throw new \InvalidArgumentException('Filter not found: ' . $name);
+        }
         return $this->filters[$name]->getCallable();
     }
 
@@ -71,10 +75,14 @@ abstract class AbstractExtension extends \Twig_Extension
 
     /**
      * @param string $name
+     * @throws \InvalidArgumentException
      * @return callable
      */
     public function getFunction($name)
     {
+        if (!isset($this->functions[$name])) {
+            throw new \InvalidArgumentException('Function not found: ' . $name);
+        }
         return $this->functions[$name]->getCallable();
     }
 

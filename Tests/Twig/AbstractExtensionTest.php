@@ -23,6 +23,25 @@ class AbstractExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('undefined', $this->ext->getName());
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testWrongFilter()
+    {
+        $this->ext->getFilter('foowrongfilter');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testWrongFunction()
+    {
+        $this->ext->getFilter('foowrongfilter');
+    }
+
+    /**
+     * @depends testWrongFilter
+     */
     public function testFilters()
     {
         $fn = function () {
@@ -40,6 +59,9 @@ class AbstractExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->ext->getFilters()['test2']->getSafe(new \Twig_Node()));
     }
 
+    /**
+     * @depends testWrongFunction
+     */
     public function testFunctions()
     {
         $fn = function () {
