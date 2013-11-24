@@ -41,12 +41,21 @@ class Compiler implements
     }
 
     /**
-     * @param string $data
+     * @param array $data
+     * @param bool  $isFiles
      * @return string
      */
-    protected function getHash($data)
+    protected function getHash(array $data, $isFiles = false)
     {
-        return substr(sha1(serialize($data)), 0, 10);
+        if ($isFiles) {
+            $hash = [];
+            foreach ($data as $file) {
+                $hash[] = $file . filemtime($file);
+            }
+            return $this->getHash($hash);
+        } else {
+            return substr(sha1(serialize($data)), 0, 10);
+        }
     }
 
     /**
@@ -81,11 +90,12 @@ class Compiler implements
             $filesJs = $loader->getFiles($block, ScriptLoader::TYPE_JS);
 
             // CSS
-            $name = $this->getHash($filesCss) . '.' . $varHash . $blockRev;
+            $name = $this->getHash($filesCss, true);
+            $name = $this->getHash([$name, $root]) . '.' . $varHash . $blockRev;
             $blocks[$block]['css'] = $name;
             $blockPath = $this->targetdir . '/' . $name;
             // Compile, if needed
-            if (!$this->isFresh($blockPath . '.css', $filesCss)) {
+            if (!file_exists($blockPath . '.css')) {
                 $data = $compilerStyle->compile($vars, $blockPath . '.css', $filesCss, $root);
                 file_put_contents($blockPath . '.scss', $data);
             }
@@ -95,35 +105,16 @@ class Compiler implements
             }
 
             // JS
-            $name = $this->getHash($filesJs) . '.' . $varHash . $blockRev;
+            $name = $this->getHash($filesJs, true) . '.' . $varHash . $blockRev;
             $blocks[$block]['js'] = $name;
             $blockPath = $this->targetdir . '/' . $name;
             // Compile, if needed
-            if (!$this->isFresh($blockPath . '.js', $filesJs)) {
+            if (!file_exists($blockPath . '.js')) {
                 $compilerScript->compile($vars, $block, $blockPath . '.js', $filesJs);
             }
         }
 
         return $blocks;
-    }
-
-    /**
-     * @param string $filepath
-     * @param array  $files
-     * @return bool
-     */
-    protected function isFresh($filepath, &$files)
-    {
-        if (!file_exists($filepath)) {
-            return false;
-        }
-        $mtime = filemtime($filepath);
-        foreach ($files as $file) {
-            if (filemtime($file) > $mtime) {
-                return false;
-            }
-        }
-        return true;
     }
 
     // -- CacheClearerInterface ---------------------------------------

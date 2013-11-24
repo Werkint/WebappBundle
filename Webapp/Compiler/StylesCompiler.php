@@ -65,12 +65,12 @@ class StylesCompiler
         $hr = null;
         if ($prefixData) {
             $hr = '.HR' . sha1(microtime(true) . $filepath);
-            $data = $prefixData . $hr . '{ display: none; }' . $data;
+            $data = $prefixData . $hr . '{ display: none; };' . $data;
         }
 
         $data = $this->processor->process($data);
         if ($prefixData) {
-            $data = substr($data, 0, strpos($data, $hr));
+            $data = substr($data, strpos($data, $hr));
         }
         file_put_contents($filepath, $data);
 
