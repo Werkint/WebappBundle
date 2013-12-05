@@ -42,11 +42,13 @@ class AjaxFilter
         $request = $event->getRequest();
         $route = $request->get('_route');
         $route = $this->router->getRouteCollection()->get($route);
-        $reqs = $route->getRequirements();
+        if ($route) {
+            $reqs = $route->getRequirements();
 
-        if (isset($reqs[Xmlhttp::KEYNAME])) {
-            if ($reqs[Xmlhttp::KEYNAME] != $request->headers->get('X-Requested-With')) {
-                throw new HttpException(static::ERROR_CODE, 'Wrong request');
+            if (isset($reqs[Xmlhttp::KEYNAME])) {
+                if ($reqs[Xmlhttp::KEYNAME] != $request->headers->get('X-Requested-With')) {
+                    throw new HttpException(static::ERROR_CODE, 'Wrong request');
+                }
             }
         }
     }
