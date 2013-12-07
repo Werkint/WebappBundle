@@ -30,6 +30,10 @@ class WerkintWebappExtension extends Extension
             $this->getAlias(),
             $config
         );
+        $container->setParameter(
+            $this->getAlias() . '.browsers',
+            $config['browsers']
+        );
         $loader = new YamlFileLoader(
             $container,
             new FileLocator(__DIR__ . '/../Resources/config')

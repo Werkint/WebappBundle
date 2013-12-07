@@ -15,6 +15,12 @@ services:
             - %kernel.debug%
         tags:
             - { name: kernel.cache_clearer, priority: 0 }
+    werkint.webapp.browsercheck:
+        class: Werkint\Bundle\WebappBundle\Webapp\BrowserCheck
+        scope: request
+        arguments:
+            - @request
+            - %werkint_webapp.browsers%
 
     werkint.webapp.listener.template:
         class: Werkint\Bundle\WebappBundle\EventListener\Template
@@ -31,6 +37,14 @@ services:
             - @werkint.webapp.scriptloader
             - @werkint.webapp.compiler
             - %werkint_webapp%
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+    werkint.webapp.listener.browserwarninjector:
+        class: Werkint\Bundle\WebappBundle\EventListener\BrowserWarnInjector
+        scope: request
+        arguments:
+            - @templating.engine.twig
+            - @werkint.webapp.browsercheck
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
     werkint.webapp.listener.ajaxredirect:
