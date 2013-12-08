@@ -76,3 +76,9 @@ services:
             - @event_dispatcher
         tags:
             -  { name: twig.extension }
+    # AJAX login exception
+    werkint.webapp.listener.authhandler:
+        class: Werkint\Bundle\WebappBundle\EventListener\AuthHandler
+        arguments:
+            - @form.csrf_provider
+            - @translator
