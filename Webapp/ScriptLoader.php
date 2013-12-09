@@ -6,12 +6,9 @@ namespace Werkint\Bundle\WebappBundle\Webapp;
  *
  * @author Bogdan Yurov <bogdan@yurov.me>
  */
-class ScriptLoader
+class ScriptLoader implements
+    ScriptLoaderInterface
 {
-    const TYPE_JS = 'js';
-    const TYPE_CSS = 'css';
-    const ROOT_BLOCK = '_root';
-
     protected $appmode;
     protected $isDebug;
 
@@ -33,7 +30,7 @@ class ScriptLoader
     protected $isSplit;
 
     /**
-     * @param bool $isSplit
+     * {@inheritdoc}
      */
     public function setIsSplit($isSplit)
     {
@@ -43,12 +40,7 @@ class ScriptLoader
     protected $jsList = [];
 
     /**
-     * Attaches one script
-     *
-     * @param string $path
-     * @param bool   $ignore_check
-     * @throws \InvalidArgumentException
-     * @return bool
+     * {@inheritdoc}
      */
     public function attachFile($path, $ignore_check = false)
     {
@@ -87,11 +79,7 @@ class ScriptLoader
     }
 
     /**
-     * Attaches related to template files
-     *
-     * @param string $path
-     * @param bool   $ignore_check
-     * @throws \InvalidArgumentException
+     * {@inheritdoc}
      */
     public function attachViewRelated($path, $ignore_check = false)
     {
@@ -111,8 +99,7 @@ class ScriptLoader
     }
 
     /**
-     * @param $name
-     * @param $value
+     * {@inheritdoc}
      */
     public function addVar($name, $value)
     {
@@ -120,9 +107,7 @@ class ScriptLoader
     }
 
     /**
-     * @param string $url
-     * @param string $type
-     * @throws \InvalidArgumentException
+     * {@inheritdoc}
      */
     public function addImport($url, $type)
     {
@@ -135,8 +120,7 @@ class ScriptLoader
     // -- Getters ---------------------------------------
 
     /**
-     * @param string|null $block
-     * @return array
+     * {@inheritdoc}
      */
     public function getVariables($block = null)
     {
@@ -144,9 +128,7 @@ class ScriptLoader
     }
 
     /**
-     * @param string|null $block
-     * @param string      $ext
-     * @return array
+     * {@inheritdoc}
      */
     public function getFiles($block, $ext)
     {
@@ -168,8 +150,7 @@ class ScriptLoader
     }
 
     /**
-     * @param string|null $block
-     * @return array[]
+     * {@inheritdoc}
      */
     public function getImports($block = null)
     {
@@ -195,9 +176,7 @@ class ScriptLoader
     }
 
     /**
-     * @param string      $name
-     * @param string|null $block
-     * @return $this
+     * {@inheritdoc}
      */
     public function addPackage($name, $block = null)
     {
@@ -206,9 +185,7 @@ class ScriptLoader
     }
 
     /**
-     * @param string      $name
-     * @param string|null $block
-     * @return bool
+     * {@inheritdoc}
      */
     public function isPackageLoaded($name, $block = null)
     {
@@ -216,8 +193,7 @@ class ScriptLoader
     }
 
     /**
-     * @param string|null $block
-     * @return array
+     * {@inheritdoc}
      */
     public function getPackages($block = null)
     {
@@ -243,10 +219,11 @@ class ScriptLoader
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getLog()
     {
+        // TODO: PSR-3
         return $this->log;
     }
 
@@ -256,8 +233,7 @@ class ScriptLoader
     protected $blocksStack = [];
 
     /**
-     * @param string $name
-     * @return $this
+     * {@inheritdoc}
      */
     public function blockStart($name)
     {
@@ -269,7 +245,7 @@ class ScriptLoader
     }
 
     /**
-     * @return $this
+     * {@inheritdoc}
      */
     public function blockEnd()
     {
@@ -283,7 +259,7 @@ class ScriptLoader
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getBlocks()
     {
@@ -291,8 +267,7 @@ class ScriptLoader
     }
 
     /**
-     * @param string $name
-     * @return \array[]
+     * {@inheritdoc}
      */
     public function createBlock($name)
     {

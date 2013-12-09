@@ -2,7 +2,7 @@
 namespace Werkint\Bundle\WebappBundle\Twig\Extension;
 
 use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * TemplateEvent.
@@ -14,10 +14,10 @@ class TemplateEvent extends Event
     protected $dispatcher;
 
     /**
-     * @param EventDispatcher $dispatcher
+     * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(
-        EventDispatcher $dispatcher
+        EventDispatcherInterface $dispatcher
     ) {
         $this->dispatcher = $dispatcher;
     }

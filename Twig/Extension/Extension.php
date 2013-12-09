@@ -2,7 +2,8 @@
 namespace Werkint\Bundle\WebappBundle\Twig\Extension;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Werkint\Bundle\WebappBundle\Webapp\ScriptLoaderInterface;
 
 /**
  * Extension.
@@ -18,12 +19,12 @@ class Extension extends \Twig_Extension
     public $loader;
 
     /**
-     * @param ScriptLoader    $loader
-     * @param EventDispatcher $dispatcher
+     * @param ScriptLoaderInterface    $loader
+     * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(
-        ScriptLoader $loader,
-        EventDispatcher $dispatcher
+        ScriptLoaderInterface $loader,
+        EventDispatcherInterface $dispatcher
     ) {
         $this->loader = $loader;
         $this->dispatcher = $dispatcher;
@@ -45,7 +46,7 @@ class Extension extends \Twig_Extension
     public function getGlobals()
     {
         return [
-            static::VAR_PREFIX => $this->loader->getVariables(ScriptLoader::ROOT_BLOCK),
+            static::VAR_PREFIX => $this->loader->getVariables(ScriptLoaderInterface::ROOT_BLOCK),
         ];
     }
 

@@ -7,7 +7,7 @@ use Werkint\Bundle\WebappBundle\Webapp\Compiler\ScriptsCompiler;
 use Werkint\Bundle\WebappBundle\Webapp\Compiler\StylesCompiler;
 use Werkint\Bundle\WebappBundle\Webapp\Processor\ScriptsProcessor;
 use Werkint\Bundle\WebappBundle\Webapp\Processor\StylesProcessor;
-use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
+use Werkint\Bundle\WebappBundle\Webapp\ScriptLoaderInterface;
 
 /**
  * Compiler.
@@ -59,11 +59,11 @@ class Compiler implements
     }
 
     /**
-     * @param ScriptLoader $loader
+     * @param ScriptLoaderInterface $loader
      * @return array
      */
     public function compile(
-        ScriptLoader $loader
+        ScriptLoaderInterface $loader
     ) {
         $blocks = [];
         $root = null;

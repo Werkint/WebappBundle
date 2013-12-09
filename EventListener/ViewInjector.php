@@ -5,7 +5,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Werkint\Bundle\WebappBundle\Webapp\Compiler;
-use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
+use Werkint\Bundle\WebappBundle\Webapp\ScriptLoaderInterface;
 
 /**
  * ViewInjector.
@@ -25,14 +25,14 @@ class ViewInjector
     protected $parameters;
 
     /**
-     * @param EngineInterface $templating
-     * @param ScriptLoader    $loader
-     * @param Compiler        $compiler
-     * @param array           $parameters
+     * @param EngineInterface       $templating
+     * @param ScriptLoaderInterface $loader
+     * @param Compiler              $compiler
+     * @param array                 $parameters
      */
     public function __construct(
         EngineInterface $templating,
-        ScriptLoader $loader,
+        ScriptLoaderInterface $loader,
         Compiler $compiler,
         array $parameters
     ) {

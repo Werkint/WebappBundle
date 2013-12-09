@@ -9,10 +9,10 @@
         }
     ],
     "require":     {
-        "symfony/framework-bundle":      "*",
+        "symfony/framework-bundle":      "~2.3",
         "sensio/framework-extra-bundle": "*",
         "symfony/twig-bundle":           "*",
-        "twig/twig":                     "*",
+        "twig/twig":                     "~1.14",
 
         "werkint/phpsass":   "*",
         "werkint/jsmin":     "*",

@@ -1,7 +1,6 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\EventListener;
 
-use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request as BaseRequest;
@@ -10,6 +9,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * AuthHandler.
@@ -25,11 +25,11 @@ class AuthHandler implements
 
     /**
      * @param CsrfProviderInterface $crsfProvider
-     * @param Translator            $translator
+     * @param TranslatorInterface   $translator
      */
     public function __construct(
         CsrfProviderInterface $crsfProvider,
-        Translator $translator
+        TranslatorInterface $translator
     ) {
         $this->crsfProvider = $crsfProvider;
         $this->translator = $translator;

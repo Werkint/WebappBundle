@@ -4,7 +4,7 @@ namespace Werkint\Bundle\WebappBundle\EventListener;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
+use Werkint\Bundle\WebappBundle\Webapp\ScriptLoaderInterface;
 
 /**
  * Request.
@@ -21,10 +21,10 @@ class Request
     protected $loader;
 
     /**
-     * @param ScriptLoader $loader
+     * @param ScriptLoaderInterface $loader
      */
     public function __construct(
-        ScriptLoader $loader
+        ScriptLoaderInterface $loader
     ) {
         $this->loader = $loader;
     }

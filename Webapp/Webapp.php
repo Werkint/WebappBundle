@@ -12,10 +12,10 @@ class Webapp implements
     protected $loader;
 
     /**
-     * @param ScriptLoader $loader
+     * @param ScriptLoaderInterface $loader
      */
     public function __construct(
-        ScriptLoader $loader
+        ScriptLoaderInterface $loader
     ) {
         $this->loader = $loader;
     }
