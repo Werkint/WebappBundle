@@ -9,7 +9,7 @@
         }
     ],
     "require":     {
-        "symfony/framework-bundle":      "2.3.*",
+        "symfony/framework-bundle":      "*",
         "sensio/framework-extra-bundle": "*",
         "symfony/twig-bundle":           "*",
         "twig/twig":                     "*",

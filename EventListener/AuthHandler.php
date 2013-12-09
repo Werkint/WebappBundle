@@ -46,6 +46,7 @@ class AuthHandler implements
             return new Response(json_encode([
                 'isError' => false,
                 'message' => '',
+                // TODO: redirect by firewall settings
             ]));
         }
         return new RedirectResponse('/');
