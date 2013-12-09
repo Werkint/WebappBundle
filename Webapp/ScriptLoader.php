@@ -40,6 +40,8 @@ class ScriptLoader
         $this->isSplit = (bool)$isSplit;
     }
 
+    protected $jsList = [];
+
     /**
      * Attaches one script
      *
@@ -56,6 +58,14 @@ class ScriptLoader
             }
         } else {
             $path = realpath($path);
+
+            if (preg_match('!\.js$!', $path)) {
+                if (in_array($path, $this->jsList)) {
+                    return false;
+                }
+                $this->jsList[] = $path;
+            }
+
             $this->log('file in [' . $this->blocksStack[0] . ']', $path);
             $this->getCurrentBlock()['files'][] = $path;
         }
