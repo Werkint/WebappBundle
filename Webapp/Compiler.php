@@ -18,22 +18,28 @@ class Compiler implements
     CacheClearerInterface
 {
     protected $targetdir;
+    protected $scriptsdir;
+    protected $project;
     protected $isDebug;
     protected $strictMode = false;
     protected $revision;
 
     /**
-     * @param string $params
-     * @param bool   $isDebug
+     * @param array $params
+     * @param bool  $isDebug
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        $params,
+        array $params,
         $isDebug = false
     ) {
         $this->targetdir = $params['resdir'];
+        $this->project = $params['project'];
+        $this->scriptsdir = $params['scriptsdir'];
         if (!file_exists($this->targetdir)) {
-            throw new \InvalidArgumentException('Directory not found: ' . $this->targetdir);
+            throw new \InvalidArgumentException(
+                'Directory not found: ' . $this->targetdir
+            );
         }
         $this->isDebug = $isDebug;
         $this->revision = substr(crc32(file_exists($params['revpath']) ?
@@ -71,16 +77,21 @@ class Compiler implements
         // compilers
         $compilerScript = new ScriptsCompiler(
             new ScriptsProcessor($this->isDebug),
+            $this->project,
             $this->strictMode
         );
         $compilerStyle = new StylesCompiler(
-            new StylesProcessor($this->isDebug)
+            new StylesProcessor($this->isDebug),
+            $this->project
         );
 
         // TODO: caching
+        // TODO: tags injectioned compilers
+        $variables = [];
         foreach ($loader->getBlocks() as $block) {
             $blockRev = '_r' . $this->revision . '_' . $block;
             $vars = $loader->getVariables($block);
+            $variables += $vars;
             // TODO: variable hash for css/js different
             $varHash = substr($this->getHash($vars), 0, 5);
             $blocks[$block]['imports'] = $loader->getImports($block);
@@ -96,7 +107,7 @@ class Compiler implements
             $blockPath = $this->targetdir . '/' . $name;
             // Compile, if needed
             if (!file_exists($blockPath . '.css')) {
-                $data = $compilerStyle->compile($vars, $blockPath . '.css', $filesCss, $root);
+                $data = $compilerStyle->compile($variables, $blockPath . '.css', $filesCss, $root);
                 file_put_contents($blockPath . '.scss', $data);
             }
 
@@ -113,6 +124,12 @@ class Compiler implements
                 $compilerScript->compile($vars, $block, $blockPath . '.js', $filesJs);
             }
         }
+
+        // Main webapp.js script
+        copy(
+            $this->scriptsdir . '/webapp.js',
+            $this->targetdir . '/webapp.js'
+        );
 
         return $blocks;
     }

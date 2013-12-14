@@ -55,9 +55,15 @@ class Webapp implements
     /**
      * {@inheritdoc}
      */
-    public function addVar($name, $value)
+    public function addVar($name, $value, $isRoot = false)
     {
+        if ($isRoot) {
+            $this->loader->blockStart('_root');
+        }
         $this->loader->addVar($name, $value);
+        if ($isRoot) {
+            $this->loader->blockEnd();
+        }
     }
 
     /**

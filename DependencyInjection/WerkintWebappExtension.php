@@ -26,6 +26,7 @@ class WerkintWebappExtension extends Extension
             new Configuration($this->getAlias()),
             $configs
         );
+        $config['scriptsdir'] = __DIR__ . '/../Resources/scripts';
         $container->setParameter(
             $this->getAlias(),
             $config

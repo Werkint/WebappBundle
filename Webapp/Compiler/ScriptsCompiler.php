@@ -11,21 +11,25 @@ use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
  */
 class ScriptsCompiler
 {
-    const VAR_PREFIX = 'CONST';
+    const VAR_PREFIX = '$webapp';
     const STRICT_MODE = '"use strict"';
 
     protected $processor;
+    protected $project;
     protected $strictMode;
 
     /**
      * @param DefaultProcessor $processor
+     * @param string           $project
      * @param bool             $strictMode
      */
     public function __construct(
         DefaultProcessor $processor,
+        $project,
         $strictMode = false
     ) {
         $this->processor = $processor;
+        $this->project = $project;
         $this->strictMode = $strictMode;
     }
 
@@ -43,27 +47,35 @@ class ScriptsCompiler
         $filepath,
         array $files
     ) {
+        // TODO: better way of compiling
         $data = [];
+        $data[] = 'void function(window){';
         if ($this->strictMode) {
             $data[] = static::STRICT_MODE;
         }
+        $data[] = 'var defjs = window.define';
+        $data[] = 'window.define = null';
 
-        $prefix = $block && $block != ScriptLoader::ROOT_BLOCK ? $block : '';
-        if ($prefix) {
-            $data[] = static::VAR_PREFIX . '.' . $prefix . '={}';
-            $prefix .= '.';
+        if ($block == ScriptLoader::ROOT_BLOCK) {
+            $data[] = static::VAR_PREFIX . '=' . json_encode([
+                    'var' => [],
+                ]);
         }
-
         foreach ($vars as $name => $value) {
-            $value = json_encode($value);
-            $data[] = static::VAR_PREFIX . '.' . $prefix . str_replace('-', '_', $name) . '=' . $value;
+            $name = str_replace('-', '_', $name);
+            $prefix = explode('_', $name)[0];
+            $prefix = $prefix == 'webapp' ? '' : 'var.';
+            $data[] = static::VAR_PREFIX . '.' . $prefix . $name . '=' . json_encode($value);
         }
+
         foreach ($files as $file) {
             if (!file_exists($file)) {
                 throw new \InvalidArgumentException('File not found: ' . $file);
             }
             $data[] = file_get_contents($file);
         }
+        $data[] = 'window.define = defjs';
+        $data[] = '}(window)';
         $data = join(";\n", $data);
 
         $data = $this->processor->process($data);

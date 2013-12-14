@@ -40,7 +40,7 @@ class Request
         }
 
         $request = $event->getRequest();
-        $list = ['jquery'];
+        $list = [];
 
         $listPjax = $request->server->get('HTTP_' . static::HEADER_PACKAGES);
         if ($listPjax) {

@@ -10,17 +10,19 @@ use Werkint\Bundle\WebappBundle\Webapp\Processor\DefaultProcessor;
  */
 class StylesCompiler
 {
-    const VAR_PREFIX = 'const';
-
     protected $processor;
+    protected $project;
 
     /**
      * @param DefaultProcessor $processor
+     * @param string           $project
      */
     public function __construct(
-        DefaultProcessor $processor
+        DefaultProcessor $processor,
+        $project
     ) {
         $this->processor = $processor;
+        $this->project = $project;
     }
 
     /**
@@ -38,20 +40,24 @@ class StylesCompiler
         $prefixData = null
     ) {
         $data = [];
-        $updVars = function ($vars, $prefix) use (&$data, &$updVars) {
+        $updVars = function ($vars, $project) use (&$data, &$updVars) {
             foreach ($vars as $name => $value) {
-                $pr = $prefix . '-' . str_replace('_', '-', $name);
+                $name = str_replace('_', '-', $name);
+                $top = explode('-', $name)[0];
+                if ($top != 'webapp') {
+                    $name = $project . '-' . $name;
+                }
                 if (is_array($value)) {
-                    $updVars($value, $pr);
+                    $updVars($value, $name);
                 }
                 if (!is_scalar($value)) {
-                    // Compiling only possible variables
+                    // Compilation only possible for variables
                     continue;
                 }
-                $data[] = '$' . $pr . ':"' . str_replace('"', '\\"', $value) . '";';
+                $data[] = '$' . $name . ':"' . str_replace('"', '\\"', $value) . '";';
             }
         };
-        $updVars($vars, static::VAR_PREFIX);
+        $updVars($vars, $this->project);
         foreach ($files as $file) {
             if (!file_exists($file)) {
                 throw new \InvalidArgumentException('File not found: ' . $file);

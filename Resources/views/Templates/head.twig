@@ -1,5 +1,4 @@
-<script src="{{ paths.jquery }}"></script>
-<script src="{{ paths.webapp }}"></script>
+<script src="{{ respath }}/webapp.js"></script>
 {% for class, block in blocks %}
   {% for import in block.imports %}
     {% if import[1] == 'css' %}

@@ -31,8 +31,10 @@ interface WebappInterface
     /**
      * @param string $name
      * @param mixed  $value
+     * @param bool   $isRoot
+     * @return
      */
-    public function addVar($name, $value);
+    public function addVar($name, $value, $isRoot = false);
 
     /**
      * @param bool $flag
