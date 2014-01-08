@@ -57,14 +57,17 @@ class ScriptsCompiler
         $data[] = 'window.define = null';
 
         if ($block == ScriptLoader::ROOT_BLOCK) {
-            $data[] = static::VAR_PREFIX . '=' . json_encode([
-                    'var' => [],
-                ]);
+            $data[] = static::VAR_PREFIX . '={"var":{}}';
         }
         foreach ($vars as $name => $value) {
             $name = str_replace('-', '_', $name);
             $prefix = explode('_', $name)[0];
-            $prefix = $prefix == 'webapp' ? '' : 'var.';
+            if ($prefix == 'webapp') {
+                $name = substr($name, strlen($prefix) + 1);
+                $prefix = '';
+            } else {
+                $prefix = 'var.';
+            }
             $data[] = static::VAR_PREFIX . '.' . $prefix . $name . '=' . json_encode($value);
         }
 
