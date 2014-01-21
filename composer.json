@@ -23,10 +23,9 @@
 
         "php": ">=5.4"
     },
-    "target-dir":  "Werkint/Bundle/WebappBundle",
     "autoload":    {
-        "psr-0": {
-            "Werkint\\Bundle\\WebappBundle": ""
+        "psr-4": {
+            "Werkint\\Bundle\\WebappBundle\\": "src/"
         }
     },
     "extra":       {
