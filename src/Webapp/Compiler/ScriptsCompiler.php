@@ -53,7 +53,7 @@ class ScriptsCompiler
         if ($this->strictMode) {
             $data[] = static::STRICT_MODE;
         }
-        $data[] = 'var defjs = window.define';
+        $data[] = 'var definejs = window.define?window.define:function(){}';
         $data[] = 'window.define = null';
 
         if ($block == ScriptLoader::ROOT_BLOCK) {
@@ -77,7 +77,7 @@ class ScriptsCompiler
             }
             $data[] = file_get_contents($file);
         }
-        $data[] = 'window.define = defjs';
+        $data[] = 'window.define = definejs';
         $data[] = '}(window)';
         $data = join(";\n", $data);
 
