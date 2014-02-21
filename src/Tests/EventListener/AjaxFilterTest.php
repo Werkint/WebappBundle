@@ -41,7 +41,7 @@ class AjaxFilterTest extends \PHPUnit_Framework_TestCase
         $req = $this->listener;
 
         $event = $this->getEvent();
-        $this->assertFalse($req->onKernelController($event));
+        $this->assertFalse($req->onRequest($event));
     }
 
     /**
@@ -52,7 +52,7 @@ class AjaxFilterTest extends \PHPUnit_Framework_TestCase
         $req = $this->listener;
 
         $event = $this->getEvent(true, 'fooroute2');
-        $this->assertNull($req->onKernelController($event));
+        $this->assertNull($req->onRequest($event));
     }
 
     /**
@@ -63,7 +63,7 @@ class AjaxFilterTest extends \PHPUnit_Framework_TestCase
         $req = $this->listener;
 
         $event = $this->getEvent(true, 'fooroute1');
-        $this->assertNull($req->onKernelController($event));
+        $this->assertNull($req->onRequest($event));
     }
 
     /**
@@ -74,7 +74,7 @@ class AjaxFilterTest extends \PHPUnit_Framework_TestCase
     protected function getEvent($real = false, $route = null)
     {
         $event = $this->getMock(
-            'Symfony\Component\HttpKernel\Event\FilterControllerEvent',
+            'Symfony\Component\HttpKernel\Event\GetResponseEvent',
             [], [], '', false
         );
         $req = new BaseRequest([

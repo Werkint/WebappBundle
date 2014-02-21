@@ -1,8 +1,7 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\EventListener;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Router;
@@ -28,16 +27,19 @@ class AjaxFilter
         $this->router = $router;
     }
 
+    protected $init = false;
+
     /**
-     * @param FilterControllerEvent $event
+     * @param GetResponseEvent $event
      * @return bool
      * @throws HttpException
      */
-    public function onKernelController(FilterControllerEvent $event)
+    public function onRequest(GetResponseEvent $event)
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-            return false;
+        if ($this->init) {
+            return;
         }
+        $this->init = true;
 
         $request = $event->getRequest();
         $route = $request->get('_route');

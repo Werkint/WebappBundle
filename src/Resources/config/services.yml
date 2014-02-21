@@ -68,7 +68,7 @@ services:
         arguments:
             - @router
         tags:
-            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+            - { name: kernel.event_listener, event: kernel.request, method: onRequest }
     werkint.webapp.listener.twigextension:
         class: Werkint\Bundle\WebappBundle\Twig\Extension\Extension
         arguments:
