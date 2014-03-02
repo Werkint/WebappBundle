@@ -37,9 +37,11 @@ class Compiler implements
         $this->project = $params['project'];
         $this->scriptsdir = $params['scriptsdir'];
         if (!file_exists($this->targetdir)) {
-            throw new \InvalidArgumentException(
-                'Directory not found: ' . $this->targetdir
-            );
+            if(!mkdir($this->targetdir)){
+                throw new \InvalidArgumentException(
+                    'Directory not found: ' . $this->targetdir
+                );
+            }
         }
         $this->isDebug = $isDebug;
         $this->revision = substr(crc32(file_exists($params['revpath']) ?
