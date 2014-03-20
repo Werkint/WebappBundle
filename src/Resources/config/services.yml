@@ -82,3 +82,14 @@ services:
         arguments:
             - @form.csrf_provider
             - @translator
+
+    # Overrides
+    werkint.webapp.templatename.templateguesser:
+        class: Werkint\Bundle\WebappBundle\TemplateName\TemplateGuesser
+        parent: sensio_framework_extra.view.guesser
+    werkint.webapp.templatename.nameparser:
+        class: Werkint\Bundle\WebappBundle\TemplateName\NameParser
+        parent: templating.name_parser
+    werkint.webapp.twig.twigloader:
+        class: Werkint\Bundle\WebappBundle\Twig\Extension\TwigLoader
+        parent: twig.loader.filesystem
