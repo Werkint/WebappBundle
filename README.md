@@ -6,14 +6,12 @@ WebappBundle
 Scripts = js/scss files
 
 Briefly, it allows:
-* Using short names for templates (template.html.twig -> template.twig).
 * Autoloading of Scripts, based on the template name (with "template.twig" files "template.js" and "template.scss" are loaded).
 * Passing of variables directly to Scripts (yes, to SCSS also). Even arrays and objects are supported.
 * Processing of Scripts: they are minimized and merged into single files. Caching helps to avoid high load.
 * Clever browser cache: you can use a tag to differentiate cached files (for example, part of GIT hash). While assetic force you to set this tag manually, Webapp handle it automtically.
 * Beauty of SCSS mixins: the files are merged before processing, so you can define variables, mixins, etc somethere and use later.
 * Repository of Scripts: you can create packages of Scripts, defining dependencies. They are automatically updated on composer.phar update.
-* Handle exceptions with ajax, so you may see short message when developing frontend
 
 ### Configuring the bundle
 
@@ -25,24 +23,22 @@ werkint_webapp:
     resdir:   %kernel.root_dir%/cache/scripts # directory for cached Scripts
     revpath:  %kernel.root_dir%/cache/revision # tag file (for browser cache)
     scripts:  %kernel.root_dir%/scripts # directory with downloaded packages
-# Hacks for short file names "template.twig"
-parameters:
-    templating.name_parser.class: Werkint\Bundle\WebappBundle\Hacks\NameParser
-    sensio_framework_extra.view.guesser.class: Werkint\Bundle\WebappBundle\Hacks\TemplateGuesser
-    twig.loader.class: Werkint\Bundle\WebappBundle\Hacks\TwigLoader
 ```
 
-Next, we should set app mode (any keyword - def, normal, us, etc).
+### Connecting SASS ruby gem
+Add to .bashrc:
+```
+/home/your_name/.gems
+```
 
-```php
-$container->setParameter(
-    'appmode', 'def'
-);
+Than:
+```bash
+gem install compass
 ```
 
 ### Configuring cached  files tagging
 
-For automatic taggin there should be a file with current repository tag. It is convenient to change this file in a git hook, and store there commit hash (symlink or source this file in .git/hooks):
+For automatic tagging there should be a file with current repository tag. It is convenient to change this file in a git hook, and store there commit hash (symlink or source this file in .git/hooks):
 ```bash
 #!/bin/bash
 DIR_CACHE=app/cache

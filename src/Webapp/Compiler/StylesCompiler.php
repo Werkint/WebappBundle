@@ -2,6 +2,7 @@
 namespace Werkint\Bundle\WebappBundle\Webapp\Compiler;
 
 use Werkint\Bundle\WebappBundle\Webapp\Processor\DefaultProcessor;
+use Werkint\Bundle\WebappBundle\Webapp\Processor\StylesProcessor;
 
 /**
  * StylesCompiler.
@@ -11,17 +12,22 @@ use Werkint\Bundle\WebappBundle\Webapp\Processor\DefaultProcessor;
 class StylesCompiler
 {
     protected $processor;
+    protected $gemPath;
     protected $project;
 
     /**
      * @param DefaultProcessor $processor
+     * @param string           $gemPath
      * @param string           $project
      */
     public function __construct(
         DefaultProcessor $processor,
+        $gemPath,
         $project
     ) {
+        /** @var StylesProcessor $processor */
         $this->processor = $processor;
+        $this->gemPath = $gemPath;
         $this->project = $project;
     }
 
@@ -39,7 +45,9 @@ class StylesCompiler
         array $files,
         $prefixData = null
     ) {
-        $data = [];
+        $data = [
+            '@charset "utf-8";',
+        ];
         $updVars = function ($vars, $project) use (&$data, &$updVars) {
             foreach ($vars as $name => $value) {
                 $name = str_replace('_', '-', $name);
@@ -74,6 +82,7 @@ class StylesCompiler
             $data = $prefixData . $hr . '{ display: none; };' . $data;
         }
 
+        $this->processor->setGemPath($this->gemPath);
         $data = $this->processor->process($data);
         if ($prefixData) {
             $data = substr($data, strpos($data, $hr));

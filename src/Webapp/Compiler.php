@@ -23,21 +23,25 @@ class Compiler implements
     protected $isDebug;
     protected $strictMode = false;
     protected $revision;
+    protected $gemPath;
 
     /**
-     * @param array $params
-     * @param bool  $isDebug
+     * @param array  $params
+     * @param bool   $isDebug
+     * @param string $gemPath
      * @throws \InvalidArgumentException
      */
     public function __construct(
         array $params,
-        $isDebug = false
+        $isDebug = false,
+        $gemPath
     ) {
+        $this->gemPath = $gemPath;
         $this->targetdir = $params['resdir'];
         $this->project = $params['project'];
         $this->scriptsdir = $params['scriptsdir'];
         if (!file_exists($this->targetdir)) {
-            if(!mkdir($this->targetdir)){
+            if (!mkdir($this->targetdir)) {
                 throw new \InvalidArgumentException(
                     'Directory not found: ' . $this->targetdir
                 );
@@ -84,6 +88,7 @@ class Compiler implements
         );
         $compilerStyle = new StylesCompiler(
             new StylesProcessor($this->isDebug),
+            $this->gemPath,
             $this->project
         );
 
