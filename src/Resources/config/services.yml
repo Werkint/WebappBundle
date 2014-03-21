@@ -47,28 +47,12 @@ services:
             - @werkint.webapp.browsercheck
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
-    werkint.webapp.listener.ajaxredirect:
-        class: Werkint\Bundle\WebappBundle\EventListener\AjaxRedirect
-        tags:
-            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
     werkint.webapp.listener.request:
         class: Werkint\Bundle\WebappBundle\EventListener\Request
         arguments:
             - @werkint.webapp.scriptloader
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onRequest, priority: -10 }
-    werkint.webapp.listener.ajaxexception:
-        class: Werkint\Bundle\WebappBundle\EventListener\AjaxException
-        arguments:
-            - %kernel.debug%
-        tags:
-            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
-    werkint.webapp.listener.ajaxfilter:
-        class: Werkint\Bundle\WebappBundle\EventListener\AjaxFilter
-        arguments:
-            - @router
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onRequest }
     werkint.webapp.listener.twigextension:
         class: Werkint\Bundle\WebappBundle\Twig\Extension\Extension
         arguments:
@@ -76,12 +60,6 @@ services:
             - @event_dispatcher
         tags:
             -  { name: twig.extension }
-    # AJAX login exception
-    werkint.webapp.listener.authhandler:
-        class: Werkint\Bundle\WebappBundle\EventListener\AuthHandler
-        arguments:
-            - @form.csrf_provider
-            - @translator
 
     # Overrides
     werkint.webapp.templatename.templateguesser:
