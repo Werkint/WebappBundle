@@ -19,6 +19,12 @@ interface WebappInterface
     public function attachFile($name);
 
     /**
+     * @param string $name
+     * @param string $ext
+     */
+    public function attachByTwigAlias($name, $ext);
+
+    /**
      * @param string $url
      */
     public function addImportCss($url);

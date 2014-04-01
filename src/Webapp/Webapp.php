@@ -1,6 +1,9 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp;
 
+use Symfony\Component\Templating\Loader\LoaderInterface;
+use Symfony\Component\Templating\TemplateNameParserInterface;
+
 /**
  * Webapp.
  *
@@ -10,14 +13,22 @@ class Webapp implements
     WebappInterface
 {
     protected $loader;
+    protected $nameParser;
+    protected $nameLoader;
 
     /**
-     * @param ScriptLoaderInterface $loader
+     * @param ScriptLoaderInterface       $loader
+     * @param TemplateNameParserInterface $nameParser
+     * @param LoaderInterface $nameLoader
      */
     public function __construct(
-        ScriptLoaderInterface $loader
+        ScriptLoaderInterface $loader,
+        TemplateNameParserInterface $nameParser,
+    LoaderInterface $nameLoader
     ) {
         $this->loader = $loader;
+        $this->nameParser = $nameParser;
+        $this->nameLoader = $nameLoader;
     }
 
     /**
@@ -26,6 +37,19 @@ class Webapp implements
     public function getLoader()
     {
         return $this->loader;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attachByTwigAlias($name, $ext)
+    {
+        $template = $this->nameParser->parse($name);
+        $name = $this->nameLoader->load($template);
+        $name = explode('.', $name);
+        array_pop($name);
+        $name[] = $ext;
+        $this->loader->attachFile(join('.', $name));
     }
 
     /**

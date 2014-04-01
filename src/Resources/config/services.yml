@@ -3,6 +3,8 @@ services:
         class: Werkint\Bundle\WebappBundle\Webapp\Webapp
         arguments:
             - @werkint.webapp.scriptloader
+            - @templating.name_parser
+            - @templating.loader
     werkint.webapp.scriptloader:
         class: Werkint\Bundle\WebappBundle\Webapp\ScriptLoader
         arguments:
