@@ -25,17 +25,6 @@ werkint_webapp:
     scripts:  %kernel.root_dir%/scripts # directory with downloaded packages
 ```
 
-### Connecting SASS ruby gem
-Add to .bashrc:
-```
-/home/your_name/.gems
-```
-
-Than:
-```bash
-gem install compass
-```
-
 ### Configuring cached  files tagging
 
 For automatic tagging there should be a file with current repository tag. It is convenient to change this file in a git hook, and store there commit hash (symlink or source this file in .git/hooks):

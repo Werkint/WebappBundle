@@ -14,10 +14,19 @@ services:
         class: Werkint\Bundle\WebappBundle\Webapp\Compiler
         arguments:
             - %werkint_webapp%
-            - %kernel.debug%
-            - @=parameter('werkint_webapp')['gemPath']
+            - @werkint.webapp.compiler.scripts
+            - @werkint.webapp.compiler.styles
         tags:
             - { name: kernel.cache_clearer, priority: 0 }
+    werkint.webapp.compiler.scripts:
+        class: Werkint\Bundle\WebappBundle\Webapp\Compiler\ScriptsCompiler
+        arguments:
+            - @=parameter('werkint_webapp')['project']
+    werkint.webapp.compiler.styles:
+        class: Werkint\Bundle\WebappBundle\Webapp\Compiler\StylesCompiler
+        arguments:
+            - @assetic.filter_manager
+            - @=parameter('werkint_webapp')['project']
     werkint.webapp.browsercheck:
         class: Werkint\Bundle\WebappBundle\Webapp\BrowserCheck
         scope: request

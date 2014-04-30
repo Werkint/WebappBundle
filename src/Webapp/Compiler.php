@@ -5,9 +5,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
 use Werkint\Bundle\WebappBundle\Webapp\Compiler\ScriptsCompiler;
 use Werkint\Bundle\WebappBundle\Webapp\Compiler\StylesCompiler;
-use Werkint\Bundle\WebappBundle\Webapp\Processor\ScriptsProcessor;
-use Werkint\Bundle\WebappBundle\Webapp\Processor\StylesProcessor;
-use Werkint\Bundle\WebappBundle\Webapp\ScriptLoaderInterface;
 
 /**
  * Compiler.
@@ -23,20 +20,18 @@ class Compiler implements
     protected $isDebug;
     protected $strictMode = false;
     protected $revision;
-    protected $gemPath;
 
     /**
-     * @param array  $params
-     * @param bool   $isDebug
-     * @param string $gemPath
-     * @throws \InvalidArgumentException
+     * @param array                    $params
+     * @param Compiler\ScriptsCompiler $scriptsCompiler
+     * @param Compiler\StylesCompiler  $stylesCompiler
+     * @internal param bool $isDebug
      */
     public function __construct(
         array $params,
-        $isDebug = false,
-        $gemPath
+        ScriptsCompiler $scriptsCompiler,
+        StylesCompiler $stylesCompiler
     ) {
-        $this->gemPath = $gemPath;
         $this->targetdir = $params['resdir'];
         $this->project = $params['project'];
         $this->scriptsdir = $params['scriptsdir'];
@@ -47,7 +42,10 @@ class Compiler implements
                 );
             }
         }
-        $this->isDebug = $isDebug;
+
+        $this->scriptsCompiler = $scriptsCompiler;
+        $this->stylesCompiler = $stylesCompiler;
+
         $this->revision = substr(crc32(file_exists($params['revpath']) ?
             file_get_contents($params['revpath']) : ''), 0, 6);
     }
@@ -80,18 +78,6 @@ class Compiler implements
         $blocks = [];
         $root = null;
 
-        // compilers
-        $compilerScript = new ScriptsCompiler(
-            new ScriptsProcessor($this->isDebug),
-            $this->project,
-            $this->strictMode
-        );
-        $compilerStyle = new StylesCompiler(
-            new StylesProcessor($this->isDebug),
-            $this->gemPath,
-            $this->project
-        );
-
         // TODO: caching
         // TODO: tags injectioned compilers
         $variables = [];
@@ -114,7 +100,7 @@ class Compiler implements
             $blockPath = $this->targetdir . '/' . $name;
             // Compile, if needed
             if (!file_exists($blockPath . '.css')) {
-                $data = $compilerStyle->compile($variables, $blockPath . '.css', $filesCss, $root);
+                $data = $this->stylesCompiler->compile($variables, $blockPath . '.css', $filesCss, $root);
                 file_put_contents($blockPath . '.scss', $data);
             }
 
@@ -128,7 +114,7 @@ class Compiler implements
             $blockPath = $this->targetdir . '/' . $name;
             // Compile, if needed
             if (!file_exists($blockPath . '.js')) {
-                $compilerScript->compile($vars, $block, $blockPath . '.js', $filesJs);
+                $this->scriptsCompiler->compile($vars, $block, $blockPath . '.js', $filesJs);
             }
         }
 

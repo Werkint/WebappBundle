@@ -37,7 +37,6 @@ class Configuration implements
                 ->scalarNode('resdir')->isRequired()->end()
                 ->scalarNode('revpath')->isRequired()->end()
                 ->scalarNode('project')->isRequired()->end()
-                ->scalarNode('gemPath')->defaultValue(null)->end()
                 ->arrayNode('browsers')
                     ->addDefaultsIfNotSet()
                     ->children()

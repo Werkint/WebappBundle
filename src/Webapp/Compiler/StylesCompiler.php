@@ -1,8 +1,9 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp\Compiler;
 
-use Werkint\Bundle\WebappBundle\Webapp\Processor\DefaultProcessor;
-use Werkint\Bundle\WebappBundle\Webapp\Processor\StylesProcessor;
+use Assetic\Asset\StringAsset;
+use Assetic\Filter\Sass\SassFilter;
+use Symfony\Bundle\AsseticBundle\FilterManager;
 
 /**
  * StylesCompiler.
@@ -11,23 +12,14 @@ use Werkint\Bundle\WebappBundle\Webapp\Processor\StylesProcessor;
  */
 class StylesCompiler
 {
-    protected $processor;
-    protected $gemPath;
+    protected $filterManager;
     protected $project;
 
-    /**
-     * @param DefaultProcessor $processor
-     * @param string           $gemPath
-     * @param string           $project
-     */
     public function __construct(
-        DefaultProcessor $processor,
-        $gemPath,
+        FilterManager $filterManager,
         $project
     ) {
-        /** @var StylesProcessor $processor */
-        $this->processor = $processor;
-        $this->gemPath = $gemPath;
+        $this->filterManager = $filterManager;
         $this->project = $project;
     }
 
@@ -82,8 +74,14 @@ class StylesCompiler
             $data = $prefixData . $hr . '{ display: none; };' . $data;
         }
 
-        $this->processor->setGemPath($this->gemPath);
-        $data = $this->processor->process($data);
+        $filter = $this->filterManager->get('scss');
+        /** @var SassFilter $filter */
+        $asset = new StringAsset(
+            $data,
+            [$filter]
+        );
+        $asset->load();
+        $data = $asset->getContent();
         if ($prefixData) {
             $data = substr($data, strpos($data, $hr));
         }

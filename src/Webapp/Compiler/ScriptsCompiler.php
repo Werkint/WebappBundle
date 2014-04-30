@@ -12,25 +12,13 @@ use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
 class ScriptsCompiler
 {
     const VAR_PREFIX = '$webapp';
-    const STRICT_MODE = '"use strict"';
 
-    protected $processor;
     protected $project;
-    protected $strictMode;
 
-    /**
-     * @param DefaultProcessor $processor
-     * @param string           $project
-     * @param bool             $strictMode
-     */
     public function __construct(
-        DefaultProcessor $processor,
-        $project,
-        $strictMode = false
+        $project
     ) {
-        $this->processor = $processor;
         $this->project = $project;
-        $this->strictMode = $strictMode;
     }
 
     /**
@@ -50,9 +38,6 @@ class ScriptsCompiler
         // TODO: better way of compiling
         $data = [];
         $data[] = 'void function(window){';
-        if ($this->strictMode) {
-            $data[] = static::STRICT_MODE;
-        }
         $data[] = 'var definejs = window.define?window.define:function(){}';
         $data[] = 'window.define = null';
 
@@ -81,7 +66,6 @@ class ScriptsCompiler
         $data[] = '}(window)';
         $data = join(";\n", $data);
 
-        $data = $this->processor->process($data);
         file_put_contents($filepath, $data);
         touch($filepath);
 
