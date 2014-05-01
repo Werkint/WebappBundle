@@ -21,11 +21,14 @@ services:
     werkint.webapp.compiler.scripts:
         class: Werkint\Bundle\WebappBundle\Webapp\Compiler\ScriptsCompiler
         arguments:
+            - @assetic.filter_manager
+            - @=parameter('werkint_webapp')['filters']['js']
             - @=parameter('werkint_webapp')['project']
     werkint.webapp.compiler.styles:
         class: Werkint\Bundle\WebappBundle\Webapp\Compiler\StylesCompiler
         arguments:
             - @assetic.filter_manager
+            - @=parameter('werkint_webapp')['filters']['css']
             - @=parameter('werkint_webapp')['project']
     werkint.webapp.browsercheck:
         class: Werkint\Bundle\WebappBundle\Webapp\BrowserCheck

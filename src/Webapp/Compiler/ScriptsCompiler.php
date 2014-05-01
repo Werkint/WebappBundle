@@ -1,7 +1,8 @@
 <?php
 namespace Werkint\Bundle\WebappBundle\Webapp\Compiler;
 
-use Werkint\Bundle\WebappBundle\Webapp\Processor\DefaultProcessor;
+use Assetic\Asset\StringAsset;
+use Symfony\Bundle\AsseticBundle\FilterManager;
 use Werkint\Bundle\WebappBundle\Webapp\ScriptLoader;
 
 /**
@@ -13,11 +14,17 @@ class ScriptsCompiler
 {
     const VAR_PREFIX = '$webapp';
 
+    protected $filterManager;
+    protected $filters;
     protected $project;
 
     public function __construct(
+        FilterManager $filterManager,
+        array $filters,
         $project
     ) {
+        $this->filterManager = $filterManager;
+        $this->filters = $filters;
         $this->project = $project;
     }
 
@@ -38,8 +45,6 @@ class ScriptsCompiler
         // TODO: better way of compiling
         $data = [];
         $data[] = 'void function(window){';
-        $data[] = 'var definejs = window.define?window.define:function(){}';
-        $data[] = 'window.define = null';
 
         if ($block == ScriptLoader::ROOT_BLOCK) {
             $data[] = static::VAR_PREFIX . '={"var":{}}';
@@ -62,9 +67,17 @@ class ScriptsCompiler
             }
             $data[] = file_get_contents($file);
         }
-        $data[] = 'window.define = definejs';
         $data[] = '}(window)';
         $data = join(";\n", $data);
+
+        $filters = array_map(function ($name) {
+            return $this->filterManager->get($name);
+        }, $this->filters);
+        $asset = new StringAsset(
+            $data,
+            $filters
+        );
+        $data = $asset->dump();
 
         file_put_contents($filepath, $data);
         touch($filepath);

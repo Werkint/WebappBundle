@@ -2,7 +2,6 @@
 namespace Werkint\Bundle\WebappBundle\Webapp\Compiler;
 
 use Assetic\Asset\StringAsset;
-use Assetic\Filter\Sass\SassFilter;
 use Symfony\Bundle\AsseticBundle\FilterManager;
 
 /**
@@ -13,13 +12,16 @@ use Symfony\Bundle\AsseticBundle\FilterManager;
 class StylesCompiler
 {
     protected $filterManager;
+    protected $filters;
     protected $project;
 
     public function __construct(
         FilterManager $filterManager,
+        array $filters,
         $project
     ) {
         $this->filterManager = $filterManager;
+        $this->filters = $filters;
         $this->project = $project;
     }
 
@@ -74,14 +76,14 @@ class StylesCompiler
             $data = $prefixData . $hr . '{ display: none; };' . $data;
         }
 
-        $filter = $this->filterManager->get('scss');
-        /** @var SassFilter $filter */
+        $filters = array_map(function ($name) {
+            return $this->filterManager->get($name);
+        }, $this->filters);
         $asset = new StringAsset(
             $data,
-            [$filter]
+            $filters
         );
-        $asset->load();
-        $data = $asset->getContent();
+        $data = $asset->dump();
         if ($prefixData) {
             $data = substr($data, strpos($data, $hr));
         }
