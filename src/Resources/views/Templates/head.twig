@@ -1,20 +1,11 @@
-<script src="{{ respath }}/webapp.js"></script>
 {% for class, block in blocks %}
   {% for import in block.imports %}
     {% if import[1] == 'css' %}
       <link href="{{ import }}" rel="stylesheet" type="text/css"/>
     {% elseif import[1] == 'js' %}
-      <script>
-        CONST._imports.add('{{ import[0] }}', '{{ import[1] }}');
-      </script>
+      <script src="{{ respath }}/{{ import[0] }}" data-webapp-hash="{{ import[1] }}" class="webapp-script"></script>
     {% endif %}
   {% endfor %}
   <link href="{{ respath }}/{{ block.css }}.css" data-hash="{{ block.css }}" rel="stylesheet" type="text/css" class="{{ prefix }}{{ class }}"/>
-  <script>
-    CONST._imports.add('{{ respath }}/{{ block.js }}.js', '{{ block.js }}', '{{ prefix }}{{ class }}');
-  </script>
+  <script src="{{ respath }}/{{ block.js }}.js" data-webapp-hash="{{ block.js }}" data-webapp-cls="{{ prefix }}{{ class }}" class="webapp-script"></script>
 {% endfor %}
-<script>
-  CONST._packages = ['{{ packages|join('\', \'')|raw }}'];
-  CONST._imports.run();
-</script>

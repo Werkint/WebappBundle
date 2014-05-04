@@ -118,12 +118,6 @@ class Compiler implements
             }
         }
 
-        // Main webapp.js script
-        copy(
-            $this->scriptsdir . '/webapp.js',
-            $this->targetdir . '/webapp.js'
-        );
-
         return $blocks;
     }
 
