@@ -63,22 +63,6 @@ class Webapp implements
     /**
      * {@inheritdoc}
      */
-    public function addImportCss($url)
-    {
-        $this->loader->addImport($url, ScriptLoader::TYPE_CSS);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addImportJs($url)
-    {
-        $this->loader->addImport($url, ScriptLoader::TYPE_JS);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function addVar($name, $value, $isRoot = false)
     {
         if ($isRoot) {

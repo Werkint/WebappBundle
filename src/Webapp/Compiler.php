@@ -87,7 +87,6 @@ class Compiler implements
             $variables += $vars;
             // TODO: variable hash for css/js different
             $varHash = substr($this->getHash($vars), 0, 5);
-            $blocks[$block]['imports'] = $loader->getImports($block);
 
             // Files to compile
             $filesCss = $loader->getFiles($block, ScriptLoader::TYPE_CSS);

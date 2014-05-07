@@ -39,19 +39,6 @@ class WebappTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function testImports()
-    {
-        $loader = $this->getMock('Werkint\Bundle\WebappBundle\Webapp\ScriptLoader');
-        $loader
-            ->expects($this->exactly(2))
-            ->method('addImport')
-            ->will($this->returnValue(null));
-        $obj = new Webapp($loader);
-
-        $obj->addImportCss('foo');
-        $obj->addImportJs('foo');
-    }
-
     public function testAttach()
     {
         $loader = $this->getMock('Werkint\Bundle\WebappBundle\Webapp\ScriptLoader');

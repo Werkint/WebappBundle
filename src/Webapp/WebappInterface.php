@@ -25,16 +25,6 @@ interface WebappInterface
     public function attachByTwigAlias($name, $ext);
 
     /**
-     * @param string $url
-     */
-    public function addImportCss($url);
-
-    /**
-     * @param string $url
-     */
-    public function addImportJs($url);
-
-    /**
      * @param string $name
      * @param mixed  $value
      * @param bool   $isRoot

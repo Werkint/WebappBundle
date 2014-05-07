@@ -43,13 +43,6 @@ interface ScriptLoaderInterface
     public function addVar($name, $value);
 
     /**
-     * @param string $url
-     * @param string $type
-     * @throws \InvalidArgumentException
-     */
-    public function addImport($url, $type);
-
-    /**
      * @param string|null $block
      * @return array
      */
@@ -62,11 +55,6 @@ interface ScriptLoaderInterface
      */
     public function getFiles($block, $ext);
 
-    /**
-     * @param string|null $block
-     * @return array[]
-     */
-    public function getImports($block = null);
 
     /**
      * @param string      $name

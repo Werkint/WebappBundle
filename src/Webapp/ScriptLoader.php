@@ -106,17 +106,6 @@ class ScriptLoader implements
         $this->getCurrentBlock()['vars'][$name] = $value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function addImport($url, $type)
-    {
-        if (!in_array($type, [static::TYPE_JS, static::TYPE_CSS])) {
-            throw new \InvalidArgumentException('Wrong import type: ' . $type);
-        }
-        $this->getCurrentBlock()['imports'][] = [$url, $type, sha1($type . $url)];
-    }
-
     // -- Getters ---------------------------------------
 
     /**
@@ -147,14 +136,6 @@ class ScriptLoader implements
         }
 
         return $ret;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getImports($block = null)
-    {
-        return $this->getCurrentBlock($block)['imports'];
     }
 
     // -- Packages ---------------------------------------
@@ -292,7 +273,6 @@ class ScriptLoader implements
             $this->blocks[$block] = [
                 'files'    => [],
                 'vars'     => [],
-                'imports'  => [],
                 'packages' => [],
             ];
         }

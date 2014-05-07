@@ -117,34 +117,6 @@ class ScriptLoaderTest extends \PHPUnit_Framework_TestCase
         $obj->blockEnd();
     }
 
-    /**
-     * @depends testPackagesBlocks
-     * @expectedException \InvalidArgumentException
-     */
-    public function testImportsWrongType()
-    {
-        $obj = $this->getObject();
-
-        $obj->addImport('testurl', 'foo_wrong_type');
-    }
-
-    /**
-     * @depends testImportsWrongType
-     */
-    public function testImports()
-    {
-        $obj = $this->getObject();
-
-        $this->assertEquals(0, count($obj->getImports()));
-        $obj->addImport('testurl', ScriptLoader::TYPE_JS);
-        $obj->addImport('testurl', ScriptLoader::TYPE_CSS);
-        $this->assertEquals(2, count($obj->getImports()));
-        $obj->blockStart('foo');
-        $obj->addImport('testurl', ScriptLoader::TYPE_JS);
-        $obj->blockEnd();
-        $this->assertEquals(2, count($obj->getImports()));
-        $this->assertEquals(1, count($obj->getImports('foo')));
-    }
 
     /**
      * @depends testBlocksAndLog
