@@ -6,6 +6,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Werkint\Bundle\WebappBundle\Webapp\Compiler;
 use Werkint\Bundle\WebappBundle\Webapp\ScriptLoaderInterface;
+use Werkint\Bundle\WebappBundle\Webapp\WebappInterface;
 
 /**
  * ViewInjector.
@@ -16,29 +17,25 @@ class ViewInjector
 {
     const TEMPLATE = 'WerkintWebappBundle:Templates:head.twig';
     const TAG_AJAX = '[[PAGEPATH]]';
-    const TAG_HEAD = '</head>';
     const PREFIX = 'webapp_res_';
 
     protected $templating;
     protected $loader;
     protected $compiler;
+    protected $webapp;
     protected $parameters;
 
-    /**
-     * @param EngineInterface       $templating
-     * @param ScriptLoaderInterface $loader
-     * @param Compiler              $compiler
-     * @param array                 $parameters
-     */
     public function __construct(
         EngineInterface $templating,
         ScriptLoaderInterface $loader,
         Compiler $compiler,
+        WebappInterface $webapp,
         array $parameters
     ) {
         $this->templating = $templating;
         $this->loader = $loader;
         $this->compiler = $compiler;
+        $this->webapp = $webapp;
         $this->parameters = $parameters;
     }
 
@@ -79,13 +76,14 @@ class ViewInjector
             $content = mb_substr($content, 0, $pos) . $data . mb_substr($content, $pos + strlen(static::TAG_AJAX));
             $response->setContent($content);
         } else {
-            $pos = mb_strrpos($content, static::TAG_HEAD);
+            $posStr = '<!--webapp-' . $this->webapp->getHash() . '-->';
+            $pos = mb_strrpos($content, $posStr);
             if ($pos === false) {
                 return false;
             }
             $code = $this->templating->render(static::TEMPLATE, $data);
             $code = "\n" . str_replace("\n", '', $code) . "\n";
-            $content = mb_substr($content, 0, $pos) . $code . mb_substr($content, $pos);
+            $content = mb_substr($content, 0, $pos) . $code . mb_substr($content, $pos + strlen($posStr));
             $response->setContent($content);
         }
     }

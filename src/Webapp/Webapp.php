@@ -15,20 +15,23 @@ class Webapp implements
     protected $loader;
     protected $nameParser;
     protected $nameLoader;
+    protected $hash;
 
     /**
      * @param ScriptLoaderInterface       $loader
      * @param TemplateNameParserInterface $nameParser
-     * @param LoaderInterface $nameLoader
+     * @param LoaderInterface             $nameLoader
      */
     public function __construct(
         ScriptLoaderInterface $loader,
         TemplateNameParserInterface $nameParser,
-    LoaderInterface $nameLoader
+        LoaderInterface $nameLoader
     ) {
         $this->loader = $loader;
         $this->nameParser = $nameParser;
         $this->nameLoader = $nameLoader;
+
+        $this->hash = sha1(get_called_class() . microtime(true) . 'salt');
     }
 
     /**
@@ -92,4 +95,11 @@ class Webapp implements
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getHash()
+    {
+        return $this->hash;
+    }
 }

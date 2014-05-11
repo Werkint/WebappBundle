@@ -51,6 +51,7 @@ services:
             - @templating.engine.twig
             - @werkint.webapp.scriptloader
             - @werkint.webapp.compiler
+            - @werkint.webapp
             - %werkint_webapp%
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
@@ -72,6 +73,7 @@ services:
         class: Werkint\Bundle\WebappBundle\Twig\Extension\Extension
         arguments:
             - @werkint.webapp.scriptloader
+            - @werkint.webapp
             - @event_dispatcher
         tags:
             -  { name: twig.extension }

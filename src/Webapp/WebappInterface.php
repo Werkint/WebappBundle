@@ -41,4 +41,9 @@ interface WebappInterface
      * @param array $vars
      */
     public function addVars(array $vars);
+
+    /**
+     * @return string
+     */
+    public function getHash();
 } 
