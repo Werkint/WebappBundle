@@ -1,6 +1,7 @@
 {
     "name":        "werkint/webapp-bundle",
-    "description": "Symfony2 Webapp bundle",
+    "type":        "symfony-bundle",
+    "description": "Werkint Webapp bundle",
     "license":     "GPL-3.0+",
     "authors":     [
         {
@@ -21,11 +22,12 @@
         "friendsofsymfony/rest-bundle": "0.13.*",
         "ikimea/browser":               "*",
 
-        "php": ">=5.4"
+        "php": ">=5.5"
     },
     "autoload":    {
         "psr-4": {
-            "Werkint\\Bundle\\WebappBundle\\": "src/"
+            "Werkint\\Bundle\\WebappBundle\\":        "src/",
+            "Werkint\\Bundle\\WebappBundle\\Tests\\": "tests/"
         }
     },
     "extra":       {
