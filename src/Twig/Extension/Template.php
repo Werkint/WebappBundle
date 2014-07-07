@@ -118,13 +118,14 @@ abstract class Template extends \Twig_Template
     public function displayBlock(
         $name,
         array $context,
-        array $blocks = []
+        array $blocks = [],
+        $useBlocks = true
     ) {
         // hook block pre
         $tpl = $this->processBlockPre($name);
 
         // call parent
-        parent::displayBlock($name, $context, $blocks);
+        parent::displayBlock($name, $context, $blocks, $useBlocks);
 
         // hook block post
         return $this->processBlockPost($tpl);
