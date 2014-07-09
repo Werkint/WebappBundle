@@ -26,9 +26,9 @@ class StylesCompiler
     }
 
     /**
-     * @param array       $vars
-     * @param string      $filepath
-     * @param array       $files
+     * @param array $vars
+     * @param string $filepath
+     * @param array $files
      * @param string|null $prefixData
      * @return string
      * @throws \Exception
@@ -42,21 +42,39 @@ class StylesCompiler
         $data = [
             '@charset "utf-8";',
         ];
-        $updVars = function ($vars, $project) use (&$data, &$updVars) {
+        $parseValue = function ($value) use (&$parseValue) {
+            if (!is_array($value)) {
+                return '"' . str_replace('"', '\\"', $value) . '"';
+            } else {
+                $ret = "(";
+                foreach ($value as $key => $elem) {
+                    if (!is_array($value)) {
+                        if (!is_scalar($elem)) {
+                            continue;
+                        }
+                    }
+                    if (!(substr($ret, -1) === '(')) {
+                        $ret .= ',';
+                    };
+                    $ret .= '"' . str_replace('"', '\\"', $key) . '":' . $parseValue($elem);
+                };
+                $ret .= ")";
+                return $ret;
+            }
+        };
+        $updVars = function ($vars, $project) use (&$data, &$parseValue) {
             foreach ($vars as $name => $value) {
                 $name = str_replace('_', '-', $name);
                 $top = explode('-', $name)[0];
                 if ($top != 'webapp') {
                     $name = $project . '-' . $name;
                 }
-                if (is_array($value)) {
-                    $updVars($value, $name);
-                }
-                if (!is_scalar($value)) {
-                    // Compilation only possible for variables
+                $parsedValue = $parseValue($value);
+                if ($parsedValue !== '()') {
+                    $data[] = '$' . $name . ':' . $parsedValue . ';';
+                } else {
                     continue;
                 }
-                $data[] = '$' . $name . ':"' . str_replace('"', '\\"', $value) . '";';
             }
         };
         $updVars($vars, $this->project);
