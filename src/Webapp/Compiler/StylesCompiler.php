@@ -62,7 +62,7 @@ class StylesCompiler
                 return $ret;
             }
         };
-        $updVars = function ($vars, $project) use (&$data, &$updVars, &$parseValue) {
+        $updVars = function ($vars, $project) use (&$data, &$parseValue) {
             foreach ($vars as $name => $value) {
                 $name = str_replace('_', '-', $name);
                 $top = explode('-', $name)[0];
