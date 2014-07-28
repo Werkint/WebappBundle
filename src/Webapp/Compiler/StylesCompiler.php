@@ -26,9 +26,9 @@ class StylesCompiler
     }
 
     /**
-     * @param array $vars
-     * @param string $filepath
-     * @param array $files
+     * @param array       $vars
+     * @param string      $filepath
+     * @param array       $files
      * @param string|null $prefixData
      * @return string
      * @throws \Exception
@@ -44,6 +44,15 @@ class StylesCompiler
         ];
         $parseValue = function ($value) use (&$parseValue) {
             if (!is_array($value)) {
+                if (is_int($value)) {
+                    return $value;
+                }
+                if (is_bool($value)) {
+                    return $value ? 'true' : 'false';
+                }
+                if (is_null($value)) {
+                    return 'null';
+                }
                 return '"' . str_replace('"', '\\"', $value) . '"';
             } else {
                 $ret = "(";
