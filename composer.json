@@ -19,7 +19,7 @@
         "werkint/jsmin":     "*",
         "werkint/minifycss": "*",
 
-        "friendsofsymfony/rest-bundle": "0.13.*",
+        "friendsofsymfony/rest-bundle": "~1.4",
         "ikimea/browser":               "*",
 
         "php": ">=5.5"
