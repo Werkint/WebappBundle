@@ -38,7 +38,7 @@ abstract class Template extends \Twig_Template
     /**
      * @return bool
      */
-    protected function processDisplay()
+    public function processDisplay()
     {
         $loader = $this->getEnvironment()->getLoader();
         if (!($loader instanceof TwigLoader)) {
