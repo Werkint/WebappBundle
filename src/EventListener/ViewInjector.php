@@ -42,7 +42,7 @@ class ViewInjector
     /**
      * @return array
      */
-    protected function getTemplateData()
+    public function getTemplateData()
     {
         $blocks = $this->compiler->compile($this->loader);
         return array_merge($this->parameters, [
