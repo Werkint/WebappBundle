@@ -53,12 +53,16 @@ class ScriptLoader implements
 
             if (preg_match('!\.js$!', $path)) {
                 if (in_array($path, $this->jsList)) {
-                    return false;
+                    unset($this->jsList[array_search($path, $this->jsList)]);
                 }
                 $this->jsList[] = $path;
             }
 
             $this->log('file in [' . $this->blocksStack[0] . ']', $path);
+
+            if (in_array($path, $this->getCurrentBlock()['files'])) {
+                unset($this->getCurrentBlock()['files'][array_search($path, $this->getCurrentBlock()['files'])]);
+            }
             $this->getCurrentBlock()['files'][] = $path;
         }
 
