@@ -76,7 +76,6 @@ class Compiler implements
         ScriptLoaderInterface $loader
     ) {
         $blocks = [];
-        $root = null;
 
         // TODO: caching
         // TODO: tags injectioned compilers
@@ -94,17 +93,13 @@ class Compiler implements
 
             // CSS
             $name = $this->getHash($filesCss, true);
-            $name = $this->getHash([$name, $root]) . '.' . $varHash . $blockRev;
+            $name = $this->getHash([$name, null]) . '.' . $varHash . $blockRev;
             $blocks[$block]['css'] = $name;
             $blockPath = $this->targetdir . '/' . $name;
+
             // Compile, if needed
             if (!file_exists($blockPath . '.css')) {
-                $data = $this->stylesCompiler->compile($variables, $blockPath . '.css', $filesCss, $root);
-                file_put_contents($blockPath . '.scss', $data);
-            }
-
-            if ($block == ScriptLoader::ROOT_BLOCK) {
-                $root = file_get_contents($blockPath . '.scss');
+                $this->stylesCompiler->compile($variables, $blockPath . '.css', $filesCss);
             }
 
             // JS
