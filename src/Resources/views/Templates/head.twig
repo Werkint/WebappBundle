@@ -1,4 +1,5 @@
 {% for class, block in blocks %}
   <link href="{{ respath }}/{{ block.css }}.css" data-hash="{{ block.css }}" rel="stylesheet" type="text/css" class="{{ prefix }}{{ class }}"/>
-  <script src="{{ respath }}/{{ block.js }}.js" data-webapp-hash="{{ block.js }}" data-webapp-cls="{{ prefix }}{{ class }}" class="webapp-script"></script>
+  <script src="{{ respath }}/{{ block.js }}.js" data-webapp-hash="{{ block.js }}" data-webapp-cls="{{ prefix }}{{ class }}" class="webapp-script" async></script>
+  {# TODO: вынести генерацию, чтобы async везде работал #}
 {% endfor %}
