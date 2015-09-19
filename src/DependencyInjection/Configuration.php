@@ -33,6 +33,7 @@ class Configuration implements
         $treeBuilder
             ->root($this->alias)
             ->children()
+                ->scalarNode('force_root_block')->defaultFalse()->end()
                 ->scalarNode('respath')->isRequired()->end()
                 ->scalarNode('resdir')->isRequired()->end()
                 ->scalarNode('revpath')->isRequired()->end()

@@ -44,7 +44,7 @@ class ScriptsCompiler
     ) {
         // TODO: better way of compiling
         $data = [];
-        $data[] = 'void function(window){';
+        //$data[] = 'void function(window){';
 
         if ($block == ScriptLoader::ROOT_BLOCK) {
             $data[] = static::VAR_PREFIX . '={"var":{}}';
@@ -67,7 +67,7 @@ class ScriptsCompiler
             }
             $data[] = file_get_contents($file);
         }
-        $data[] = '}(window)';
+        //$data[] = '}(window)';
         $data = join(";\n", $data);
 
         $filters = array_map(function ($name) {

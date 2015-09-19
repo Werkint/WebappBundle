@@ -11,6 +11,7 @@ class ScriptLoader implements
 {
     protected $appmode;
     protected $isDebug;
+    protected $forceRootBlock;
 
     /**
      * @param bool        $isDebug
@@ -19,10 +20,12 @@ class ScriptLoader implements
      */
     public function __construct(
         $isDebug = false,
-        $appmode = null
+        $appmode = null,
+        $forceRootBlock = false
     ) {
         $this->appmode = $appmode;
         $this->isDebug = $isDebug;
+        $this->forceRootBlock = $forceRootBlock;
 
         $this->blockStart(static::ROOT_BLOCK);
     }
@@ -153,9 +156,9 @@ class ScriptLoader implements
     protected function &getPackageList($block = null)
     {
         if ($this->isSplit) {
-            $list = & $this->getCurrentBlock($block)['packages'];
+            $list = &$this->getCurrentBlock($block)['packages'];
         } else {
-            $list = & $this->packages;
+            $list = &$this->packages;
         }
         return $list;
     }
@@ -222,6 +225,10 @@ class ScriptLoader implements
      */
     public function blockStart($name)
     {
+        if ($this->forceRootBlock) {
+            $name = ScriptLoader::ROOT_BLOCK;
+        }
+
         $this->log('block start', $name);
         $this->createBlock($name);
         array_unshift($this->blocksStack, $name);

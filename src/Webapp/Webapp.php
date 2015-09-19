@@ -69,7 +69,7 @@ class Webapp implements
     public function addVar($name, $value, $isRoot = false)
     {
         if ($isRoot) {
-            $this->loader->blockStart('_root');
+            $this->loader->blockStart(ScriptLoader::ROOT_BLOCK);
         }
         $this->loader->addVar($name, $value);
         if ($isRoot) {
