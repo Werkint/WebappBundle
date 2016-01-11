@@ -2,9 +2,9 @@ services:
     werkint.webapp:
         class: Werkint\Bundle\WebappBundle\Webapp\Webapp
         arguments:
-            - @werkint.webapp.scriptloader
-            - @templating.name_parser
-            - @templating.loader
+            - "@werkint.webapp.scriptloader"
+            - "@templating.name_parser"
+            - "@templating.loader"
     werkint.webapp.scriptloader:
         class: Werkint\Bundle\WebappBundle\Webapp\ScriptLoader
         arguments:
@@ -15,33 +15,33 @@ services:
         class: Werkint\Bundle\WebappBundle\Webapp\Compiler
         arguments:
             - %werkint_webapp%
-            - @werkint.webapp.compiler.scripts
-            - @werkint.webapp.compiler.styles
+            - "@werkint.webapp.compiler.scripts"
+            - "@werkint.webapp.compiler.styles"
         tags:
             - { name: kernel.cache_clearer, priority: 0 }
     werkint.webapp.compiler.scripts:
         class: Werkint\Bundle\WebappBundle\Webapp\Compiler\ScriptsCompiler
         arguments:
-            - @assetic.filter_manager
-            - @=parameter('werkint_webapp')['filters']['js']
-            - @=parameter('werkint_webapp')['project']
+            - "@assetic.filter_manager"
+            - "@=parameter('werkint_webapp')['filters']['js']"
+            - "@=parameter('werkint_webapp')['project']"
     werkint.webapp.compiler.styles:
         class: Werkint\Bundle\WebappBundle\Webapp\Compiler\StylesCompiler
         arguments:
-            - @assetic.filter_manager
-            - @=parameter('werkint_webapp')['filters']['css']
-            - @=parameter('werkint_webapp')['project']
+            - "@assetic.filter_manager"
+            - "@=parameter('werkint_webapp')['filters']['css']"
+            - "@=parameter('werkint_webapp')['project']"
     werkint.webapp.browsercheck:
         class: Werkint\Bundle\WebappBundle\Webapp\BrowserCheck
         scope: request
         arguments:
-            - @request
+            - "@request"
             - %werkint_webapp.browsers%
 
     werkint.webapp.listener.template:
         class: Werkint\Bundle\WebappBundle\EventListener\Template
         arguments:
-            - @werkint.webapp.scriptloader
+            - "@werkint.webapp.scriptloader"
         tags:
             - { name: kernel.event_listener, event: werkint.webapp.displaypost, method: templateDisplayPost }
             - { name: kernel.event_listener, event: werkint.webapp.blockpre, method: templateBlockStart }
@@ -49,10 +49,10 @@ services:
     werkint.webapp.listener.viewinjector:
         class: Werkint\Bundle\WebappBundle\EventListener\ViewInjector
         arguments:
-            - @templating.engine.twig
-            - @werkint.webapp.scriptloader
-            - @werkint.webapp.compiler
-            - @werkint.webapp
+            - "@templating.engine.twig"
+            - "@werkint.webapp.scriptloader"
+            - "@werkint.webapp.compiler"
+            - "@werkint.webapp"
             - %werkint_webapp%
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
@@ -60,22 +60,22 @@ services:
         class: Werkint\Bundle\WebappBundle\EventListener\BrowserWarnInjector
         scope: request
         arguments:
-            - @templating.engine.twig
-            - @werkint.webapp.browsercheck
+            - "@templating.engine.twig"
+            - "@werkint.webapp.browsercheck"
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
     werkint.webapp.listener.request:
         class: Werkint\Bundle\WebappBundle\EventListener\Request
         arguments:
-            - @werkint.webapp.scriptloader
+            - "@werkint.webapp.scriptloader"
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onRequest, priority: -10 }
     werkint.webapp.listener.twigextension:
         class: Werkint\Bundle\WebappBundle\Twig\Extension\Extension
         arguments:
-            - @werkint.webapp.scriptloader
-            - @werkint.webapp
-            - @event_dispatcher
+            - "@werkint.webapp.scriptloader"
+            - "@werkint.webapp"
+            - "@event_dispatcher"
         tags:
             -  { name: twig.extension }
 
