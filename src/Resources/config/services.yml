@@ -10,7 +10,7 @@ services:
         arguments:
             - %kernel.debug%
             - %kernel.environment%
-            - @=parameter('werkint_webapp')['force_root_block']
+            - "@=parameter('werkint_webapp')['force_root_block']"
     werkint.webapp.compiler:
         class: Werkint\Bundle\WebappBundle\Webapp\Compiler
         arguments:
