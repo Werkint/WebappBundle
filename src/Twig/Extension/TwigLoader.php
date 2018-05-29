@@ -13,9 +13,9 @@ class TwigLoader extends FilesystemLoader
     /**
      * {@inheritdoc}
      */
-    public function findTemplate($template)
+    public function findTemplate($template, $throw = true)
     {
-        return parent::findTemplate($template);
+        return parent::findTemplate($template, $throw);
     }
 
 }
